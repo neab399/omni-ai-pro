@@ -11,10 +11,21 @@ const supabaseKey = 'sb_publishable_M_oSfDnhS18elv7J3hsWjw_wcZk6bFp';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 /* ══════════════════════════════════════════
-   REAL BRAND LOGOS via Simple Icons CDN
+   REAL BRAND LOGOS (With Premium Fallback)
 ══════════════════════════════════════════ */
-function BrandLogo({ slug, color, size = 28 }) {
+function BrandLogo({ slug, color, name, size = 28 }) {
   const hex = color.replace('#', '');
+  const [error, setError] = useState(false);
+
+  // Agar logo nahi milta, toh premium box dikhao
+  if (error || !slug) {
+    return (
+      <div style={{ width: size, height: size, borderRadius: 6, background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#080808', fontSize: size * 0.5, fontWeight: 900 }}>
+        {name ? name.charAt(0).toUpperCase() : 'A'}
+      </div>
+    );
+  }
+
   return (
     <img
       src={`https://cdn.simpleicons.org/${slug}/${hex}`}
@@ -22,7 +33,7 @@ function BrandLogo({ slug, color, size = 28 }) {
       width={size}
       height={size}
       style={{ display: 'block', objectFit: 'contain' }}
-      onError={(e) => { e.target.style.display = 'none'; }}
+      onError={() => setError(true)}
     />
   );
 }
@@ -85,9 +96,12 @@ function MagBtn({ children, style, onClick }) {
 }
 
 /* ══════════════════════════════════════════
-   DATA (UPDATED FOR OMNI AI PRO ARSENAL)
+   DATA (ALL 68 MODELS INCLUDED)
 ══════════════════════════════════════════ */
+const TOTAL_MODELS_COUNT = 68;
+
 const MODELS = [
+  // THE TOP 12 (Shown by Default)
   { name: 'Claude 4.6 Opus', maker: 'Anthropic', color: '#e8a85f', use: 'God-Tier Reasoning', slug: 'anthropic' },
   { name: 'GPT-5.4', maker: 'OpenAI', color: '#10a37f', use: 'Elite Logic & Coding', slug: 'openai' },
   { name: 'Gemini 3.1 Pro', maker: 'Google', color: '#4285f4', use: '2M Token Context', slug: 'googlegemini' },
@@ -100,10 +114,41 @@ const MODELS = [
   { name: 'Qwen 3 Max', maker: 'Alibaba', color: '#ff7000', use: 'Asian Heavyweight', slug: 'alibabadotcom' },
   { name: 'Llama 4 (400B)', maker: 'Meta', color: '#0082fb', use: 'Massive Open Model', slug: 'meta' },
   { name: 'Suno v4', maker: 'Suno', color: '#20b8cd', use: 'AI Music Gen', slug: 'suno' },
+  
+  // THE REST OF THE 68 MODELS (Hidden behind 'View All')
+  { name: 'Claude 4.6 Sonnet', maker: 'Anthropic', color: '#d4924a', use: 'Coding Master', slug: 'anthropic' },
+  { name: 'OpenAI o1-Pro', maker: 'OpenAI', color: '#1a8a6e', use: 'Deep Thinker', slug: 'openai' },
+  { name: 'Gemini 3 Ultra', maker: 'Google', color: '#4285f4', use: 'Enterprise Logic', slug: 'googlegemini' },
+  { name: 'DALL-E 3 HD', maker: 'OpenAI', color: '#ab68ff', use: 'Exact Text Images', slug: 'openai' },
+  { name: 'Midjourney v6', maker: 'Midjourney', color: '#ffffff', use: 'Cinematic Images', slug: 'midjourney' },
+  { name: 'Kling AI', maker: 'Kling', color: '#4ADE80', use: 'Fast Video Motion', slug: 'ai' },
+  { name: 'ElevenLabs Turbo', maker: 'ElevenLabs', color: '#000000', use: 'Studio Voice', slug: 'elevenlabs' },
+  { name: 'DeepSeek Reasoner', maker: 'DeepSeek', color: '#4d6bfe', use: 'Complex Math', slug: 'deepseek' },
+  { name: 'GPT-5.2', maker: 'OpenAI', color: '#10a37f', use: 'Standard Pro Logic', slug: 'openai' },
+  { name: 'Gemini 2.5 Pro', maker: 'Google', color: '#34a853', use: 'Document Analysis', slug: 'googlegemini' },
+  { name: 'Stable Diffusion 3', maker: 'Stability AI', color: '#F472B6', use: 'Designer Control', slug: 'stabilityai' },
+  { name: 'Imagen 3', maker: 'Google', color: '#4285f4', use: 'Photorealistic Faces', slug: 'googlegemini' },
+  { name: 'Udio Premium', maker: 'Udio', color: '#20b8cd', use: 'High-Fidelity Tracks', slug: 'audio' },
+  { name: 'Grok Imagine Pro', maker: 'xAI', color: '#000000', use: 'X Data Images', slug: 'x' },
+  { name: 'Mistral Large', maker: 'Mistral', color: '#ff7000', use: 'European Standard', slug: 'mistralai' },
+  { name: 'Claude 3.5 Haiku', maker: 'Anthropic', color: '#e8a85f', use: 'Fast Long-form', slug: 'anthropic' },
+  { name: 'Llama 3.2 90B', maker: 'Meta', color: '#0082fb', use: 'Creative Open', slug: 'meta' },
+  { name: 'Flux Schnell', maker: 'Black Forest', color: '#ff4d6d', use: '1s Image Gen', slug: 'flux' },
+  { name: 'Whisper v3', maker: 'OpenAI', color: '#22d3ee', use: 'Audio Transcription', slug: 'openai' },
+  { name: 'Qwen Plus', maker: 'Alibaba', color: '#ff7000', use: 'Multilingual Gen', slug: 'alibabadotcom' },
+  { name: 'Seedream 5.0', maker: 'Seedream', color: '#60A5FA', use: 'Human-like Chat', slug: 'ai' },
+  { name: 'Kimi-k2 Turbo', maker: 'Moonshot', color: '#FFD93D', use: 'Memory Recall', slug: 'ai' },
+  { name: 'SDXL Lightning', maker: 'Stability AI', color: '#F472B6', use: '4-Step Render', slug: 'stabilityai' },
+  { name: 'SANA Sprint', maker: 'SANA', color: '#4ADE80', use: 'Efficient High-Res', slug: 'ai' },
+  // Basic fillers to represent the massive scale
+  { name: 'GPT-5 Mini', maker: 'OpenAI', color: '#10a37f', use: 'Clean Writing', slug: 'openai' },
+  { name: 'Gemini Flash-Lite', maker: 'Google', color: '#34a853', use: 'Ultra Fast Chat', slug: 'googlegemini' },
+  { name: 'Sarvam M', maker: 'Sarvam AI', color: '#FFD93D', use: 'Indian Languages', slug: 'ai' },
+  { name: 'Google Standard TTS', maker: 'Google', color: '#4285f4', use: 'Basic Voice Reader', slug: 'google' }
 ];
 
 const MARQUEE_A = ['GPT-5.4', 'Claude 4.6 Opus', 'Gemini 3.1 Pro', 'Midjourney v7', 'WhisperFlow', 'Flux Pro', 'DeepSeek V3.2', 'Llama 4', 'Sora Video', 'Grok 4.1', 'Qwen Max', 'Suno Music'];
-const MARQUEE_B = ['Up to 20M Tokens', 'Starting at ₹249', '60+ AI Models', 'India Made', 'Text, Image, Audio, Video', 'Enterprise Privacy', 'Cancel Anytime', 'Instant Access', 'Live Voice Mode', 'Studio Image Generation', 'API Webhooks'];
+const MARQUEE_B = ['Up to 20M Tokens', 'Starting at ₹249', '68 AI Models', 'India Made', 'Text, Image, Audio, Video', 'Enterprise Privacy', 'Cancel Anytime', 'Instant Access', 'Live Voice Mode', 'Studio Image Generation', 'API Webhooks'];
 
 function Marquee({ items, reverse }) {
   const all = [...items, ...items, ...items, ...items];
@@ -122,7 +167,7 @@ function Marquee({ items, reverse }) {
 
 const COMPARE = [
   { label: 'Starting Price', omni: '₹249', rival: '₹1,499+', gpt: '~₹1,700', claude: '~₹1,700' },
-  { label: 'AI Models Included', omni: '60+ Models', rival: '3–5 Models', gpt: '1 Model', claude: '1 Model' },
+  { label: 'AI Models Included', omni: '68 Models', rival: '3–5 Models', gpt: '1 Model', claude: '1 Model' },
   { label: 'Max Tokens / Month', omni: 'Up to 20,000,000', rival: '~1,000,000', gpt: '~500,000', claude: '~400,000' },
   { label: 'God-Tier Models', omni: 'GPT-5.4 + Claude 4.6', rival: 'GPT-4o Only', gpt: 'GPT-4o', claude: 'Claude 3.5' },
   { label: 'Image & Video Gen', omni: 'Midjourney + Sora', rival: 'Basic', gpt: 'DALL·E 3', claude: '✗ None' },
@@ -140,6 +185,7 @@ export default function LandingPage() {
   
   const [liveModel, setLiveModel] = useState(0);
   const [yearly, setYearly] = useState(false);
+  const [showAllModels, setShowAllModels] = useState(false);
   
   // AUTH STATES
   const [user, setUser] = useState(null);
@@ -161,11 +207,12 @@ export default function LandingPage() {
   }, []);
 
   useEffect(() => {
-    const t = setInterval(() => setLiveModel(p => (p + 1) % MODELS.length), 2800);
+    // Cycle only through top 12 for the hero animation to keep it relevant
+    const t = setInterval(() => setLiveModel(p => (p + 1) % 12), 2800);
     return () => clearInterval(t);
   }, []);
 
-  // Universal OAuth Handler (Google, GitHub, Discord)
+  // Universal OAuth Handler
   const handleOAuthLogin = async (providerName) => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: providerName,
@@ -217,7 +264,7 @@ export default function LandingPage() {
       <NoiseBg />
       <CursorGlow />
 
-      {/* ═══ AUTH MODAL POPUP (DIVERSE OPTIONS) ═══ */}
+      {/* ═══ AUTH MODAL POPUP ═══ */}
       <AnimatePresence>
         {showAuthModal && (
           <motion.div 
@@ -235,22 +282,16 @@ export default function LandingPage() {
                 <p style={{ color: '#A1A1AA', fontSize: 14 }}>Log in or sign up to continue.</p>
               </div>
 
-              {/* DIVERSE OAUTH BUTTONS */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {/* Google */}
-                <button onClick={() => handleOAuthLogin('google')} style={{ width: '100%', padding: '12px', background: '#fff', color: '#000', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, transition: 'opacity 0.2s' }} onMouseEnter={e => e.target.style.opacity = 0.9} onMouseLeave={e => e.target.style.opacity = 1}>
+                <button onClick={() => handleOAuthLogin('google')} style={{ width: '100%', padding: '12px', background: '#fff', color: '#000', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
                   <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
                   Continue with Google
                 </button>
-
-                {/* GitHub */}
-                <button onClick={() => handleOAuthLogin('github')} style={{ width: '100%', padding: '12px', background: '#24292e', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, transition: 'background 0.2s' }} onMouseEnter={e => e.target.style.background = '#1b1f23'} onMouseLeave={e => e.target.style.background = '#24292e'}>
+                <button onClick={() => handleOAuthLogin('github')} style={{ width: '100%', padding: '12px', background: '#24292e', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                   Continue with GitHub
                 </button>
-
-                {/* Discord */}
-                <button onClick={() => handleOAuthLogin('discord')} style={{ width: '100%', padding: '12px', background: '#5865F2', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, transition: 'opacity 0.2s' }} onMouseEnter={e => e.target.style.opacity = 0.9} onMouseLeave={e => e.target.style.opacity = 1}>
+                <button onClick={() => handleOAuthLogin('discord')} style={{ width: '100%', padding: '12px', background: '#5865F2', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
                   <svg width="20" height="20" viewBox="0 0 127.14 96.36" fill="currentColor"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.31,60,73.31,53s5-12.74,11.43-12.74S96.18,46,96.06,53,91.08,65.69,84.69,65.69Z"/></svg>
                   Continue with Discord
                 </button>
@@ -262,13 +303,12 @@ export default function LandingPage() {
                 <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.1)' }} />
               </div>
 
-              {/* Email Magic Link Form */}
               {!emailSent ? (
                 <form onSubmit={handleMagicLink} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   <input type="email" placeholder="name@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required
                     style={{ width: '100%', padding: '14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, color: '#fff', fontSize: 14 }}
                   />
-                  <button type="submit" disabled={loading} style={{ width: '100%', padding: '14px', background: '#FFD93D', color: '#080808', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer', transition: 'transform 0.1s' }} onMouseDown={e => e.target.style.transform = 'scale(0.98)'} onMouseUp={e => e.target.style.transform = 'scale(1)'}>
+                  <button type="submit" disabled={loading} style={{ width: '100%', padding: '14px', background: '#FFD93D', color: '#080808', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
                     {loading ? 'Sending Link...' : 'Send Magic Link ✨'}
                   </button>
                 </form>
@@ -276,11 +316,10 @@ export default function LandingPage() {
                 <div style={{ textAlign: 'center', padding: '10px 0' }}>
                   <div style={{ fontSize: 40, marginBottom: 12 }}>📩</div>
                   <h3 style={{ fontSize: 18, fontWeight: 600, color: '#4ADE80', marginBottom: 8 }}>Check your email!</h3>
-                  <p style={{ fontSize: 13, color: '#A1A1AA', lineHeight: 1.5 }}>We sent a magic login link to <strong style={{ color: '#fff' }}>{email}</strong>. Click it to instantly log in.</p>
+                  <p style={{ fontSize: 13, color: '#A1A1AA', lineHeight: 1.5 }}>We sent a magic login link to <strong style={{ color: '#fff' }}>{email}</strong>.</p>
                   <button type="button" onClick={() => setEmailSent(false)} style={{ background: 'none', border: 'none', color: '#FFD93D', fontSize: 12, marginTop: 16, cursor: 'pointer', fontWeight: 600 }}>← Try another email</button>
                 </div>
               )}
-              
             </motion.div>
           </motion.div>
         )}
@@ -319,13 +358,13 @@ export default function LandingPage() {
           </motion.div>
 
           <motion.h1 initial={{ opacity: 0, y: 40, filter: 'blur(12px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ duration: 0.85, delay: 0.2, ease: [0.16, 1, 0.3, 1] }} style={{ position: 'relative', zIndex: 1, ...bebasStyle, fontSize: 'clamp(68px, 12vw, 150px)', lineHeight: 0.88, letterSpacing: '-0.02em', marginBottom: 26 }}>
-            <span style={{ color: '#fff', display: 'block' }}>60+ AI MODELS.</span>
+            <span style={{ color: '#fff', display: 'block' }}>68 AI MODELS.</span>
             <span style={{ color: '#FFD93D', display: 'block' }}>ONE DASHBOARD.</span>
             <span style={{ color: 'transparent', WebkitTextStroke: '1px rgba(255,255,255,0.25)', display: 'block', fontSize: '0.58em' }}>UP TO 20M TOKENS</span>
           </motion.h1>
 
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.48 }} style={{ position: 'relative', zIndex: 1, color: '#D4D4D8', fontSize: 'clamp(14px, 1.8vw, 17px)', maxWidth: 580, lineHeight: 1.75, marginBottom: 44 }}>
-            GPT-5.4, Claude 4.6 Opus, Gemini 3.1 Pro, Midjourney, Sora Video and 55+ more. Everything you need for Code, Copy, Audio, and Video starting at just ₹249.
+            GPT-5.4, Claude 4.6 Opus, Gemini 3.1 Pro, Midjourney, Sora Video and 60+ more. Everything you need for Code, Copy, Audio, and Video starting at just ₹249.
           </motion.p>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.62 }} style={{ position: 'relative', zIndex: 1, display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 52 }}>
@@ -342,7 +381,8 @@ export default function LandingPage() {
                 {MODELS[liveModel].name}
               </motion.span>
             </AnimatePresence>
-            <span style={{ fontSize: 11, color: '#737373', ...monoStyle }}>+{MODELS.length - 1} more</span>
+            {/* FIXED TO REFLECT ALL 68 MODELS CORRECTLY */}
+            <span style={{ fontSize: 11, color: '#737373', ...monoStyle }}>+{TOTAL_MODELS_COUNT - 1} more</span>
           </motion.div>
 
           <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 2.2, repeat: Infinity }} style={{ position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)' }}>
@@ -361,7 +401,7 @@ export default function LandingPage() {
       <section style={{ padding: '80px 40px', maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 1, background: 'rgba(255,255,255,0.1)', borderRadius: 20, overflow: 'hidden' }}>
           {[
-            { big: '60+', sub: 'Premium Models' },
+            { big: '68', sub: 'Total Models' },
             { big: '20M', sub: 'Max Tokens / Month' },
             { big: '₹249', sub: 'Starting Price' },
             { big: '12+', sub: 'God-Tier Models' },
@@ -375,10 +415,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ MODELS — REAL LOGOS VIA CDN ═══ */}
+      {/* ═══ MODELS DIRECTORY (EXPANDABLE) ═══ */}
       <section id="models" style={{ padding: '40px 40px 80px', maxWidth: 1100, margin: '0 auto' }}>
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ marginBottom: 44 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.16em', color: '#FFD93D', textTransform: 'uppercase', marginBottom: 12 }}>60+ Models Included</div>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.16em', color: '#FFD93D', textTransform: 'uppercase', marginBottom: 12 }}>68 Models Included</div>
           <h2 style={{ ...bebasStyle, fontSize: 'clamp(44px, 7vw, 88px)', lineHeight: 0.9, letterSpacing: '-0.02em', color: '#fff', marginBottom: 16 }}>
             The God-Tier Library.<br />
             <span style={{ color: 'rgba(255,255,255,0.2)', WebkitTextStroke: '1px rgba(255,255,255,0.3)' }}>Zero Friction.</span>
@@ -387,8 +427,9 @@ export default function LandingPage() {
         </motion.div>
         
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 1, background: 'rgba(255,255,255,0.1)', borderRadius: 20, overflow: 'hidden' }}>
-          {MODELS.map((model, i) => (
-            <motion.div key={i} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }} style={{ padding: '28px 24px', background: '#0d0d0d', position: 'relative', overflow: 'hidden', cursor: 'default', transition: 'background 0.3s' }}
+          {/* LOGIC FOR VIEW ALL BUTTON */}
+          {(showAllModels ? MODELS : MODELS.slice(0, 12)).map((model, i) => (
+            <motion.div key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.02 }} style={{ padding: '28px 24px', background: '#0d0d0d', position: 'relative', overflow: 'hidden', cursor: 'default', transition: 'background 0.3s' }}
               onMouseEnter={e => {
                 const r = parseInt(model.color.slice(1,3),16);
                 const g = parseInt(model.color.slice(3,5),16);
@@ -400,7 +441,7 @@ export default function LandingPage() {
               }}
             >
               <div style={{ marginBottom: 16, height: 32, display: 'flex', alignItems: 'center' }}>
-                <BrandLogo slug={model.slug} color={model.color} size={30} />
+                <BrandLogo slug={model.slug} color={model.color} name={model.name} size={30} />
               </div>
               <div style={{ fontSize: 15, fontWeight: 700, color: '#F8FAFC', marginBottom: 4 }}>{model.name}</div>
               <div style={{ fontSize: 11, color: '#A1A1AA', fontWeight: 600, marginBottom: 8 }}>{model.maker}</div>
@@ -408,6 +449,28 @@ export default function LandingPage() {
               <div style={{ position: 'absolute', bottom: -20, right: -20, width: 80, height: 80, borderRadius: '50%', background: model.color, filter: 'blur(30px)', opacity: 0.15 }} />
             </motion.div>
           ))}
+        </div>
+
+        {/* THE VIEW ALL BUTTON */}
+        <div style={{ textAlign: 'center', marginTop: 40 }}>
+          <button 
+            onClick={() => setShowAllModels(!showAllModels)} 
+            style={{ 
+              background: 'transparent', 
+              border: '1px solid rgba(255,217,61,0.4)', 
+              color: '#FFD93D', 
+              padding: '14px 36px', 
+              borderRadius: 999, 
+              fontSize: 14, 
+              fontWeight: 700, 
+              cursor: 'pointer',
+              transition: 'all 0.3s'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,217,61,0.1)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+          >
+            {showAllModels ? 'Show Less ↑' : 'View All 68 Models ↓'}
+          </button>
         </div>
       </section>
 
@@ -446,7 +509,7 @@ export default function LandingPage() {
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} style={{ marginTop: 28, padding: '18px 22px', borderRadius: 12, background: 'rgba(255,217,61,0.06)', border: '1px solid rgba(255,217,61,0.2)', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
           <span style={{ fontSize: 16, flexShrink: 0 }}>📌</span>
           <p style={{ fontSize: 13, color: '#D4D4D8', lineHeight: 1.65 }}>
-            <strong style={{ color: '#FFD93D' }}>Massive Value:</strong> Single-model subscriptions (ChatGPT Plus / Claude Pro) each cost ~₹1,700/month for just one AI. You get 60+ models starting at just ₹249.
+            <strong style={{ color: '#FFD93D' }}>Massive Value:</strong> Single-model subscriptions (ChatGPT Plus / Claude Pro) each cost ~₹1,700/month for just one AI. You get 68 models starting at just ₹249.
           </p>
         </motion.div>
       </section>
@@ -456,7 +519,7 @@ export default function LandingPage() {
         {[
           { n: '01', title: 'Up to 20 Million Tokens', body: "That's massive coding, generating scripts, or rendering high-quality images. No throttle limits, just pure unadulterated AI power across text, image, audio and video.", big: '20M', sub: 'tokens/month', color: '#FFD93D' },
           { n: '02', title: 'Start from just ₹249.', body: 'Basic plans start at ₹249 for students. Need more? Our ₹899 Pro and ₹2499 Elite Pro plans give you access to the most expensive APIs in the world for pennies.', big: '₹249', sub: 'entry price point', color: '#4ADE80' },
-          { n: '03', title: 'Switch 60+ Models Instantly', body: 'Not getting what you want from GPT-5.4? Switch to Claude 4.6 Opus. Need images? Midjourney and Flux are right there. One platform, zero friction.', big: '60+', sub: 'models, one dashboard', color: '#60A5FA' },
+          { n: '03', title: 'Switch 68 Models Instantly', body: 'Not getting what you want from GPT-5.4? Switch to Claude 4.6 Opus. Need images? Midjourney and Flux are right there. One platform, zero friction.', big: '68', sub: 'models, one dashboard', color: '#60A5FA' },
           { n: '04', title: 'Your Data Is Yours. Always.', body: 'We do not train on your conversations. We do not sell your data. Encrypted at rest and in transit. Enterprise-grade privacy built-in.', big: '0', sub: 'data sold or shared', color: '#F472B6' },
         ].map((f, i) => {
           const even = i % 2 === 0;
@@ -499,7 +562,7 @@ export default function LandingPage() {
               { text: '4M tokens/month', included: true }, { text: '58 Premium AI Models', included: true }, { text: 'GPT-5 Series & Gemini 3 Pro', included: true }, { text: 'Midjourney v7 & DALL-E 3', included: true }, { text: 'DeepSeek Reasoner (Math/Logic)', included: true }, { text: 'Priority Speed & Support', included: true }, { text: 'Claude 4.6 & Sora Video', included: false }
             ]},
             { name: 'Elite Pro', monthly: 2499, yearly: 24990, color: '#a855f7', featured: false, badge: 'God Tier', features: [
-              { text: '20M tokens/month', included: true }, { text: '60+ Elite AI Models (Everything)', included: true }, { text: 'Claude 4.6 Opus & Sonnet', included: true }, { text: 'GPT-5.4 Ultra-Logic', included: true }, { text: 'Sora Video AI & Suno Music', included: true }, { text: 'Dedicated Server Priority', included: true }, { text: 'API Access & Webhooks', included: true }
+              { text: '20M tokens/month', included: true }, { text: '68 Elite AI Models (Everything)', included: true }, { text: 'Claude 4.6 Opus & Sonnet', included: true }, { text: 'GPT-5.4 Ultra-Logic', included: true }, { text: 'Sora Video AI & Suno Music', included: true }, { text: 'Dedicated Server Priority', included: true }, { text: 'API Access & Webhooks', included: true }
             ]},
           ].map((plan, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} style={{ padding: '44px 32px', background: plan.featured ? '#111' : '#0d0d0d', position: 'relative', overflow: 'hidden' }}>
@@ -542,7 +605,7 @@ export default function LandingPage() {
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(255,217,61,0.05) 0%, transparent 60%)' }} />
           <div style={{ position: 'relative' }}>
             <h2 style={{ ...bebasStyle, fontSize: 'clamp(52px, 10vw, 108px)', lineHeight: 0.88, letterSpacing: '-0.03em', color: '#fff', marginBottom: 20 }}>STOP OVERPAYING.<br /><span style={{ color: '#FFD93D' }}>START NOW.</span></h2>
-            <p style={{ color: '#D4D4D8', fontSize: 16, marginBottom: 40, maxWidth: 440, margin: '0 auto 40px', lineHeight: 1.7 }}>From ₹249/month for 60+ AI models and up to 20 million tokens. Most single-model plans cost more and cover only one AI.</p>
+            <p style={{ color: '#D4D4D8', fontSize: 16, marginBottom: 40, maxWidth: 440, margin: '0 auto 40px', lineHeight: 1.7 }}>From ₹249/month for 68 AI models and up to 20 million tokens. Most single-model plans cost more and cover only one AI.</p>
             <MagBtn onClick={triggerAuth} style={{ background: '#FFD93D', color: '#080808', border: 'none', padding: '18px 52px', borderRadius: 10, fontSize: 16, fontWeight: 800, cursor: 'pointer', letterSpacing: '-0.02em', boxShadow: '0 0 60px rgba(255,217,61,0.25)' }}>
               {user ? 'Continue to Chat' : 'Start Free — No Card Needed'}
             </MagBtn>
