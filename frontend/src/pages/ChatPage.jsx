@@ -749,7 +749,8 @@ export default function ChatPage() {
 
       const fetchRealResponse = async () => {
         try {
-          const response = await fetch('http://localhost:5000/api/chat', {
+          // Puraana (localhost) hatao, aur ye dalo:
+           const response = await fetch('https://omni-ai-pro.onrender.com/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
