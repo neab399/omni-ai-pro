@@ -13,13 +13,9 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// 2. API Keys Validation (Security Check)
+// 2. API Keys Validation
 const GROQ_KEY = process.env.GROQ_API_KEY;
 const GEMINI_KEY = process.env.GEMINI_API_KEY;
-
-if (!GROQ_KEY) {
-    console.warn("⚠️ WARNING: GROQ_API_KEY is missing in .env file. Llama models will not work.");
-}
 
 // 3. Initialize AI Clients
 const groq = GROQ_KEY ? new OpenAI({
@@ -56,7 +52,7 @@ function sendError(res, message) {
 
 // 🟣 Meta (Llama via Groq)
 async function streamGroq(res, messages, systemPrompt) {
-    if (!groq) return sendError(res, 'Groq API setup failed. Check backend .env');
+    if (!groq) return sendError(res, 'Groq API setup failed.');
     try {
         const stream = await groq.chat.completions.create({
             model: "llama-3.3-70b-versatile",
@@ -76,14 +72,13 @@ async function streamGroq(res, messages, systemPrompt) {
 
 // 🔵 Google Gemini
 async function streamGemini(res, messages, systemPrompt) {
-    if (!gemini) return sendError(res, 'Gemini API key missing in .env');
+    if (!gemini) return sendError(res, 'Gemini API key missing.');
     try {
         const modelInstance = gemini.getGenerativeModel({ 
             model: "gemini-1.5-flash", 
             ...(systemPrompt ? { systemInstruction: systemPrompt } : {}) 
         });
         
-        // Convert message format for Gemini
         const history = messages.slice(0, -1).map(m => ({
             role: m.role === 'assistant' ? 'model' : 'user',
             parts: [{ text: m.content }]
@@ -105,7 +100,6 @@ async function streamGemini(res, messages, systemPrompt) {
 // --- Main API Route ---
 app.post('/api/chat', async (req, res) => {
     const { messages = [], providerId, systemPrompt } = req.body;
-    
     setSSEHeaders(res);
 
     try {
@@ -114,18 +108,18 @@ app.post('/api/chat', async (req, res) => {
         } else if (providerId === 'google') {
             await streamGemini(res, messages, systemPrompt);
         } else {
-            sendError(res, `Provider ${providerId} is not configured.`);
+            sendError(res, `Provider ${providerId} not configured.`);
         }
     } catch (err) {
         sendError(res, `Internal Server Error: ${err.message}`);
     }
 });
 
-// --- Start Server ---
-app.listen(PORT, () => {
+// --- Start Server (FIXED FOR RENDER) ---
+app.listen(PORT, '0.0.0.0', () => {
     console.log('---');
     console.log(`🚀 OMNI AI BACKEND IS LIVE`);
-    console.log(`📡 URL: http://localhost:${PORT}`);
+    console.log(`📡 URL: http://0.0.0.0:${PORT}`);
     console.log(`🔐 Groq Status: ${GROQ_KEY ? 'Connected ✅' : 'Not Found ❌'}`);
     console.log(`🔐 Gemini Status: ${GEMINI_KEY ? 'Connected ✅' : 'Not Found ❌'}`);
     console.log('---');
