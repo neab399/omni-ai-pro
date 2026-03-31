@@ -5,15 +5,26 @@
   --color-omin-card: rgba(20, 20, 24, 0.4);
   --color-omin-border: rgba(255, 255, 255, 0.08);
   --color-omin-gold: #FFD93D;
+  --color-omin-gold-dim: rgba(255, 217, 61, 0.15);
   
   --font-sans: "Inter", system-ui, sans-serif;
   --font-display: "Outfit", system-ui, sans-serif;
 
   --animate-shimmer: shimmer 3s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
   
   @keyframes shimmer {
     from { background-position: 0 0; }
     to { background-position: -200% 0; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(255,217,61,0.15); }
+    50% { box-shadow: 0 0 40px rgba(255,217,61,0.3); }
   }
 }
 
@@ -31,22 +42,23 @@ body {
   background: var(--color-omin-black);
   color: #fff;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Premium Webkit Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.12);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.25);
+  background: rgba(255,217,61,0.4);
 }
 
 .text-gradient {
@@ -69,6 +81,13 @@ body {
   border: 1px solid rgba(255,255,255,0.06);
 }
 
+.glass-strong {
+  background: rgba(10, 10, 14, 0.7);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
 .glow-border {
   position: relative;
 }
@@ -86,4 +105,35 @@ body {
 }
 .glow-border:hover::before {
   opacity: 1;
+}
+
+/* Typewriter cursor blink */
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.cursor-blink {
+  animation: blink-cursor 1s step-end infinite;
+}
+
+/* Accordion */
+.accordion-trigger[data-state="open"] .accordion-chevron {
+  transform: rotate(180deg);
+}
+.accordion-chevron {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Pricing popular card glow */
+.pricing-popular {
+  box-shadow: 
+    0 0 0 1px rgba(255,217,61,0.3),
+    0 0 40px rgba(255,217,61,0.1),
+    0 20px 60px rgba(0,0,0,0.5);
+}
+
+/* Star rating */
+.star-filled {
+  color: #FFD93D;
+  filter: drop-shadow(0 0 4px rgba(255,217,61,0.4));
 }
