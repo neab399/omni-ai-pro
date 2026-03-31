@@ -86,7 +86,13 @@ export default function LandingPage() {
             <motion.div initial={{ scale: 0.95, y: 10 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 10 }} className="w-full max-w-[420px] p-8 rounded-3xl glass-strong relative shadow-[0_0_80px_rgba(255,217,61,0.08)]">
               <button onClick={() => setShowAuthModal(false)} className="absolute top-6 right-6 text-white/30 hover:text-white transition-colors text-xl">✕</button>
               <div className="text-center mb-8">
-                <div className="w-12 h-12 bg-omin-gold rounded-xl mx-auto mb-4 flex items-center justify-center text-black font-display font-black text-lg shadow-[0_0_30px_rgba(255,217,61,0.3)]">O</div>
+                <motion.div
+                animate={{ boxShadow: ['0 0 20px rgba(255,217,61,0.3)', '0 0 40px rgba(255,217,61,0.6)', '0 0 20px rgba(255,217,61,0.3)'] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                className="w-12 h-12 bg-omin-gold rounded-xl mx-auto mb-4 flex items-center justify-center shadow-[0_0_30px_rgba(255,217,61,0.3)] overflow-hidden"
+              >
+                <img src="/logo.png" alt="OMNI AI PRO" className="w-8 h-8 object-contain" style={{ filter: 'brightness(0)' }} />
+              </motion.div>
                 <h2 className="text-2xl font-display font-bold tracking-tight mb-2">Welcome to OMNI AI</h2>
                 <p className="text-sm text-white/40">Log in or sign up to continue.</p>
               </div>
@@ -115,7 +121,13 @@ export default function LandingPage() {
       {/* ═══ NAV ═══ */}
       <motion.nav style={{ background: navBg, borderBottomColor: navBorder }} className="landing-nav fixed top-[3px] z-[100] w-full h-[72px] flex items-center justify-between px-6 lg:px-12 backdrop-blur-xl border-b border-transparent">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-omin-gold rounded-lg shadow-[0_0_15px_rgba(255,217,61,0.3)] flex items-center justify-center text-black font-display font-black text-xs">O</div>
+          <motion.div
+            animate={{ boxShadow: ['0 0 10px rgba(255,217,61,0.25)', '0 0 22px rgba(255,217,61,0.55)', '0 0 10px rgba(255,217,61,0.25)'] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-8 h-8 bg-omin-gold rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0"
+          >
+            <img src="/logo.png" alt="OMNI AI PRO" className="w-5 h-5 object-contain" style={{ filter: 'brightness(0)' }} />
+          </motion.div>
           <span className="font-display font-bold tracking-tight text-[15px]">OMNI AI <span className="text-omin-gold">PRO</span></span>
         </div>
         <div className="hidden md:flex gap-8">
@@ -184,7 +196,9 @@ export default function LandingPage() {
                   <div className="h-3 w-48 bg-white/70 rounded-full mb-3" /><div className="h-3 w-32 bg-white/50 rounded-full" />
                 </motion.div>
                 <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.7 }} className="self-start max-w-[80%] relative pl-11">
-                  <div className="absolute left-0 top-0 w-8 h-8 rounded-full bg-omin-gold flex items-center justify-center font-display font-black text-black text-xs">O</div>
+                  <div className="absolute left-0 top-0 w-8 h-8 rounded-full bg-omin-gold flex items-center justify-center overflow-hidden shadow-[0_0_12px_rgba(255,217,61,0.4)]">
+                    <img src="/logo.png" alt="O" className="w-5 h-5 object-contain" style={{ filter: 'brightness(0)' }} />
+                  </div>
                   <div className="text-xs font-bold text-omin-gold uppercase tracking-wider mb-2 flex items-center gap-2">Claude 4.6 <span className="px-2 py-0.5 rounded text-[9px] bg-white/10 text-white/60">Reasoning</span></div>
                   <div className="glass-panel bg-black/30 p-5 rounded-2xl">
                     <div className="h-3 w-[280px] bg-white/60 rounded-full mb-3" /><div className="h-3 w-[350px] bg-white/40 rounded-full mb-4" />
@@ -282,7 +296,12 @@ export default function LandingPage() {
         <div className="max-w-[1200px] mx-auto">
           <div className="footer-grid grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
             <div>
-              <div className="flex items-center gap-3 mb-6"><div className="w-8 h-8 bg-omin-gold rounded-lg flex items-center justify-center text-black font-display font-black text-xs shadow-[0_0_15px_rgba(255,217,61,0.2)]">O</div><span className="font-display font-bold text-sm">OMNI AI PRO</span></div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 bg-omin-gold rounded-lg flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(255,217,61,0.2)] flex-shrink-0">
+                  <img src="/logo.png" alt="OMNI AI PRO" className="w-5 h-5 object-contain" style={{ filter: 'brightness(0)' }} />
+                </div>
+                <span className="font-display font-bold text-sm">OMNI AI PRO</span>
+              </div>
               <p className="text-xs text-white/30 leading-relaxed">The world's most powerful AI aggregator. 68 models, one interface.</p>
             </div>
             <div>

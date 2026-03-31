@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ALL_IMAGE_MODELS, ALL_AUDIO_MODELS, ALL_VIDEO_MODELS, IC, genId } from '../lib/models';
+import { ALL_IMAGE_MODELS, ALL_AUDIO_MODELS, ALL_VIDEO_MODELS, IC, genId } from '../../lib/models';
+import { BrandLogo, ModelAvatar } from './ChatUIKit';
+import ModelSelectorModal from './ModelSelectorModal';
 
-export function ({ addToast }) {
+export function ImageSection({ addToast }) {
   const [prompt, setPrompt]           = useState('');
   const [negPrompt, setNegPrompt]     = useState('');
   const [mode, setMode]               = useState('single'); // single | multi
@@ -184,7 +186,7 @@ export function ({ addToast }) {
   );
 }
 
-export function ({ result, ar, large }) {
+export function ImageResult({ result, ar, large }) {
   const aspectMap = { '1:1': '100%', '16:9': '56.25%', '4:3': '75%', '3:4': '133%', '9:16': '177.7%' };
   const paddingPct = aspectMap[ar] || '100%';
   return (
@@ -211,7 +213,7 @@ export function ({ result, ar, large }) {
   );
 }
 
-export function ({ onQuickPrompt }) {
+export function ImageEmptyState({ onQuickPrompt }) {
   const ideas = ['A cyberpunk street at night, neon lights reflecting on wet pavement', 'Majestic mountain peaks at golden hour, hyperrealistic', 'Watercolor portrait of a fox in the forest, soft light', 'Abstract geometric art, bold colors, minimalist design', 'Cinematic scene: astronaut walking on alien planet'];
   return (
     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
@@ -240,7 +242,7 @@ export function ({ onQuickPrompt }) {
 /* ══════════════════════════════════════════════════════════
    VOICE SECTION
 ══════════════════════════════════════════════════════════ */
-export function ({ addToast }) {
+export function VoiceSection({ addToast }) {
   const [tab, setTab]                 = useState('stt'); // stt | tts
   const [activeSTTModel, setSTTModel] = useState(ALL_AUDIO_MODELS.find(m => m.mode === 'stt'));
   const [activeTTSModel, setTTSModel] = useState(ALL_AUDIO_MODELS.find(m => m.mode === 'tts'));
@@ -474,7 +476,7 @@ export function ({ addToast }) {
 /* ══════════════════════════════════════════════════════════
    VIDEO SECTION
 ══════════════════════════════════════════════════════════ */
-export function ({ addToast }) {
+export function VideoSection({ addToast }) {
   const [prompt, setPrompt]           = useState('');
   const [mode, setMode]               = useState('single');
   const [activeModels, setActiveModels] = useState([ALL_VIDEO_MODELS[0]]);
@@ -608,7 +610,7 @@ export function ({ addToast }) {
   );
 }
 
-export function ({ onQuickPrompt }) {
+export function VideoEmptyState({ onQuickPrompt }) {
   const ideas = ['A slow pan across misty mountain peaks at sunrise', 'Underwater scene with colorful coral reef and tropical fish', 'Time-lapse of a city at night, neon lights, rain on the streets', 'A majestic eagle soaring over the Grand Canyon'];
   return (
     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
