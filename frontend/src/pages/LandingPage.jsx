@@ -41,6 +41,14 @@ export default function LandingPage() {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    if (window.location.search.includes('auth=true')) {
+      setShowAuthModal(true);
+      // Clean up the URL so it doesn't get stuck in a loop
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   useEffect(() => { const t = setInterval(() => setLiveModel(p => (p + 1) % 8), 3000); return () => clearInterval(t); }, []);
 
   const handleOAuthLogin = async (provider) => {

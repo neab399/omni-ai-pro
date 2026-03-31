@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import SplashScreen from './components/SplashScreen';
 import CookieNotice from './components/CookieNotice';
+import GlobalFeedback from './components/GlobalFeedback';
 
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const ChatPage = lazy(() => import('./pages/ChatPage'));
@@ -33,6 +34,7 @@ function App() {
           </Routes>
         </Suspense>
       </Router>
+      <GlobalFeedback />
       <CookieNotice />
       <Analytics />
       <SpeedInsights />

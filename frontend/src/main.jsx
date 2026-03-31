@@ -14,24 +14,11 @@ Sentry.init({
       colorScheme: 'dark',
       buttonLabel: 'Share Feedback',
       submitButtonLabel: 'Send Feedback',
-      cancelButtonLabel: 'Cancel',
-      formTitle: 'How can we improve?',
-      messagePlaceholder: 'Share your thoughts, report a bug, or request a feature...',
-      successMessageText: 'Thank you! Our team has been notified.',
-      
-      // ── Require User Details ───────────────────────────
-      isNameRequired: true,
-      isEmailRequired: true,
-      nameLabel: 'Name',
-      namePlaceholder: 'Your Name',
-      emailLabel: 'Email',
-      emailPlaceholder: 'you@example.com',
-
       // ── Theming ────────────────────────────────────────
       themeLight: { accentBackground: '#FFD93D', accentForeground: '#000' },
       themeDark:  { accentBackground: '#FFD93D', accentForeground: '#000', background: '#0a0a0a', foreground: '#ffffff', backgroundHover: '#111' },
       // ── Widget position ────────────────────────────────
-      autoInject: true,
+      autoInject: false,
     }),
   ],
   // Performance Monitoring
