@@ -1,5 +1,7 @@
 import { useState, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import SplashScreen from './components/SplashScreen';
 import CookieNotice from './components/CookieNotice';
 
@@ -32,6 +34,8 @@ function App() {
         </Suspense>
       </Router>
       <CookieNotice />
+      <Analytics />
+      <SpeedInsights />
     </>
   );
 }
