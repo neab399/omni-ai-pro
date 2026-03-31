@@ -3,25 +3,36 @@ import { motion, useMotionValue, useSpring, useMotionTemplate, AnimatePresence }
 
 /* ─── Noise Background ─── */
 export const NoiseBg = () => (
-  <svg className="fixed inset-0 w-full h-full z-[1] pointer-events-none opacity-[0.03] mix-blend-screen">
+  <svg className="noise-bg-mobile fixed inset-0 w-full h-full z-[1] pointer-events-none opacity-[0.03] mix-blend-screen">
     <filter id="omni-noise"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" /><feColorMatrix type="saturate" values="0" /></filter>
     <rect width="100%" height="100%" filter="url(#omni-noise)" />
   </svg>
 );
 
-/* ─── Cursor Glow ─── */
+/* ─── Cursor Glow (throttled with rAF) ─── */
 export function CursorGlow() {
   const [pos, setPos] = useState({ x: -500, y: -500 });
   const [isMobile, setIsMobile] = useState(false);
+  const rafRef = useRef(null);
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
     check();
-    window.addEventListener('resize', check);
+    window.addEventListener('resize', check, { passive: true });
     return () => window.removeEventListener('resize', check);
   }, []);
-  useEffect(() => { if (isMobile) return; const h = e => setPos({ x: e.clientX, y: e.clientY }); window.addEventListener('mousemove', h); return () => window.removeEventListener('mousemove', h); }, [isMobile]);
+  useEffect(() => {
+    if (isMobile) return;
+    const h = e => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(() => {
+        setPos({ x: e.clientX, y: e.clientY });
+      });
+    };
+    window.addEventListener('mousemove', h, { passive: true });
+    return () => { window.removeEventListener('mousemove', h); if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [isMobile]);
   if (isMobile) return null;
-  return <div className="fixed pointer-events-none z-10 rounded-full transition-all duration-75 ease-linear mix-blend-screen" style={{ left: pos.x - 300, top: pos.y - 300, width: 600, height: 600, background: 'radial-gradient(circle, rgba(255,217,61,0.08) 0%, rgba(59,130,246,0.04) 40%, transparent 70%)' }} />;
+  return <div className="fixed pointer-events-none z-10 rounded-full mix-blend-screen" style={{ left: pos.x - 300, top: pos.y - 300, width: 600, height: 600, background: 'radial-gradient(circle, rgba(255,217,61,0.08) 0%, rgba(59,130,246,0.04) 40%, transparent 70%)', willChange: 'transform', transform: 'translateZ(0)' }} />;
 }
 
 /* ─── Magnetic Button ─── */
@@ -41,12 +52,12 @@ export function BrandLogo({ slug, color, name, size = 28 }) {
   return <img src={`https://cdn.simpleicons.org/${slug}/${hex}`} alt={slug} width={size} height={size} className="block object-contain" onError={() => setError(true)} />;
 }
 
-/* ─── Marquee ─── */
+/* ─── Marquee (optimized: 2x duplicate instead of 4x) ─── */
 export function Marquee({ items, reverse }) {
-  const all = [...items, ...items, ...items, ...items];
+  const all = [...items, ...items];
   return (
     <div className="overflow-hidden flex">
-      <motion.div animate={{ x: reverse ? ['-50%', '0%'] : ['0%', '-50%'] }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }} className="marquee-track flex flex-shrink-0">
+      <motion.div animate={{ x: reverse ? ['-50%', '0%'] : ['0%', '-50%'] }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }} className="marquee-track flex flex-shrink-0" style={{ willChange: 'transform' }}>
         {all.map((item, i) => <span key={i} className={`inline-flex items-center gap-4 px-10 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase whitespace-nowrap ${i % 2 === 0 ? 'text-omin-gold/70' : 'text-white/40'}`}><span className="text-[6px] opacity-30">✦</span>{item}</span>)}
       </motion.div>
     </div>

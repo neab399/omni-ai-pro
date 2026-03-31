@@ -37,12 +37,15 @@ body {
   margin: 0;
   padding: 0;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   font-family: var(--font-sans);
   background: var(--color-omin-black);
   color: #fff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -59,6 +62,84 @@ html {
   overscroll-behavior-y: contain;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,217,61,0.2) transparent;
+  will-change: scroll-position;
+  transform: translateZ(0);
+}
+
+/* ══════════════════════════════════════════════════════════
+   GPU ACCELERATION — promote animated layers
+══════════════════════════════════════════════════════════ */
+.parallax-orb,
+.dashboard-mockup,
+.hero-section,
+.marquee-track {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Reduce paint for blurred orbs */
+.parallax-orb {
+  contain: layout style paint;
+}
+
+/* ══════════════════════════════════════════════════════════
+   CHAT PAGE — MOBILE RESPONSIVE
+══════════════════════════════════════════════════════════ */
+/* Chat page mobile sidebar overlay */
+@media (max-width: 768px) {
+  /* Force sidebar as overlay on mobile */
+  .chat-sidebar-mobile {
+    position: fixed !important;
+    z-index: 150 !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 280px !important;
+    box-shadow: 8px 0 40px rgba(0,0,0,0.6) !important;
+  }
+  
+  /* Chat header — compact on mobile */
+  .chat-header-mobile {
+    height: 50px !important;
+    padding: 0 10px !important;
+    gap: 6px !important;
+  }
+  
+  /* Section tabs — scrollable on mobile */
+  .chat-section-tabs-mobile {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    max-width: 55vw;
+  }
+  .chat-section-tabs-mobile::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide multi-model button text on mobile */
+  .chat-multi-btn-mobile span.desktop-text {
+    display: none !important;
+  }
+  
+  /* Chat model selector button — compact */
+  .chat-model-btn-mobile {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Chat input area */
+  .chat-input-mobile {
+    padding: 0 10px !important;
+  }
+  
+  /* Fix 100vh on mobile browsers */
+  .chat-page-root {
+    height: 100vh;
+    height: 100dvh;
+  }
 }
 
 /* Premium Webkit Scrollbar */
@@ -404,9 +485,23 @@ html {
   .marquee-track span {
     font-size: clamp(1.2rem, 4vw, 1.5rem) !important;
   }
-  
-  /* ── Parallax orbs — smaller on mobile ── */
+    /* ── Parallax orbs — hidden on mobile for perf ── */
   .parallax-orb {
+    display: none !important;
+  }
+  
+  /* ── Reduce motion intensity on mobile ── */
+  .glass-panel {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+  .glass-strong {
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+  }
+  
+  /* ── NoiseBg — disable on mobile ── */
+  .noise-bg-mobile {
     display: none !important;
   }
 }
@@ -442,4 +537,37 @@ html {
 }
 @media (max-width: 768px) {
   .desktop-only { display: none !important; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   ACCESSIBILITY — Reduce motion for users who prefer it
+══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .parallax-orb,
+  .noise-bg-mobile {
+    display: none !important;
+  }
+  .marquee-track {
+    animation: none !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   CHAT PAGE — Smooth scroll containers
+══════════════════════════════════════════════════════════ */
+.omni-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+}
+
+/* Content containment for non-visible sections */
+.section-content {
+  contain: content;
 }

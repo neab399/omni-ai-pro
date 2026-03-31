@@ -393,7 +393,7 @@ const GLOBAL_STYLES = `
 
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{height:100%;overflow:hidden;}
-  body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:14px;background:var(--bg-base);color:var(--text-main);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:14px;background:var(--bg-base);color:var(--text-main);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
 
   .omni-scroll::-webkit-scrollbar{width:5px;height:5px;}
   .omni-scroll::-webkit-scrollbar-track{background:transparent;}
@@ -1659,10 +1659,17 @@ function SearchPane({ conversations, chatHistories, onJump, onClose }) {
 export default function ChatPage() {
   const navigate = useNavigate();
 
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const [theme,         setTheme]         = useState(() => localStorage.getItem('omni-theme') || 'dark');
   const [currentUser,   setCurrentUser]   = useState(null);
   const [userProfile,   setUserProfile]   = useState({ name: 'Omni User', email: '', avatar: null });
-  const [sidebarOpen,   setSidebarOpen]   = useState(true);
+  const [sidebarOpen,   setSidebarOpen]   = useState(() => window.innerWidth >= 768);
   const [isMultiMode,   setIsMultiMode]   = useState(false);
   const [input,         setInput]         = useState('');
   const [isLoading,     setIsLoading]     = useState(true);
@@ -1892,14 +1899,19 @@ export default function ChatPage() {
   );
 
   return (
-    <div style={{ display: 'flex', height: '100vh', background: 'var(--bg-base)', color: 'var(--text-main)', overflow: 'hidden', fontFamily: "'Outfit',sans-serif" }}>
+    <div className="chat-page-root" style={{ display: 'flex', height: '100vh', background: 'var(--bg-base)', color: 'var(--text-main)', overflow: 'hidden', fontFamily: "'Outfit',sans-serif" }}>
       <style>{GLOBAL_STYLES}</style>
+
+      {/* Mobile sidebar backdrop */}
+      {isMobile && sidebarOpen && (
+        <div onClick={() => setSidebarOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 140, backdropFilter: 'blur(4px)' }} />
+      )}
 
       {/* ═══ SIDEBAR ═══ */}
       <AnimatePresence>
         {sidebarOpen && (
-          <motion.aside initial={{ width: 0, opacity: 0 }} animate={{ width: 260, opacity: 1 }} exit={{ width: 0, opacity: 0 }} transition={{ duration: .25, ease: [0.16, 1, 0.3, 1] }}
-            style={{ borderRight: '1px solid var(--border-light)', background: 'var(--bg-panel)', backdropFilter: 'var(--panel-blur-strong)', display: 'flex', flexDirection: 'column', overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
+          <motion.aside className={isMobile ? 'chat-sidebar-mobile' : ''} initial={{ width: 0, opacity: 0, x: isMobile ? -280 : 0 }} animate={{ width: isMobile ? 280 : 260, opacity: 1, x: 0 }} exit={{ width: 0, opacity: 0, x: isMobile ? -280 : 0 }} transition={{ duration: .25, ease: [0.16, 1, 0.3, 1] }}
+            style={{ borderRight: '1px solid var(--border-light)', background: 'var(--bg-panel)', backdropFilter: 'var(--panel-blur-strong)', display: 'flex', flexDirection: 'column', overflow: 'hidden', flexShrink: 0, position: isMobile ? 'fixed' : 'relative', zIndex: isMobile ? 150 : 'auto', top: 0, left: 0, bottom: 0 }}>
 
             {/* Logo */}
             <div style={{ padding: '16px 16px 12px', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
@@ -1933,11 +1945,11 @@ export default function ChatPage() {
               <div className="omni-scroll" style={{ height: '100%', overflowY: 'auto', padding: '0 8px' }}>
                 {sortedConvs.some(c => c.pinned) && <div style={{ fontSize: 9, color: 'var(--text-faint)', fontWeight: 700, padding: '8px 4px 4px', letterSpacing: '.08em', textTransform: 'uppercase' }}>📌 Pinned</div>}
                 {sortedConvs.filter(c => c.pinned).map(conv => (
-                  <ConvItem key={conv.id} conv={conv} isActive={activeConvId === conv.id} onSelect={() => { setActiveConvId(conv.id); setShowSearch(false); }} onPin={() => handlePinConv(conv.id)} onDelete={() => handleDeleteConv(conv.id)} onRename={() => { setRenamingId(conv.id); setRenameValue(conv.title); }} renamingId={renamingId} renameValue={renameValue} setRenameValue={setRenameValue} onRenameSubmit={() => handleRenameConv(conv.id, renameValue)} />
+                  <ConvItem key={conv.id} conv={conv} isActive={activeConvId === conv.id} onSelect={() => { setActiveConvId(conv.id); setShowSearch(false); if (isMobile) setSidebarOpen(false); }} onPin={() => handlePinConv(conv.id)} onDelete={() => handleDeleteConv(conv.id)} onRename={() => { setRenamingId(conv.id); setRenameValue(conv.title); }} renamingId={renamingId} renameValue={renameValue} setRenameValue={setRenameValue} onRenameSubmit={() => handleRenameConv(conv.id, renameValue)} />
                 ))}
                 {sortedConvs.some(c => !c.pinned) && <div style={{ fontSize: 9, color: 'var(--text-faint)', fontWeight: 700, padding: '8px 4px 4px', letterSpacing: '.08em', textTransform: 'uppercase' }}>Recent</div>}
                 {sortedConvs.filter(c => !c.pinned).map(conv => (
-                  <ConvItem key={conv.id} conv={conv} isActive={activeConvId === conv.id} onSelect={() => { setActiveConvId(conv.id); setShowSearch(false); }} onPin={() => handlePinConv(conv.id)} onDelete={() => handleDeleteConv(conv.id)} onRename={() => { setRenamingId(conv.id); setRenameValue(conv.title); }} renamingId={renamingId} renameValue={renameValue} setRenameValue={setRenameValue} onRenameSubmit={() => handleRenameConv(conv.id, renameValue)} />
+                  <ConvItem key={conv.id} conv={conv} isActive={activeConvId === conv.id} onSelect={() => { setActiveConvId(conv.id); setShowSearch(false); if (isMobile) setSidebarOpen(false); }} onPin={() => handlePinConv(conv.id)} onDelete={() => handleDeleteConv(conv.id)} onRename={() => { setRenamingId(conv.id); setRenameValue(conv.title); }} renamingId={renamingId} renameValue={renameValue} setRenameValue={setRenameValue} onRenameSubmit={() => handleRenameConv(conv.id, renameValue)} />
                 ))}
               </div>
             </div>
@@ -1984,43 +1996,47 @@ export default function ChatPage() {
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
 
         {/* Header */}
-        <header style={{ height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 18px', borderBottom: '1px solid var(--border-light)', background: 'var(--bg-panel)', backdropFilter: 'var(--panel-blur)', flexShrink: 0, gap: 10, position: 'relative' }}>
+        <header className="chat-header-mobile" style={{ height: isMobile ? 50 : 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: isMobile ? '0 10px' : '0 18px', borderBottom: '1px solid var(--border-light)', background: 'var(--bg-panel)', backdropFilter: 'var(--panel-blur)', flexShrink: 0, gap: isMobile ? 6 : 10, position: 'relative' }}>
           <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, var(--accent-low), transparent)', pointerEvents: 'none' }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: 9, minWidth: 0 }}>
-            <button onClick={() => setSidebarOpen(p => !p)} title="Toggle sidebar (⌘\\)"
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 5 : 9, minWidth: 0 }}>
+            <button onClick={() => setSidebarOpen(p => !p)} title="Toggle sidebar"
               style={{ width: 32, height: 32, background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .14s' }}
               onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.color = 'var(--text-main)'; }}
               onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
               <IC.Sidebar />
             </button>
-            {activeSection === 'chat' && <span style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200 }}>{activeConv?.title || 'New Conversation'}</span>}
+            {activeSection === 'chat' && !isMobile && <span style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200 }}>{activeConv?.title || 'New Conversation'}</span>}
           </div>
 
           {/* Section tabs — centre */}
           <SectionTabs active={activeSection} onChange={setActiveSection} />
 
           {/* Right controls — only for chat */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 4 : 6, minWidth: 0 }}>
             {activeSection === 'chat' && (
               <>
-                <button onClick={() => setIsMultiMode(p => !p)}
-                  style={{ padding: '5px 11px', borderRadius: 8, background: isMultiMode ? 'var(--accent-low)' : 'var(--bg-hover)', border: `1px solid ${isMultiMode ? 'rgba(232,168,95,.3)' : 'var(--border-light)'}`, fontSize: 12, cursor: 'pointer', color: isMultiMode ? 'var(--accent)' : 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5, fontFamily: "'Outfit',sans-serif", transition: 'all .18s' }}>
-                  <IC.Layers />{isMultiMode ? `Multi (${activeModels.length})` : 'Multi-Model'}
-                </button>
-                <button onClick={() => setShowModelSel(true)}
-                  style={{ padding: '5px 11px', borderRadius: 8, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', fontSize: 12, cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: 5, fontWeight: 500, fontFamily: "'Outfit',sans-serif", transition: 'all .14s' }}
+                {!isMobile && (
+                  <button onClick={() => setIsMultiMode(p => !p)}
+                    style={{ padding: '5px 11px', borderRadius: 8, background: isMultiMode ? 'var(--accent-low)' : 'var(--bg-hover)', border: `1px solid ${isMultiMode ? 'rgba(232,168,95,.3)' : 'var(--border-light)'}`, fontSize: 12, cursor: 'pointer', color: isMultiMode ? 'var(--accent)' : 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5, fontFamily: "'Outfit',sans-serif", transition: 'all .18s' }}>
+                    <IC.Layers />{isMultiMode ? `Multi (${activeModels.length})` : 'Multi-Model'}
+                  </button>
+                )}
+                <button onClick={() => setShowModelSel(true)} className="chat-model-btn-mobile"
+                  style={{ padding: isMobile ? '5px 8px' : '5px 11px', borderRadius: 8, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', fontSize: isMobile ? 11 : 12, cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: 5, fontWeight: 500, fontFamily: "'Outfit',sans-serif", transition: 'all .14s', maxWidth: isMobile ? 120 : 'none', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
                   onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-focus)'}
                   onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-light)'}>
                   {activeModels.length === 1 && activeModels[0]?.slug && <BrandLogo slug={activeModels[0].slug} color={activeModels[0].color} size={12} />}
-                  {activeModels.length === 1 ? activeModels[0]?.name : `${activeModels.length} Models`}
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{activeModels.length === 1 ? activeModels[0]?.name : `${activeModels.length} Models`}</span>
                   <IC.ChevronD />
                 </button>
               </>
             )}
-            <button onClick={() => setTheme(p => p === 'dark' ? 'light' : 'dark')}
-              style={{ width: 32, height: 32, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-              {theme === 'dark' ? <IC.Sun /> : <IC.Moon />}
-            </button>
+            {!isMobile && (
+              <button onClick={() => setTheme(p => p === 'dark' ? 'light' : 'dark')}
+                style={{ width: 32, height: 32, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                {theme === 'dark' ? <IC.Sun /> : <IC.Moon />}
+              </button>
+            )}
           </div>
         </header>
 
@@ -2087,7 +2103,7 @@ export default function ChatPage() {
                 )}
               </div>
               {/* Chat input */}
-              <div style={{ padding: '0 20px', background: 'var(--bg-base)', flexShrink: 0 }}>
+              <div className="chat-input-mobile" style={{ padding: isMobile ? '0 10px' : '0 20px', background: 'var(--bg-base)', flexShrink: 0 }}>
                 <AdvancedInput input={input} setInput={setInput} onSend={handleSend} activeModels={activeModels} isMultiChatMode={isMultiMode} inputRef={inputRef} />
               </div>
             </motion.div>
