@@ -1,7 +1,17 @@
 @import "tailwindcss";
 
+@theme {
+  --color-omin-black: #050505;
+  --color-omin-card: rgba(20, 20, 24, 0.4);
+  --color-omin-border: rgba(255, 255, 255, 0.08);
+  --color-omin-gold: #FFD93D;
+  
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Outfit", system-ui, sans-serif;
+}
+
 :root {
-  background-color: #030712;
+  background-color: var(--color-omin-black);
   color-scheme: dark;
 }
 
@@ -10,16 +20,44 @@ body {
   padding: 0;
   height: 100vh;
   overflow: hidden;
+  font-family: var(--font-sans);
+  background: var(--color-omin-black);
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Scrollbar */
+/* Premium Webkit Scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #030712;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1f2937;
+  background: rgba(255,255,255,0.15);
   border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glass-panel {
+  background: var(--color-omin-card);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--color-omin-border);
+}
+
+.glass-pill {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.06);
 }
