@@ -294,12 +294,16 @@ html {
   
   /* ── Nav ── */
   .landing-nav {
-    padding: 0 16px !important;
+    padding: 0 12px !important;
     height: 60px !important;
   }
+  .landing-nav span.font-display {
+    font-size: 13px !important;
+    letter-spacing: -0.02em;
+  }
   .nav-cta-btn {
-    padding: 8px 16px !important;
-    font-size: 12px !important;
+    padding: 7px 12px !important;
+    font-size: 11px !important;
   }
   
   /* ── Hero ── */
@@ -307,12 +311,13 @@ html {
     padding-top: 100px !important;
     padding-bottom: 40px !important;
     min-height: 85vh !important;
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
   }
   .hero-heading {
-    font-size: clamp(2.2rem, 10vw, 3.5rem) !important;
-    line-height: 1 !important;
+    font-size: clamp(2.5rem, 8vw, 3rem) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.03em !important;
   }
   .hero-subtitle {
     font-size: 0.9rem !important;

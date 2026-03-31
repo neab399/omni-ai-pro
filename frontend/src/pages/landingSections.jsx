@@ -149,25 +149,50 @@ export function CompareTable() {
   return (
     <section id="compare" className="section-content py-32 px-6 max-w-[1200px] mx-auto relative z-20">
       <SectionHeader title="Stop overpaying." subtitle="One unified subscription that replaces them all." />
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="compare-wrapper glass-panel rounded-[2rem] overflow-hidden overflow-x-auto border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.5)] bg-black/60 relative">
+      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="compare-wrapper glass-panel rounded-[2rem] overflow-hidden border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.5)] bg-black/60 relative">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-omin-gold/50 to-transparent" />
-        <table className="w-full min-w-[700px] text-left border-collapse">
-          <thead><tr className="border-b border-white/10 bg-white/[0.02]">
-            <th className="p-7 text-[11px] font-bold text-white/40 uppercase tracking-[0.2em] w-1/3">Criteria</th>
-            <th className="p-7 text-sm font-black text-omin-gold tracking-widest text-center bg-omin-gold/[0.03] uppercase relative"><span className="relative z-10">OMNI PRO</span><div className="absolute inset-0 bg-gradient-to-b from-omin-gold/10 to-transparent opacity-50" /></th>
-            <th className="p-7 text-[11px] font-bold text-white/40 text-center uppercase tracking-widest">ChatGPT+</th>
-            <th className="p-7 text-[11px] font-bold text-white/40 text-center uppercase tracking-widest">Claude Pro</th>
-          </tr></thead>
-          <tbody className="divide-y divide-white/5">
-            {COMPARE_DATA.map((r, i) => (
-              <tr key={i} className="hover:bg-white/[0.02] transition-colors">
-                <td className="p-6 pl-7 text-sm font-semibold text-white/80">{r.label}</td>
-                <td className="p-6 text-center text-lg font-bold text-white bg-omin-gold/[0.02] border-x border-omin-gold/10">{r.omni}</td>
-                <td className="p-6 text-center text-sm font-medium text-white/40">{r.gpt}</td>
-                <td className="p-6 text-center text-sm font-medium text-white/40">{r.claude}</td>
-              </tr>))}
-          </tbody>
-        </table>
+        
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full min-w-[700px] text-left border-collapse">
+            <thead><tr className="border-b border-white/10 bg-white/[0.02]">
+              <th className="p-7 text-[11px] font-bold text-white/40 uppercase tracking-[0.2em] w-1/3">Criteria</th>
+              <th className="p-7 text-sm font-black text-omin-gold tracking-widest text-center bg-omin-gold/[0.03] uppercase relative"><span className="relative z-10">OMNI PRO</span><div className="absolute inset-0 bg-gradient-to-b from-omin-gold/10 to-transparent opacity-50" /></th>
+              <th className="p-7 text-[11px] font-bold text-white/40 text-center uppercase tracking-widest">ChatGPT+</th>
+              <th className="p-7 text-[11px] font-bold text-white/40 text-center uppercase tracking-widest">Claude Pro</th>
+            </tr></thead>
+            <tbody className="divide-y divide-white/5">
+              {COMPARE_DATA.map((r, i) => (
+                <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+                  <td className="p-6 pl-7 text-sm font-semibold text-white/80">{r.label}</td>
+                  <td className="p-6 text-center text-lg font-bold text-white bg-omin-gold/[0.02] border-x border-omin-gold/10">{r.omni}</td>
+                  <td className="p-6 text-center text-sm font-medium text-white/40">{r.gpt}</td>
+                  <td className="p-6 text-center text-sm font-medium text-white/40">{r.claude}</td>
+                </tr>))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Cards (Stacked) */}
+        <div className="md:hidden flex flex-col divide-y divide-white/10">
+          {COMPARE_DATA.map((r, i) => (
+            <div key={i} className="p-6 flex flex-col gap-4">
+              <div className="text-[13px] font-bold text-white/60 tracking-wider uppercase">{r.label}</div>
+              <div className="bg-omin-gold/[0.05] border border-omin-gold/20 rounded-xl p-4 flex justify-between items-center shadow-[0_0_15px_rgba(255,217,61,0.05)]">
+                <span className="text-[11px] font-black tracking-widest text-omin-gold uppercase">OMNI PRO</span>
+                <span className="text-lg font-bold text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.4)]">{r.omni}</span>
+              </div>
+              <div className="flex justify-between items-center px-3 pt-2">
+                <span className="text-[11px] text-white/40 uppercase">ChatGPT+</span>
+                <span className="text-[13px] text-white/40 font-medium">{r.gpt}</span>
+              </div>
+              <div className="flex justify-between items-center px-3 pb-2">
+                <span className="text-[11px] text-white/40 uppercase">Claude Pro</span>
+                <span className="text-[13px] text-white/40 font-medium">{r.claude}</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </motion.div>
     </section>
   );
@@ -186,7 +211,7 @@ export function TestimonialsSection() {
             <motion.div key={i} initial={{ opacity: 0, y: 20, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -20, scale: 0.97 }} transition={{ duration: 0.5 }} className="testimonial-card absolute inset-0 glass-panel rounded-[2rem] p-10 flex flex-col justify-between">
               <div>
                 <div className="flex gap-1 mb-4">{Array.from({ length: t.stars }).map((_, j) => <span key={j} className="star-filled text-lg">★</span>)}</div>
-                <p className="text-white/80 text-[15px] leading-relaxed italic">"{t.text}"</p>
+                <p className="text-white text-[16px] leading-relaxed italic font-medium">"{t.text}"</p>
               </div>
               <div className="flex items-center gap-4 mt-6">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-sm text-black" style={{ background: t.color }}>{t.initials}</div>
