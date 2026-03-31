@@ -382,11 +382,11 @@ export default function ChatPage() {
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
 
         {/* Header */}
-        <header className="chat-header-mobile" style={{ height: isMobile ? 50 : 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: isMobile ? '0 10px' : '0 18px', borderBottom: '1px solid var(--border-light)', background: 'var(--bg-panel)', backdropFilter: 'var(--panel-blur)', flexShrink: 0, gap: isMobile ? 6 : 10, position: 'relative' }}>
+        <header className="chat-header-mobile" style={{ height: isMobile ? 48 : 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: isMobile ? '0 8px' : '0 18px', borderBottom: '1px solid var(--border-light)', background: 'var(--bg-panel)', backdropFilter: 'var(--panel-blur)', flexShrink: 0, gap: isMobile ? 4 : 10, position: 'relative' }}>
           <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, var(--accent-low), transparent)', pointerEvents: 'none' }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 5 : 9, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 3 : 9, minWidth: 0, flexShrink: 0 }}>
             <button onClick={() => setSidebarOpen(p => !p)} title="Toggle sidebar"
-              style={{ width: 32, height: 32, background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .14s' }}
+              style={{ width: 32, height: 32, background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .14s', flexShrink: 0 }}
               onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.color = 'var(--text-main)'; }}
               onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
               <IC.Sidebar />
@@ -402,7 +402,7 @@ export default function ChatPage() {
           <SectionTabs active={activeSection} onChange={setActiveSection} />
 
           {/* Right controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 4 : 6, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 3 : 6, minWidth: 0, flexShrink: 0 }}>
             {activeSection === 'chat' && (
               <>
                 {!isMobile && (
@@ -412,11 +412,11 @@ export default function ChatPage() {
                   </button>
                 )}
                 <button onClick={() => setShowModelSel(true)} className="chat-model-btn-mobile"
-                  style={{ padding: isMobile ? '5px 8px' : '5px 11px', borderRadius: 8, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', fontSize: isMobile ? 11 : 12, cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: 5, fontWeight: 500, fontFamily: "'Outfit',sans-serif", transition: 'all .14s', maxWidth: isMobile ? 120 : 'none', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
+                  style={{ padding: isMobile ? '5px 6px' : '5px 11px', borderRadius: 8, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', fontSize: isMobile ? 11 : 12, cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: isMobile ? 3 : 5, fontWeight: 500, fontFamily: "'Outfit',sans-serif", transition: 'all .14s', maxWidth: isMobile ? 80 : 'none', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
                   onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-focus)'}
                   onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-light)'}>
-                  {activeModels.length === 1 && activeModels[0]?.slug && <BrandLogo slug={activeModels[0].slug} color={activeModels[0].color} size={12} />}
-                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{activeModels.length === 1 ? activeModels[0]?.name : `${activeModels.length} Models`}</span>
+                  {activeModels.length === 1 && activeModels[0]?.slug && <BrandLogo slug={activeModels[0].slug} color={activeModels[0].color} size={isMobile ? 14 : 12} />}
+                  {!isMobile && <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{activeModels.length === 1 ? activeModels[0]?.name : `${activeModels.length} Models`}</span>}
                   <IC.ChevronD />
                 </button>
               </>
@@ -488,8 +488,8 @@ export default function ChatPage() {
                       if (!history.some(m => m.role === 'user'))
                         return <EmptyState activeModel={activeModels[0]} onTemplateSelect={t => { setInput(t); setTimeout(() => inputRef.current?.focus(), 100); }} />;
                       return (
-                        <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '30px 20px 14px' }}>
-                          <div style={{ maxWidth: 740, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                        <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: isMobile ? '16px 12px 10px' : '30px 20px 14px' }}>
+                          <div style={{ maxWidth: 740, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: isMobile ? 14 : 20 }}>
                             {history.map(msg => (
                               <MessageBubble key={msg.id} msg={msg} model={activeModels[0]} userProfile={userProfile}
                                 onCopy={txt => { navigator.clipboard.writeText(txt); addToast('Copied!', 'success'); }}

@@ -107,8 +107,10 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
   };
 
+  const isMobileView = typeof window !== 'undefined' && window.innerWidth < 640;
+
   return (
-    <div style={{ padding: '12px 0 24px', background: 'var(--bg-base)', position: 'relative', flexShrink: 0 }} onDragOver={e => e.preventDefault()} onDrop={handleDrop}>
+    <div style={{ padding: isMobileView ? '8px 0 12px' : '12px 0 24px', background: 'var(--bg-base)', position: 'relative', flexShrink: 0 }} onDragOver={e => e.preventDefault()} onDrop={handleDrop}>
       {/* Template chips */}
       <AnimatePresence>
         {focused && !input && (
@@ -126,7 +128,7 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
         )}
       </AnimatePresence>
 
-      <div style={{ maxWidth: isMultiChatMode ? '96%' : 760, margin: '0 auto', position: 'relative' }}>
+      <div style={{ maxWidth: isMultiChatMode ? '96%' : 760, margin: '0 auto', position: 'relative', padding: isMobileView ? '0 4px' : 0 }}>
         {/* Slash dropdown */}
         <AnimatePresence>
           {showSlash && filteredCmds.length > 0 && (
@@ -165,7 +167,7 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
 
         <motion.div
           animate={{ borderColor: focused ? 'var(--border-focus)' : 'var(--border-med)', boxShadow: focused ? 'var(--glow-gold-strong), 0 0 0 1px rgba(255,217,61,0.08)' : 'var(--shadow-sm)' }}
-          style={{ background: 'var(--bg-input)', border: '1px solid var(--border-med)', borderRadius: 18, overflow: 'visible', backdropFilter: 'var(--panel-blur)', transition: 'border-color 0.3s' }}>
+          style={{ background: 'var(--bg-input)', border: '1px solid var(--border-med)', borderRadius: isMobileView ? 14 : 18, overflow: 'visible', backdropFilter: 'var(--panel-blur)', transition: 'border-color 0.3s' }}>
 
           {/* Multi-model tags */}
           {activeModels.length > 1 && (
@@ -182,12 +184,12 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
             onKeyDown={handleKeyDown}
             onFocus={() => setFocused(true)}
             onBlur={() => setTimeout(() => setFocused(false), 200)}
-            placeholder={isMultiChatMode ? `Ask ${activeModels.length} models at once… (/ for commands)` : `Message ${activeModels[0]?.name || 'AI'}… (/ commands · ↑ history)`}
+            placeholder={isMultiChatMode ? `Ask ${activeModels.length} models…` : `Message ${activeModels[0]?.name || 'AI'}…`}
             rows={1}
-            style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: 14.5, fontFamily: "'Outfit',sans-serif", color: overLimit ? 'var(--red)' : 'var(--text-main)', lineHeight: 1.65, padding: '14px 18px', resize: 'none', maxHeight: 220, minHeight: 54, caretColor: 'var(--accent)' }}
+            style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: isMobileView ? 14 : 14.5, fontFamily: "'Outfit',sans-serif", color: overLimit ? 'var(--red)' : 'var(--text-main)', lineHeight: 1.55, padding: isMobileView ? '10px 14px' : '14px 18px', resize: 'none', maxHeight: isMobileView ? 120 : 220, minHeight: isMobileView ? 44 : 54, caretColor: 'var(--accent)' }}
           />
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px 10px', borderTop: '1px solid var(--border-light)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: isMobileView ? '6px 8px 8px' : '8px 10px 10px', borderTop: '1px solid var(--border-light)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.txt,.md,.csv,.json,.js,.ts,.py" style={{ display: 'none' }} onChange={e => addFiles(Array.from(e.target.files))} />
               <InputTBtn title="Attach" onClick={() => fileRef.current?.click()}><IC.Paperclip /></InputTBtn>
@@ -203,17 +205,19 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               {input.length > 0 && <span style={{ fontSize: 11, fontFamily: "'JetBrains Mono',monospace", color: overLimit ? 'var(--red)' : 'var(--text-faint)' }}>{tokens.toLocaleString()}</span>}
               <motion.button onClick={handleSend} disabled={!input.trim()} whileTap={{ scale: .9 }}
-                style={{ padding: '8px 20px', borderRadius: 11, background: input.trim() ? 'var(--accent)' : 'transparent', color: input.trim() ? 'var(--bg-base)' : 'var(--text-faint)', border: `1px solid ${input.trim() ? 'transparent' : 'var(--border-light)'}`, cursor: input.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 700, fontFamily: "'Outfit',sans-serif", transition: 'all .22s', boxShadow: input.trim() ? 'var(--glow-gold)' : 'none' }}>
+                style={{ padding: isMobileView ? '8px 12px' : '8px 20px', borderRadius: isMobileView ? 10 : 11, background: input.trim() ? 'var(--accent)' : 'transparent', color: input.trim() ? 'var(--bg-base)' : 'var(--text-faint)', border: `1px solid ${input.trim() ? 'transparent' : 'var(--border-light)'}`, cursor: input.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 700, fontFamily: "'Outfit',sans-serif", transition: 'all .22s', boxShadow: input.trim() ? 'var(--glow-gold)' : 'none' }}>
                 {sending ? <span className="spin"><IC.Send /></span> : <IC.Send />}
-                {isMultiChatMode && input.trim() && <span style={{ fontSize: 10, opacity: .7 }}>×{activeModels.length}</span>}
+                {isMultiChatMode && input.trim() && !isMobileView && <span style={{ fontSize: 10, opacity: .7 }}>×{activeModels.length}</span>}
               </motion.button>
             </div>
           </div>
         </motion.div>
 
-        <div style={{ textAlign: 'center', marginTop: 8, fontSize: 10.5, color: 'var(--text-faint)' }}>
-          OMNI AI PRO · Type <code style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, padding: '1px 5px', background: 'var(--bg-hover)', borderRadius: 3, border: '1px solid var(--border-light)' }}>/</code> for commands · Drag files to attach
-        </div>
+        {!isMobileView && (
+          <div style={{ textAlign: 'center', marginTop: 8, fontSize: 10.5, color: 'var(--text-faint)' }}>
+            OMNI AI PRO · Type <code style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, padding: '1px 5px', background: 'var(--bg-hover)', borderRadius: 3, border: '1px solid var(--border-light)' }}>/</code> for commands · Drag files to attach
+          </div>
+        )}
       </div>
     </div>
   );
