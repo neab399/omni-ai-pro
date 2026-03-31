@@ -8,7 +8,7 @@ export default function TermsOfService() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-omin-black text-white selection:bg-omin-gold/30 selection:text-omin-gold overflow-hidden font-sans relative">
+    <div className="min-h-screen bg-omin-black text-white selection:bg-omin-gold/30 selection:text-omin-gold overflow-x-hidden font-sans relative">
       <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-screen pointer-events-none z-10" />
       
       {/* Simple Header */}
