@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import * as Sentry from '@sentry/react';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient('https://chutexfnzoylpuikeblz.supabase.co', 'sb_publishable_M_oSfDnhS18elv7J3hsWjw_wcZk6bFp');
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function GlobalFeedback() {
   const [user, setUser] = useState(null);
