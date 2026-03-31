@@ -30,6 +30,12 @@ export default function LandingPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // Lock body scroll — landing page uses its own container scroll
+    document.body.classList.add('landing-page-active');
+    return () => document.body.classList.remove('landing-page-active');
+  }, []);
+
+  useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => setUser(session?.user ?? null));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => setUser(session?.user ?? null));
     return () => subscription.unsubscribe();

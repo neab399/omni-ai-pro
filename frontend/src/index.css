@@ -36,9 +36,6 @@
 body {
   margin: 0;
   padding: 0;
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
   font-family: var(--font-sans);
   background: var(--color-omin-black);
   color: #fff;
@@ -46,6 +43,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+}
+
+/* Landing page locks body scroll — its own container scrolls instead */
+.landing-page-active body,
+body.landing-page-active {
+  overflow: hidden;
+  height: 100dvh;
+}
+
+/* All other pages scroll naturally */
+.page-scrollable {
+  min-height: 100vh;
+  overflow-y: auto;
 }
 
 /* ══════════════════════════════════════════════════════════
