@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { supabase, MODELS } from './landingData';
 import { NoiseBg, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp } from './landingComponents';
 import { LogoCloud, LiveAIDemo, HowItWorks, ModelLibrary, CompareTable, TestimonialsSection, PricingSection, FAQSection, MarqueeSection } from './landingSections';
@@ -281,7 +281,22 @@ export default function LandingPage() {
             </div>
             <div>
               <h4 className="text-xs font-bold tracking-[0.2em] uppercase text-white/50 mb-5">Legal</h4>
-              <ul className="space-y-3">{['Privacy', 'Terms', 'Security', 'DPA'].map(l => <li key={l}><a href="#" className="text-sm text-white/30 hover:text-white transition-colors">{l}</a></li>)}</ul>
+              <ul className="space-y-3">
+                {[
+                  { name: 'Privacy', path: '/privacy' },
+                  { name: 'Terms', path: '/terms' },
+                  { name: 'Security', path: '#' },
+                  { name: 'DPA', path: '#' }
+                ].map(l => (
+                  <li key={l.name}>
+                    {l.path.startsWith('/') ? (
+                      <Link to={l.path} className="text-sm text-white/30 hover:text-white transition-colors">{l.name}</Link>
+                    ) : (
+                      <a href={l.path} className="text-sm text-white/30 hover:text-white transition-colors">{l.name}</a>
+                    )}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
           <div className="footer-bottom border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">

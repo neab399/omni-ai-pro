@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /chat
+
+Sitemap: https://omniaipro.com/sitemap.xml
