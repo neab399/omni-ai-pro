@@ -9,6 +9,21 @@ Sentry.init({
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.replayIntegration(),
+    Sentry.feedbackIntegration({
+      // ── Branding to match Omni AI Pro ──────────────────
+      colorScheme: 'dark',
+      buttonLabel: 'Report a Bug',
+      submitButtonLabel: 'Send Feedback',
+      cancelButtonLabel: 'Cancel',
+      formTitle: 'Report an Issue',
+      messagePlaceholder: 'Describe the issue you encountered...',
+      successMessageText: 'Thank you! Our team has been notified.',
+      // ── Theming ────────────────────────────────────────
+      themeLight: { accentBackground: '#FFD93D', accentForeground: '#000' },
+      themeDark:  { accentBackground: '#FFD93D', accentForeground: '#000', background: '#0a0a0a', foreground: '#ffffff', backgroundHover: '#111' },
+      // ── Widget position ────────────────────────────────
+      autoInject: true,
+    }),
   ],
   // Performance Monitoring
   tracesSampleRate: 1.0, 
