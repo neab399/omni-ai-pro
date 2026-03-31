@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ALL_IMAGE_MODELS, ALL_AUDIO_MODELS, ALL_VIDEO_MODELS, IC, genId } from '../../lib/models';
+import { ALL_IMAGE_MODELS, ALL_AUDIO_MODELS, ALL_VIDEO_MODELS, IMAGE_PROVIDERS, AUDIO_PROVIDERS, VIDEO_PROVIDERS, IC, genId } from '../../lib/models';
 import { BrandLogo, ModelAvatar } from './ChatUIKit';
 import ModelSelectorModal from './ModelSelectorModal';
 
