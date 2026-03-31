@@ -382,51 +382,88 @@ export default function ChatPage() {
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
 
         {/* Header */}
-        <header className="chat-header-mobile" style={{ height: isMobile ? 56 : 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: isMobile ? '0 12px' : '0 18px', borderBottom: '1px solid var(--border-light)', background: 'var(--bg-panel)', backdropFilter: 'var(--panel-blur)', flexShrink: 0, gap: isMobile ? 6 : 10, position: 'relative' }}>
+        <header className="chat-header-mobile" style={{ background: 'var(--bg-panel)', backdropFilter: 'var(--panel-blur)', borderBottom: '1px solid var(--border-light)', flexShrink: 0, position: 'relative' }}>
           <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, var(--accent-low), transparent)', pointerEvents: 'none' }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 3 : 9, minWidth: 0, flexShrink: 0 }}>
-            <button onClick={() => setSidebarOpen(p => !p)} title="Toggle sidebar"
-              style={{ width: 32, height: 32, background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .14s', flexShrink: 0 }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.color = 'var(--text-main)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
-              <IC.Sidebar />
-            </button>
-            {activeSection === 'chat' && !isMobile && (
-              <span style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 200 }}>
-                {activeConv?.title || 'New Conversation'}
-              </span>
-            )}
-          </div>
 
-          {/* Section tabs — centre (desktop only; mobile uses bottom nav bar) */}
-          {!isMobile && <SectionTabs active={activeSection} onChange={setActiveSection} />}
-
-          {/* Right controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 3 : 6, minWidth: 0, flexShrink: 0 }}>
-            {activeSection === 'chat' && (
-              <>
-                <button onClick={() => setIsMultiMode(p => !p)}
-                  style={{ padding: isMobile ? '5px 8px' : '5px 11px', borderRadius: 8, background: isMultiMode ? 'var(--accent-low)' : 'var(--bg-hover)', border: `1px solid ${isMultiMode ? 'rgba(232,168,95,.3)' : 'var(--border-light)'}`, fontSize: 12, cursor: 'pointer', color: isMultiMode ? 'var(--accent)' : 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5, fontFamily: "'Outfit',sans-serif", transition: 'all .18s' }}>
-                  <IC.Layers />{!isMobile && (isMultiMode ? `Multi (${activeModels.length})` : 'Multi-Model')}
-                </button>
-                <button onClick={() => setShowModelSel(true)} className="chat-model-btn-mobile"
-                  style={{ padding: isMobile ? '6px 8px' : '5px 11px', borderRadius: 9, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', fontSize: isMobile ? 12 : 12, cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: isMobile ? 4 : 5, fontWeight: 500, fontFamily: "'Outfit',sans-serif", transition: 'all .14s', maxWidth: isMobile ? 100 : 'none', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', flexShrink: 0 }}
-                  onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-focus)'}
-                  onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-light)'}>
-                  {activeModels.length === 1 && activeModels[0]?.slug && <BrandLogo slug={activeModels[0].slug} color={activeModels[0].color} size={isMobile ? 16 : 12} />}
-                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', display: isMobile ? 'none' : 'inline' }}>{activeModels.length === 1 ? activeModels[0]?.name : `${activeModels.length} Models`}</span>
-                  <IC.ChevronD />
-                </button>
-              </>
-            )}
-            {!isMobile && (
-              <button onClick={() => setTheme(p => p === 'dark' ? 'light' : 'dark')}
-                style={{ width: 32, height: 32, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                {theme === 'dark' ? <IC.Sun /> : <IC.Moon />}
+          {/* Row 1: Sidebar toggle + title/section name + theme toggle */}
+          <div style={{ height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: isMobile ? '0 12px' : '0 18px', gap: isMobile ? 6 : 10 }}>
+            {/* Left: sidebar toggle */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+              <button onClick={() => setSidebarOpen(p => !p)} title="History &amp; conversations"
+                style={{ width: 34, height: 34, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', cursor: 'pointer', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .14s', flexShrink: 0 }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-focus)'; e.currentTarget.style.color = 'var(--accent)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
+                <IC.Sidebar />
               </button>
-            )}
+              {isMobile && activeSection === 'chat' && (
+                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-muted)', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {activeConv?.title || 'New Chat'}
+                </span>
+              )}
+            </div>
+
+            {/* Centre: section tabs (desktop) */}
+            {!isMobile && <SectionTabs active={activeSection} onChange={setActiveSection} />}
+
+            {/* Right: theme toggle */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+              {isMobile && activeSection === 'chat' && (
+                <button onClick={() => setTheme(p => p === 'dark' ? 'light' : 'dark')}
+                  style={{ width: 34, height: 34, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                  {theme === 'dark' ? <IC.Sun /> : <IC.Moon />}
+                </button>
+              )}
+              {!isMobile && (
+                <>
+                  {activeSection === 'chat' && (
+                    <>
+                      <button onClick={() => setIsMultiMode(p => !p)}
+                        style={{ padding: '5px 11px', borderRadius: 8, background: isMultiMode ? 'var(--accent-low)' : 'var(--bg-hover)', border: `1px solid ${isMultiMode ? 'rgba(232,168,95,.3)' : 'var(--border-light)'}`, fontSize: 12, cursor: 'pointer', color: isMultiMode ? 'var(--accent)' : 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5, fontFamily: "'Outfit',sans-serif", transition: 'all .18s' }}>
+                        <IC.Layers />{isMultiMode ? `Multi (${activeModels.length})` : 'Multi-Model'}
+                      </button>
+                      <button onClick={() => setShowModelSel(true)}
+                        style={{ padding: '5px 11px', borderRadius: 9, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', fontSize: 12, cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: 5, fontWeight: 500, fontFamily: "'Outfit',sans-serif", transition: 'all .14s' }}
+                        onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-focus)'}
+                        onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-light)'}>
+                        {activeModels.length === 1 && activeModels[0]?.slug && <BrandLogo slug={activeModels[0].slug} color={activeModels[0].color} size={12} />}
+                        {activeModels.length === 1 ? activeModels[0]?.name : `${activeModels.length} Models`}
+                        <IC.ChevronD />
+                      </button>
+                    </>
+                  )}
+                  <button onClick={() => setTheme(p => p === 'dark' ? 'light' : 'dark')}
+                    style={{ width: 32, height: 32, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                    {theme === 'dark' ? <IC.Sun /> : <IC.Moon />}
+                  </button>
+                </>
+              )}
+            </div>
           </div>
+
+          {/* Row 2 (mobile only, chat section): Model selector + Compare */}
+          {isMobile && activeSection === 'chat' && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 12px 10px' }}>
+              {/* Model selector pill */}
+              <button onClick={() => setShowModelSel(true)}
+                style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, padding: '7px 12px', borderRadius: 10, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', cursor: 'pointer', fontFamily: "'Outfit',sans-serif", transition: 'all .14s' }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-focus)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-light)'}>
+                {activeModels.length === 1 && activeModels[0]?.slug && <BrandLogo slug={activeModels[0].slug} color={activeModels[0].color} size={18} />}
+                <span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: 'var(--text-main)', textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {activeModels.length === 1 ? activeModels[0]?.name : `${activeModels.length} Models`}
+                </span>
+                <IC.ChevronD />
+              </button>
+              {/* Compare / Multi-model toggle */}
+              <button onClick={() => setIsMultiMode(p => !p)}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 10, background: isMultiMode ? 'var(--accent-low)' : 'var(--bg-hover)', border: `1px solid ${isMultiMode ? 'var(--accent)' : 'var(--border-light)'}`, cursor: 'pointer', fontSize: 12, fontWeight: 700, fontFamily: "'Outfit',sans-serif", color: isMultiMode ? 'var(--accent)' : 'var(--text-muted)', whiteSpace: 'nowrap', flexShrink: 0, transition: 'all .18s' }}>
+                <IC.Layers />
+                {isMultiMode ? `Compare (${activeModels.length})` : 'Compare'}
+              </button>
+            </div>
+          )}
         </header>
+
 
         {/* Section content */}
         <AnimatePresence mode="wait">
