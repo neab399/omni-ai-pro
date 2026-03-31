@@ -12,12 +12,21 @@ Sentry.init({
     Sentry.feedbackIntegration({
       // ── Branding to match Omni AI Pro ──────────────────
       colorScheme: 'dark',
-      buttonLabel: 'Report a Bug',
+      buttonLabel: 'Share Feedback',
       submitButtonLabel: 'Send Feedback',
       cancelButtonLabel: 'Cancel',
-      formTitle: 'Report an Issue',
-      messagePlaceholder: 'Describe the issue you encountered...',
+      formTitle: 'How can we improve?',
+      messagePlaceholder: 'Share your thoughts, report a bug, or request a feature...',
       successMessageText: 'Thank you! Our team has been notified.',
+      
+      // ── Require User Details ───────────────────────────
+      isNameRequired: true,
+      isEmailRequired: true,
+      nameLabel: 'Name',
+      namePlaceholder: 'Your Name',
+      emailLabel: 'Email',
+      emailPlaceholder: 'you@example.com',
+
       // ── Theming ────────────────────────────────────────
       themeLight: { accentBackground: '#FFD93D', accentForeground: '#000' },
       themeDark:  { accentBackground: '#FFD93D', accentForeground: '#000', background: '#0a0a0a', foreground: '#ffffff', backgroundHover: '#111' },
