@@ -8,6 +8,8 @@ const ChatPage = lazy(() => import('./pages/ChatPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const Security = lazy(() => import('./pages/Security'));
+const DPAPolicy = lazy(() => import('./pages/DPAPolicy'));
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -24,6 +26,8 @@ function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/security" element={<Security />} />
+            <Route path="/dpa" element={<DPAPolicy />} />
           </Routes>
         </Suspense>
       </Router>

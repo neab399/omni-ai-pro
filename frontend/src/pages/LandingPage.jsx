@@ -285,8 +285,8 @@ export default function LandingPage() {
                 {[
                   { name: 'Privacy', path: '/privacy' },
                   { name: 'Terms', path: '/terms' },
-                  { name: 'Security', path: '#' },
-                  { name: 'DPA', path: '#' }
+                  { name: 'Security', path: '/security' },
+                  { name: 'DPA', path: '/dpa' }
                 ].map(l => (
                   <li key={l.name}>
                     {l.path.startsWith('/') ? (
