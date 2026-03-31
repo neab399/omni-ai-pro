@@ -398,8 +398,8 @@ export default function ChatPage() {
             )}
           </div>
 
-          {/* Section tabs — centre */}
-          <SectionTabs active={activeSection} onChange={setActiveSection} />
+          {/* Section tabs — centre (desktop only; mobile uses bottom nav bar) */}
+          {!isMobile && <SectionTabs active={activeSection} onChange={setActiveSection} />}
 
           {/* Right controls */}
           <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 3 : 6, minWidth: 0, flexShrink: 0 }}>
@@ -506,7 +506,12 @@ export default function ChatPage() {
 
               {/* Chat input */}
               <div className="chat-input-mobile" style={{ padding: isMobile ? '0 10px' : '0 20px', background: 'var(--bg-base)', flexShrink: 0 }}>
-                <AdvancedInput input={input} setInput={setInput} onSend={handleSend} activeModels={activeModels} isMultiChatMode={isMultiMode} inputRef={inputRef} />
+                {(() => {
+                  const key = `${activeModels[0]?.providerId}-${activeModels[0]?.id}`;
+                  const history = getCurrentHistory(key);
+                  const hasMessages = history.some(m => m.role === 'user');
+                  return <AdvancedInput input={input} setInput={setInput} onSend={handleSend} activeModels={activeModels} isMultiChatMode={isMultiMode} inputRef={inputRef} hasMessages={hasMessages} />;
+                })()}
               </div>
             </motion.div>
           )}
@@ -527,6 +532,23 @@ export default function ChatPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* ── Mobile bottom navigation bar ── */}
+        {isMobile && (
+          <div style={{ display: 'flex', alignItems: 'stretch', borderTop: '1px solid var(--border-light)', background: 'var(--bg-panel)', backdropFilter: 'var(--panel-blur)', flexShrink: 0, zIndex: 50, height: 54 }}>
+            {[{ id: 'chat', label: 'Chat', Icon: IC.Chat }, { id: 'image', label: 'Image', Icon: IC.Image }, { id: 'voice', label: 'Voice', Icon: IC.Volume }, { id: 'video', label: 'Video', Icon: IC.Video }].map(({ id, label, Icon }) => {
+              const isActive = activeSection === id;
+              return (
+                <button key={id} onClick={() => setActiveSection(id)}
+                  style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, background: 'none', border: 'none', cursor: 'pointer', color: isActive ? 'var(--accent)' : 'var(--text-muted)', transition: 'all .18s', fontFamily: "'Outfit',sans-serif", position: 'relative', padding: '8px 0' }}>
+                  {isActive && <div style={{ position: 'absolute', top: 0, left: '25%', right: '25%', height: 2, background: 'var(--accent)', borderRadius: '0 0 3px 3px', boxShadow: '0 0 8px var(--accent)' }} />}
+                  <Icon />
+                  <span style={{ fontSize: 10, fontWeight: isActive ? 700 : 500, letterSpacing: '0.02em' }}>{label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </main>
 
       {/* Model selector modal */}

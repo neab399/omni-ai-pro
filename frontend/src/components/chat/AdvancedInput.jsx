@@ -6,7 +6,7 @@ import { InputTBtn } from './ChatUIKit';
 /* ══════════════════════════════════════════════════════════
    ADVANCED INPUT
 ══════════════════════════════════════════════════════════ */
-export default function AdvancedInput({ input, setInput, onSend, activeModels, isMultiChatMode, inputRef: extRef }) {
+export default function AdvancedInput({ input, setInput, onSend, activeModels, isMultiChatMode, inputRef: extRef, hasMessages }) {
   const intRef = useRef(null);
   const inputEl = extRef || intRef;
   const fileRef = useRef(null);
@@ -111,9 +111,9 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
 
   return (
     <div style={{ padding: isMobileView ? '8px 0 12px' : '12px 0 24px', background: 'var(--bg-base)', position: 'relative', flexShrink: 0 }} onDragOver={e => e.preventDefault()} onDrop={handleDrop}>
-      {/* Template chips */}
+      {/* Template chips — only when no conversation started yet */}
       <AnimatePresence>
-        {focused && !input && (
+        {focused && !input && !hasMessages && (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
             style={{ maxWidth: isMultiChatMode ? '96%' : 760, margin: '0 auto 10px', display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 2, scrollbarWidth: 'none' }}>
             {PROMPT_TEMPLATES.map((t, i) => (
