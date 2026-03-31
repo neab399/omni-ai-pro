@@ -53,7 +53,7 @@ export default function LandingPage() {
   const heroWords2 = "ONE DASHBOARD.".split(" ");
 
   return (
-    <div ref={containerRef} className="h-screen w-full relative bg-omin-black text-white selection:bg-omin-gold/30 overflow-y-scroll overflow-x-hidden">
+    <div ref={containerRef} className="landing-scroll-container h-screen w-full relative bg-omin-black text-white selection:bg-omin-gold/30 overflow-y-scroll overflow-x-hidden">
       <NoiseBg />
       <CursorGlow />
 
@@ -61,9 +61,9 @@ export default function LandingPage() {
       <motion.div style={{ scaleX: progressScaleX }} className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-omin-gold via-yellow-200 to-omin-gold z-[200] origin-left" />
 
       {/* Background Parallax Orbs */}
-      <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, 600]) }} className="fixed top-[-15%] left-[-15%] w-[55vw] h-[55vw] rounded-full bg-omin-gold/[0.04] blur-[140px] pointer-events-none" />
-      <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, -500]) }} className="fixed bottom-[-25%] right-[-15%] w-[60vw] h-[60vw] rounded-full bg-blue-500/[0.04] blur-[160px] pointer-events-none" />
-      <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, 300]) }} className="fixed top-[40%] right-[-5%] w-[30vw] h-[30vw] rounded-full bg-purple-500/[0.03] blur-[120px] pointer-events-none" />
+      <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, 600]) }} className="parallax-orb fixed top-[-15%] left-[-15%] w-[55vw] h-[55vw] rounded-full bg-omin-gold/[0.04] blur-[140px] pointer-events-none" />
+      <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, -500]) }} className="parallax-orb fixed bottom-[-25%] right-[-15%] w-[60vw] h-[60vw] rounded-full bg-blue-500/[0.04] blur-[160px] pointer-events-none" />
+      <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, 300]) }} className="parallax-orb fixed top-[40%] right-[-5%] w-[30vw] h-[30vw] rounded-full bg-purple-500/[0.03] blur-[120px] pointer-events-none" />
 
       {/* ═══ AUTH MODAL ═══ */}
       <AnimatePresence>
@@ -99,7 +99,7 @@ export default function LandingPage() {
       </AnimatePresence>
 
       {/* ═══ NAV ═══ */}
-      <motion.nav style={{ background: navBg, borderBottomColor: navBorder }} className="fixed top-[3px] z-[100] w-full h-[72px] flex items-center justify-between px-6 lg:px-12 backdrop-blur-xl border-b border-transparent">
+      <motion.nav style={{ background: navBg, borderBottomColor: navBorder }} className="landing-nav fixed top-[3px] z-[100] w-full h-[72px] flex items-center justify-between px-6 lg:px-12 backdrop-blur-xl border-b border-transparent">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-omin-gold rounded-lg shadow-[0_0_15px_rgba(255,217,61,0.3)] flex items-center justify-center text-black font-display font-black text-xs">O</div>
           <span className="font-display font-bold tracking-tight text-[15px]">OMNI AI <span className="text-omin-gold">PRO</span></span>
@@ -109,20 +109,20 @@ export default function LandingPage() {
         </div>
         <div className="flex items-center gap-4">
           {user ? <button onClick={handleLogout} className="text-red-400 text-[13px] font-semibold hover:text-red-300">Log Out</button> : <button onClick={triggerAuth} className="text-white/50 text-[13px] font-semibold hover:text-white transition-colors hidden sm:block">Log In</button>}
-          <MagBtn onClick={triggerAuth} className="bg-omin-gold text-black px-6 py-2.5 rounded-full text-[13px] font-bold shadow-[0_4px_20px_rgba(255,217,61,0.25)] hover:shadow-[0_4px_30px_rgba(255,217,61,0.4)] transition-all">
+          <MagBtn onClick={triggerAuth} className="nav-cta-btn bg-omin-gold text-black px-6 py-2.5 rounded-full text-[13px] font-bold shadow-[0_4px_20px_rgba(255,217,61,0.25)] hover:shadow-[0_4px_30px_rgba(255,217,61,0.4)] transition-all">
             {user ? 'Dashboard →' : 'Start Free →'}
           </MagBtn>
         </div>
       </motion.nav>
 
       {/* ═══ 1. HERO ═══ */}
-      <motion.section style={{ opacity: heroOpacity, scale: heroScale, y: heroY }} className="relative flex flex-col items-center justify-center min-h-[95vh] text-center px-4 pt-32 pb-10">
+      <motion.section style={{ opacity: heroOpacity, scale: heroScale, y: heroY }} className="hero-section relative flex flex-col items-center justify-center min-h-[95vh] text-center px-4 pt-32 pb-10">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="relative z-10 mb-10">
           <span className="glass-pill px-6 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-[0.25em] text-white uppercase shadow-[0_0_30px_rgba(255,255,255,0.05)]">
             <span className="text-omin-gold mr-2">✦</span>The Ultimate AI Aggregator
           </span>
         </motion.div>
-        <h1 className="relative z-10 font-display font-bold text-[clamp(3rem,8vw,9rem)] leading-[0.9] tracking-tighter mb-10 max-w-6xl mx-auto flex flex-col items-center">
+        <h1 className="hero-heading relative z-10 font-display font-bold text-[clamp(3rem,8vw,9rem)] leading-[0.9] tracking-tighter mb-10 max-w-6xl mx-auto flex flex-col items-center">
           <div className="overflow-hidden flex gap-[clamp(0.4rem,2vw,1.5rem)] flex-wrap justify-center">
             {heroWords1.map((w, i) => <motion.span key={i} initial={{ y: "120%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.9, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }} className="inline-block text-white pb-2">{w}</motion.span>)}
           </div>
@@ -130,10 +130,10 @@ export default function LandingPage() {
             {heroWords2.map((w, i) => <motion.span key={i} initial={{ y: "120%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.9, delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] }} className="inline-block text-transparent bg-clip-text bg-[linear-gradient(110deg,#FFD93D,45%,#fff,55%,#FFD93D)] bg-[length:250%_100%] animate-shimmer pb-4">{w}</motion.span>)}
           </div>
         </h1>
-        <motion.p initial={{ opacity: 0, filter: 'blur(10px)' }} animate={{ opacity: 1, filter: 'blur(0px)' }} transition={{ duration: 1, delay: 0.6 }} className="relative z-10 text-white/50 text-[clamp(0.95rem,2vw,1.25rem)] max-w-3xl leading-relaxed mb-12 font-medium">
+        <motion.p initial={{ opacity: 0, filter: 'blur(10px)' }} animate={{ opacity: 1, filter: 'blur(0px)' }} transition={{ duration: 1, delay: 0.6 }} className="hero-subtitle relative z-10 text-white/50 text-[clamp(0.95rem,2vw,1.25rem)] max-w-3xl leading-relaxed mb-12 font-medium">
           GPT-5.4, Claude 4.6 Opus, Gemini 3.1 Pro, Midjourney, and Sora Video.<br className="hidden sm:block" /> Everything you need for Code, Copy, Audio, and Video — starting at just ₹249.
         </motion.p>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }} className="relative z-10 flex flex-col sm:flex-row gap-4 mb-12">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }} className="hero-cta-row relative z-10 flex flex-col sm:flex-row gap-4 mb-12">
           <MagBtn onClick={triggerAuth} className="bg-white text-black px-10 py-4 rounded-full font-bold hover:bg-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] flex items-center justify-center gap-2 group">
             {user ? 'Go to Dashboard' : 'Start Free — No Card Needed'}<span className="group-hover:translate-x-1 transition-transform">→</span>
           </MagBtn>
@@ -152,15 +152,15 @@ export default function LandingPage() {
       <LogoCloud />
 
       {/* ═══ 3. DASHBOARD MOCKUP (Apple 3D Scroll) ═══ */}
-      <section className="relative w-full min-h-[130vh] -mt-[5vh] flex items-start justify-center">
-        <div className="sticky top-[10vh] w-full max-w-[1400px] px-4 sm:px-6" style={{ perspective: '1200px' }}>
-          <motion.div style={{ scale: dashboardScale, rotateX: dashboardRotateX, opacity: dashboardOpacity, y: dashboardY, transformStyle: 'preserve-3d' }} className="w-full aspect-[16/10] sm:aspect-[16/9] glass-strong rounded-3xl sm:rounded-[2rem] border border-white/15 shadow-[0_40px_120px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.3)] overflow-hidden flex flex-col will-change-transform">
+      <section className="dashboard-section relative w-full min-h-[130vh] -mt-[5vh] flex items-start justify-center">
+        <div className="dashboard-viewport sticky top-[10vh] w-full max-w-[1400px] px-4 sm:px-6" style={{ perspective: '1200px' }}>
+          <motion.div style={{ scale: dashboardScale, rotateX: dashboardRotateX, opacity: dashboardOpacity, y: dashboardY, transformStyle: 'preserve-3d' }} className="dashboard-mockup w-full aspect-[16/10] sm:aspect-[16/9] glass-strong rounded-3xl sm:rounded-[2rem] border border-white/15 shadow-[0_40px_120px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.3)] overflow-hidden flex flex-col will-change-transform">
             <div className="h-12 border-b border-white/10 bg-white/[0.02] flex items-center px-6 gap-2">
               <div className="w-3 h-3 rounded-full bg-red-500/70" /><div className="w-3 h-3 rounded-full bg-yellow-500/70" /><div className="w-3 h-3 rounded-full bg-green-500/70" />
               <div className="mx-auto flex items-center gap-2 text-[11px] font-medium text-white/25 tracking-widest uppercase"><div className="w-2 h-2 bg-omin-gold rounded-full shadow-[0_0_10px_#FFD93D]" />OMNI AI PRO — Live Preview</div>
             </div>
             <div className="flex-1 flex p-6 gap-6 relative">
-              <div className="w-60 hidden lg:flex flex-col gap-3 border-r border-white/5 pr-6">
+              <div className="dashboard-sidebar-mock w-60 hidden lg:flex flex-col gap-3 border-r border-white/5 pr-6">
                 <div className="h-10 w-full glass-pill rounded-xl flex items-center px-4 gap-3 bg-white/5"><div className="w-4 h-4 bg-omin-gold/20 rounded" /><div className="h-2 w-20 bg-white/15 rounded-full" /></div>
                 <div className="h-8 w-full rounded-xl flex items-center px-4 gap-3 opacity-40"><div className="w-4 h-4 bg-white/15 rounded" /><div className="h-2 w-16 bg-white/15 rounded-full" /></div>
                 <div className="h-8 w-full rounded-xl flex items-center px-4 gap-3 opacity-40"><div className="w-4 h-4 bg-white/15 rounded" /><div className="h-2 w-24 bg-white/15 rounded-full" /></div>
@@ -193,16 +193,16 @@ export default function LandingPage() {
       <LiveAIDemo />
 
       {/* ═══ 6. BENTO FEATURES ═══ */}
-      <section id="features" className="py-32 px-6 max-w-[1400px] mx-auto relative z-20 flex flex-col lg:flex-row gap-12 lg:gap-20">
-        <div className="lg:w-1/3 lg:sticky lg:top-40 h-fit">
+      <section id="features" className="bento-section section-content py-32 px-6 max-w-[1400px] mx-auto relative z-20 flex flex-col lg:flex-row gap-12 lg:gap-20">
+        <div className="bento-sidebar lg:w-1/3 lg:sticky lg:top-40 h-fit">
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
             <h2 className="font-display font-bold text-[clamp(2.5rem,5vw,4.5rem)] leading-none tracking-tight mb-6">Unfair<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-omin-gold to-yellow-100">Advantage.</span></h2>
             <p className="text-white/50 text-lg leading-relaxed max-w-sm">Why pay for 5 different subscriptions when you can have the absolute best AI models in one unified terminal?</p>
           </motion.div>
         </div>
-        <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-5 relative">
+        <div className="bento-cards lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-5 relative">
           <div className="absolute inset-0 bg-omin-gold/5 blur-[100px] rounded-full pointer-events-none -z-10" />
-          <BentoCard className="md:col-span-2 min-h-[300px] flex flex-col md:flex-row gap-8 items-center">
+          <BentoCard className="bento-card-wide md:col-span-2 min-h-[300px] flex flex-col md:flex-row gap-8 items-center">
             <div className="w-full md:w-3/5"><div className="text-omin-gold text-xs font-bold tracking-[0.2em] uppercase mb-3">Model Ecosystem</div><h3 className="text-3xl font-display font-bold mb-4"><CountUp target={68} /> God-Tier AIs.</h3><p className="text-white/60 text-sm leading-relaxed">Instantly switch between GPT-5, Claude, Gemini, and open-source titans without leaving your thought process.</p></div>
             <div className="hidden md:flex flex-1 justify-center gap-4 opacity-60">
               {['openai', 'anthropic', 'googlegemini', 'meta'].map(s => <div key={s} className="w-14 h-14 rounded-2xl glass-panel flex items-center justify-center animate-float" style={{ animationDelay: `${Math.random() * 2}s` }}><BrandLogo slug={s} color="#fff" size={28} /></div>)}
@@ -253,20 +253,20 @@ export default function LandingPage() {
 
       {/* ═══ 13. FINAL CTA ═══ */}
       <section className="py-32 px-6 relative flex justify-center z-20">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="relative max-w-4xl w-full text-center glass-strong rounded-[3rem] p-16 md:p-24 border border-omin-gold/20 overflow-hidden group">
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="cta-card relative max-w-4xl w-full text-center glass-strong rounded-[3rem] p-16 md:p-24 border border-omin-gold/20 overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-t from-omin-gold/10 to-transparent opacity-40 group-hover:opacity-70 transition-opacity duration-1000" />
           {/* Floating particles */}
           {[...Array(6)].map((_, i) => <div key={i} className="absolute w-1 h-1 bg-omin-gold/40 rounded-full animate-float" style={{ left: `${15 + i * 14}%`, top: `${20 + (i % 3) * 25}%`, animationDelay: `${i * 0.8}s`, animationDuration: `${4 + i}s` }} />)}
           <h2 className="font-display font-bold text-4xl md:text-6xl tracking-tight mb-6 relative z-10">Access the God-Tier.</h2>
           <p className="text-white/60 text-lg mb-12 max-w-xl mx-auto relative z-10">Claim your unfair advantage today. All 68 models inside one immersive interface.</p>
-          <div className="relative z-10"><MagBtn onClick={triggerAuth} className="bg-omin-gold text-black px-12 py-5 rounded-full font-bold text-lg hover:bg-omin-gold/90 shadow-[0_10px_40px_rgba(255,217,61,0.3)] hover:shadow-[0_10px_60px_rgba(255,217,61,0.5)] transition-all">{user ? 'Go to Dashboard' : 'Sign Up Free →'}</MagBtn></div>
+          <div className="relative z-10"><MagBtn onClick={triggerAuth} className="cta-btn bg-omin-gold text-black px-12 py-5 rounded-full font-bold text-lg hover:bg-omin-gold/90 shadow-[0_10px_40px_rgba(255,217,61,0.3)] hover:shadow-[0_10px_60px_rgba(255,217,61,0.5)] transition-all">{user ? 'Go to Dashboard' : 'Sign Up Free →'}</MagBtn></div>
         </motion.div>
       </section>
 
       {/* ═══ 14. FOOTER ═══ */}
       <footer className="border-t border-white/5 bg-[#010101] py-20 px-6 relative z-20">
         <div className="max-w-[1200px] mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
+          <div className="footer-grid grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
             <div>
               <div className="flex items-center gap-3 mb-6"><div className="w-8 h-8 bg-omin-gold rounded-lg flex items-center justify-center text-black font-display font-black text-xs shadow-[0_0_15px_rgba(255,217,61,0.2)]">O</div><span className="font-display font-bold text-sm">OMNI AI PRO</span></div>
               <p className="text-xs text-white/30 leading-relaxed">The world's most powerful AI aggregator. 68 models, one interface.</p>
@@ -284,7 +284,7 @@ export default function LandingPage() {
               <ul className="space-y-3">{['Privacy', 'Terms', 'Security', 'DPA'].map(l => <li key={l}><a href="#" className="text-sm text-white/30 hover:text-white transition-colors">{l}</a></li>)}</ul>
             </div>
           </div>
-          <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="footer-bottom border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-white/20 font-display uppercase tracking-widest">© 2026 OMNI AI PRO. The God-Tier Interface.</p>
             <div className="flex gap-6 text-xs text-white/20">{['Twitter', 'GitHub', 'Discord'].map(l => <a key={l} href="#" className="hover:text-omin-gold transition-colors font-semibold uppercase tracking-widest">{l}</a>)}</div>
           </div>

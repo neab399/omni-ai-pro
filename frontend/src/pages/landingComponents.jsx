@@ -12,7 +12,15 @@ export const NoiseBg = () => (
 /* ─── Cursor Glow ─── */
 export function CursorGlow() {
   const [pos, setPos] = useState({ x: -500, y: -500 });
-  useEffect(() => { const h = e => setPos({ x: e.clientX, y: e.clientY }); window.addEventListener('mousemove', h); return () => window.removeEventListener('mousemove', h); }, []);
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+  useEffect(() => { if (isMobile) return; const h = e => setPos({ x: e.clientX, y: e.clientY }); window.addEventListener('mousemove', h); return () => window.removeEventListener('mousemove', h); }, [isMobile]);
+  if (isMobile) return null;
   return <div className="fixed pointer-events-none z-10 rounded-full transition-all duration-75 ease-linear mix-blend-screen" style={{ left: pos.x - 300, top: pos.y - 300, width: 600, height: 600, background: 'radial-gradient(circle, rgba(255,217,61,0.08) 0%, rgba(59,130,246,0.04) 40%, transparent 70%)' }} />;
 }
 
@@ -38,7 +46,7 @@ export function Marquee({ items, reverse }) {
   const all = [...items, ...items, ...items, ...items];
   return (
     <div className="overflow-hidden flex">
-      <motion.div animate={{ x: reverse ? ['-50%', '0%'] : ['0%', '-50%'] }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }} className="flex flex-shrink-0">
+      <motion.div animate={{ x: reverse ? ['-50%', '0%'] : ['0%', '-50%'] }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }} className="marquee-track flex flex-shrink-0">
         {all.map((item, i) => <span key={i} className={`inline-flex items-center gap-4 px-10 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase whitespace-nowrap ${i % 2 === 0 ? 'text-omin-gold/70' : 'text-white/40'}`}><span className="text-[6px] opacity-30">✦</span>{item}</span>)}
       </motion.div>
     </div>
@@ -96,7 +104,7 @@ export function SectionHeader({ badge, title, subtitle }) {
   return (
     <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="text-center mb-20">
       {badge && <div className="text-omin-gold text-xs font-bold tracking-[0.25em] uppercase mb-5">{badge}</div>}
-      <h2 className="font-display font-bold text-[clamp(2.5rem,5vw,4.5rem)] tracking-tight mb-6 leading-tight">{title}</h2>
+      <h2 className="font-display font-bold text-[clamp(2rem,5vw,4.5rem)] tracking-tight mb-6 leading-tight">{title}</h2>
       {subtitle && <p className="text-white/50 text-lg max-w-2xl mx-auto leading-relaxed">{subtitle}</p>}
     </motion.div>
   );
