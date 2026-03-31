@@ -326,102 +326,116 @@ const parseMarkdown = (text) => {
 ══════════════════════════════════════════════════════════ */
 const GLOBAL_STYLES = `
   :root[data-theme="dark"] {
-    --bg-base: #050505;
-    --bg-panel: rgba(20, 20, 24, 0.4);
-    --bg-hover: rgba(255, 255, 255, 0.05);
-    --bg-input: rgba(0, 0, 0, 0.4);
-    --bg-modal: #0a0a0c;
+    --bg-base: #030305;
+    --bg-panel: rgba(14, 14, 18, 0.65);
+    --bg-hover: rgba(255, 255, 255, 0.04);
+    --bg-input: rgba(0, 0, 0, 0.5);
+    --bg-modal: #080810;
     --bg-card: rgba(255, 255, 255, 0.02);
     
-    --text-main: #ffffff;
-    --text-sec: rgba(255, 255, 255, 0.75);
-    --text-muted: rgba(255, 255, 255, 0.45);
-    --text-faint: rgba(255, 255, 255, 0.15);
+    --text-main: #f0f0f5;
+    --text-sec: rgba(255, 255, 255, 0.72);
+    --text-muted: rgba(255, 255, 255, 0.40);
+    --text-faint: rgba(255, 255, 255, 0.13);
     
-    --border-light: rgba(255, 255, 255, 0.08);
-    --border-med: rgba(255, 255, 255, 0.14);
-    --border-focus: rgba(255, 217, 61, 0.35);
+    --border-light: rgba(255, 255, 255, 0.06);
+    --border-med: rgba(255, 255, 255, 0.10);
+    --border-focus: rgba(255, 217, 61, 0.45);
     
     --accent: #FFD93D;
-    --accent-low: rgba(255, 217, 61, 0.1);
+    --accent-low: rgba(255, 217, 61, 0.08);
     --accent2: #3b82f6;
     
     --green: #4ade80; --red: #f87171; --blue: #60a5fa;
-    --shadow-sm: 0 4px 24px rgba(0,0,0,0.4);
-    --shadow-md: 0 12px 48px rgba(0,0,0,0.6);
-    --shadow-lg: 0 24px 80px rgba(0,0,0,0.8);
-    --img-bg: #030303;
-    --section-active: rgba(255, 217, 61, 0.08);
+    --shadow-sm: 0 2px 16px rgba(0,0,0,0.5);
+    --shadow-md: 0 8px 40px rgba(0,0,0,0.7);
+    --shadow-lg: 0 20px 80px rgba(0,0,0,0.9);
+    --glow-gold: 0 0 20px rgba(255,217,61,0.12), 0 0 60px rgba(255,217,61,0.05);
+    --glow-gold-strong: 0 0 25px rgba(255,217,61,0.2), 0 0 80px rgba(255,217,61,0.08);
+    --img-bg: #020204;
+    --section-active: rgba(255, 217, 61, 0.06);
+    --panel-blur: blur(24px);
+    --panel-blur-strong: blur(40px);
   }
   
   :root[data-theme="light"] {
-    --bg-base: #fafafa;
-    --bg-panel: #ffffff;
-    --bg-hover: rgba(0, 0, 0, 0.04);
-    --bg-input: #f4f4f5;
+    --bg-base: #f8f9fa;
+    --bg-panel: rgba(255,255,255,0.85);
+    --bg-hover: rgba(0, 0, 0, 0.035);
+    --bg-input: #f0f1f3;
     --bg-modal: #ffffff;
-    --bg-card: #f9fafb;
+    --bg-card: rgba(0,0,0,0.015);
     
     --text-main: #09090b;
     --text-sec: #3f3f46;
     --text-muted: #71717a;
-    --text-faint: #d4d4d8;
+    --text-faint: #c4c4cc;
     
-    --border-light: #e4e4e7;
-    --border-med: #d4d4d8;
-    --border-focus: #fbbf24;
+    --border-light: rgba(0,0,0,0.06);
+    --border-med: rgba(0,0,0,0.10);
+    --border-focus: #e8a850;
     
-    --accent: #fbbf24;
-    --accent-low: rgba(251, 191, 36, 0.15);
+    --accent: #e8a850;
+    --accent-low: rgba(232, 168, 80, 0.10);
     --accent2: #2563eb;
     
     --green: #16a34a; --red: #dc2626; --blue: #2563eb;
-    --shadow-sm: 0 2px 12px rgba(0,0,0,0.05);
-    --shadow-md: 0 8px 32px rgba(0,0,0,0.08);
-    --shadow-lg: 0 16px 48px rgba(0,0,0,0.12);
-    --img-bg: #f4f4f5;
-    --section-active: rgba(251, 191, 36, 0.1);
+    --shadow-sm: 0 1px 8px rgba(0,0,0,0.04);
+    --shadow-md: 0 6px 24px rgba(0,0,0,0.06);
+    --shadow-lg: 0 12px 48px rgba(0,0,0,0.10);
+    --glow-gold: 0 0 15px rgba(232,168,80,0.08);
+    --glow-gold-strong: 0 0 20px rgba(232,168,80,0.12);
+    --img-bg: #f0f1f3;
+    --section-active: rgba(232, 168, 80, 0.08);
+    --panel-blur: blur(20px);
+    --panel-blur-strong: blur(30px);
   }
 
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{height:100%;overflow:hidden;}
-  body{font-family:'Inter',system-ui,sans-serif;font-size:14px;background:var(--bg-base);color:var(--text-main);-webkit-font-smoothing:antialiased;}
+  body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:14px;background:var(--bg-base);color:var(--text-main);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 
-  .omni-scroll::-webkit-scrollbar{width:6px;height:6px;}
+  .omni-scroll::-webkit-scrollbar{width:5px;height:5px;}
   .omni-scroll::-webkit-scrollbar-track{background:transparent;}
-  .omni-scroll::-webkit-scrollbar-thumb{background:var(--border-med);border-radius:10px;}
-  .omni-scroll::-webkit-scrollbar-thumb:hover{background:var(--border-focus);}
+  .omni-scroll::-webkit-scrollbar-thumb{background:var(--border-med);border-radius:10px;transition:background .3s;}
+  .omni-scroll::-webkit-scrollbar-thumb:hover{background:var(--accent);box-shadow:0 0 8px var(--accent-low);}
 
-  .md-p{margin:0 0 12px;line-height:1.75;color:var(--text-sec);font-size:14.5px;}
+  .md-p{margin:0 0 14px;line-height:1.8;color:var(--text-sec);font-size:14.5px;letter-spacing:0.01em;}
   .md-p:last-child{margin-bottom:0;}
-  .md-h1{font-size:24px;font-weight:700;color:var(--text-main);margin:28px 0 14px;font-family:'Outfit',sans-serif;letter-spacing:-0.02em;}
-  .md-h2{font-size:20px;font-weight:700;color:var(--text-main);margin:24px 0 12px;font-family:'Outfit',sans-serif;letter-spacing:-0.01em;}
-  .md-h3{font-size:16px;font-weight:600;color:var(--text-main);margin:18px 0 10px;font-family:'Outfit',sans-serif;}
-  .md-quote{border-left:3px solid var(--accent);padding:10px 18px;color:var(--text-muted);font-style:italic;margin:14px 0;background:var(--accent-low);border-radius:0 10px 10px 0;}
-  .md-ul{margin:10px 0 14px;padding:0;list-style:none;}
-  .md-li{padding:4px 0 4px 22px;position:relative;color:var(--text-sec);font-size:14.5px;line-height:1.65;}
-  .md-li::before{content:'✦';position:absolute;left:4px;color:var(--accent);font-size:10px;top:9px;}
-  .inline-code{background:var(--bg-hover);border:1px solid var(--border-light);border-radius:6px;padding:2px 6px;font-family:monospace;font-size:12.5px;color:var(--accent);font-weight:500;}
+  .md-h1{font-size:26px;font-weight:800;color:var(--text-main);margin:30px 0 16px;font-family:'Outfit',sans-serif;letter-spacing:-0.03em;background:linear-gradient(135deg,var(--text-main),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .md-h2{font-size:21px;font-weight:700;color:var(--text-main);margin:26px 0 13px;font-family:'Outfit',sans-serif;letter-spacing:-0.02em;}
+  .md-h3{font-size:17px;font-weight:600;color:var(--text-main);margin:20px 0 11px;font-family:'Outfit',sans-serif;letter-spacing:-0.01em;}
+  .md-quote{border-left:3px solid var(--accent);padding:12px 20px;color:var(--text-muted);font-style:italic;margin:16px 0;background:var(--accent-low);border-radius:0 12px 12px 0;backdrop-filter:blur(8px);}
+  .md-ul{margin:12px 0 16px;padding:0;list-style:none;}
+  .md-li{padding:5px 0 5px 24px;position:relative;color:var(--text-sec);font-size:14.5px;line-height:1.7;}
+  .md-li::before{content:'✦';position:absolute;left:4px;color:var(--accent);font-size:10px;top:10px;filter:drop-shadow(0 0 3px var(--accent-low));}
+  .inline-code{background:var(--accent-low);border:1px solid rgba(255,217,61,0.15);border-radius:7px;padding:2.5px 7px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);font-weight:600;letter-spacing:0.02em;}
   
-  .code-block{background:#0a0a0c;border:1px solid var(--border-light);border-radius:14px;margin:20px 0;overflow:hidden;box-shadow:inset 0 4px 20px rgba(0,0,0,0.5);}
-  .code-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--bg-panel);backdrop-filter:blur(8px);border-bottom:1px solid var(--border-light);}
-  .code-lang{font-size:11px;color:var(--text-muted);font-weight:800;text-transform:uppercase;letter-spacing:.1em;}
-  .code-block pre{margin:0;padding:22px;overflow-x:auto;font-size:13.5px;line-height:1.75;color:#e4e4e7;font-family:monospace;}
-  .code-copy-btn{background:transparent;border:1px solid var(--border-med);border-radius:6px;padding:5px 12px;font-size:11px;color:var(--text-muted);cursor:pointer;font-weight:700;transition:all .2s;}
-  .code-copy-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-low);}
+  .code-block{background:#08080c;border:1px solid var(--border-med);border-radius:16px;margin:20px 0;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.04);}
+  .code-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:linear-gradient(135deg,rgba(255,217,61,0.04),transparent 60%);backdrop-filter:var(--panel-blur);border-bottom:1px solid var(--border-light);}
+  .code-lang{font-size:10.5px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.12em;text-shadow:0 0 12px var(--accent-low);}
+  .code-block pre{margin:0;padding:22px;overflow-x:auto;font-size:13px;line-height:1.8;color:#c8cacc;font-family:'JetBrains Mono','Fira Code',monospace;letter-spacing:0.02em;}
+  .code-copy-btn{background:rgba(255,255,255,0.03);border:1px solid var(--border-med);border-radius:8px;padding:5px 14px;font-size:11px;color:var(--text-muted);cursor:pointer;font-weight:700;transition:all .25s;backdrop-filter:blur(4px);}
+  .code-copy-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-low);box-shadow:var(--glow-gold);}
 
   @keyframes omni-spin{to{transform:rotate(360deg)}}
-  @keyframes omni-pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  @keyframes omni-pulse{0%,100%{opacity:1}50%{opacity:.3}}
   @keyframes omni-fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes img-appear{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+  @keyframes img-appear{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+  @keyframes msg-slide{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes glow-pulse{0%,100%{box-shadow:0 0 12px rgba(255,217,61,0.08)}50%{box-shadow:0 0 24px rgba(255,217,61,0.18)}}
+  @keyframes gradient-shift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  @keyframes wave{0%,100%{height:6px}50%{height:22px}}
+  @keyframes subtle-breathe{0%,100%{opacity:0.6}50%{opacity:1}}
 
-  .spin{animation:omni-spin .8s linear infinite;}
+  .spin{animation:omni-spin .7s linear infinite;}
   .pulse-text{animation:omni-pulse 1.2s ease infinite;}
   .img-appear{animation:img-appear .5s cubic-bezier(0.16, 1, 0.3, 1) forwards;}
+  .msg-appear{animation:msg-slide .35s cubic-bezier(0.16, 1, 0.3, 1) forwards;}
 
-  input[type=range]{-webkit-appearance:none;height:4px;border-radius:2px;background:var(--border-med);outline:none;}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 12px var(--accent-low);}
-  ::selection{background:var(--accent-low);color:var(--accent);}
+  input[type=range]{-webkit-appearance:none;height:3px;border-radius:2px;background:var(--border-med);outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 14px rgba(255,217,61,0.25);border:2px solid rgba(0,0,0,0.3);}
+  ::selection{background:rgba(255,217,61,0.2);color:var(--accent);}
 
   .img-grid-1{grid-template-columns:1fr;}
   .img-grid-2{grid-template-columns:1fr 1fr;}
@@ -492,10 +506,10 @@ function UserAvatar({ profile, size = 30 }) {
 
 function TypingIndicator() {
   return (
-    <div style={{ display: 'flex', gap: 5, alignItems: 'center', padding: '4px 0' }}>
+    <div style={{ display: 'flex', gap: 5, alignItems: 'center', padding: '6px 0' }}>
       {[0, 1, 2].map(i => (
-        <motion.div key={i} animate={{ scale: [1, 1.4, 1], opacity: [0.2, 1, 0.2] }} transition={{ duration: 1, repeat: Infinity, delay: i * 0.18 }}
-          style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--text-muted)' }} />
+        <motion.div key={i} animate={{ scale: [1, 1.5, 1], opacity: [0.15, 1, 0.15] }} transition={{ duration: 1.1, repeat: Infinity, delay: i * 0.2 }}
+          style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 6px var(--accent-low)' }} />
       ))}
     </div>
   );
@@ -536,13 +550,13 @@ const SECTIONS = [
 
 function SectionTabs({ active, onChange }) {
   return (
-    <div style={{ display: 'flex', gap: 3, background: 'var(--bg-hover)', borderRadius: 10, padding: 3, border: '1px solid var(--border-light)' }}>
+    <div style={{ display: 'flex', gap: 3, background: 'var(--bg-hover)', borderRadius: 11, padding: 3, border: '1px solid var(--border-light)', backdropFilter: 'var(--panel-blur)' }}>
       {SECTIONS.map(s => {
         const isActive = s.id === active;
         const Icon = s.icon;
         return (
           <button key={s.id} onClick={() => onChange(s.id)}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 12.5, fontWeight: isActive ? 700 : 500, background: isActive ? 'var(--bg-panel)' : 'transparent', color: isActive ? 'var(--accent)' : 'var(--text-muted)', boxShadow: isActive ? 'var(--shadow-sm)' : 'none', transition: 'all .18s', fontFamily: "'Outfit',sans-serif" }}>
+            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 16px', borderRadius: 9, border: 'none', cursor: 'pointer', fontSize: 12.5, fontWeight: isActive ? 700 : 500, background: isActive ? 'var(--bg-panel)' : 'transparent', color: isActive ? 'var(--accent)' : 'var(--text-muted)', boxShadow: isActive ? 'var(--shadow-sm), var(--glow-gold)' : 'none', transition: 'all .22s cubic-bezier(0.16, 1, 0.3, 1)', fontFamily: "'Outfit',sans-serif", letterSpacing: isActive ? '0.02em' : '0' }}>
             <Icon /> {s.label}
           </button>
         );
@@ -569,10 +583,10 @@ function ModelSelectorModal({ onClose, onSelect, activeModels, isMulti, provider
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       onClick={onClose}
-      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, backdropFilter: 'blur(5px)' }}>
+      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, backdropFilter: 'blur(12px)' }}>
       <motion.div initial={{ opacity: 0, scale: .95, y: 16 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: .95 }}
         onClick={e => e.stopPropagation()}
-        style={{ background: 'var(--bg-panel)', border: '1px solid var(--border-med)', borderRadius: 18, width: '92%', maxWidth: 860, maxHeight: '84vh', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-lg)', overflow: 'hidden' }}>
+        style={{ background: 'var(--bg-panel)', backdropFilter: 'var(--panel-blur-strong)', border: '1px solid var(--border-med)', borderRadius: 20, width: '92%', maxWidth: 860, maxHeight: '84vh', display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-lg), var(--glow-gold)', overflow: 'hidden' }}>
 
         <div style={{ padding: '20px 24px 0', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
           <div>
@@ -1274,16 +1288,16 @@ function MessageBubble({ msg, model, userProfile, onCopy, onDelete, onRegenerate
   const isUser = msg.role === 'user';
 
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       onMouseEnter={() => setShowActions(true)} onMouseLeave={() => setShowActions(false)}
-      style={{ display: 'flex', gap: 12, flexDirection: isUser ? 'row-reverse' : 'row', position: 'relative', padding: '4px 0' }}>
-      {isUser ? <UserAvatar profile={userProfile} size={29} /> : <ModelAvatar model={model} size={29} />}
-      <div style={{ maxWidth: isCompact ? '88%' : '82%', display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 7, flexDirection: isUser ? 'row-reverse' : 'row' }}>
-          <span style={{ fontSize: 11.5, fontWeight: 700, color: isUser ? 'var(--text-muted)' : (model?.color || 'var(--text-main)') }}>{isUser ? 'You' : (model?.name || 'AI')}</span>
-          <span style={{ fontSize: 10.5, color: 'var(--text-faint)' }}>{formatTime(msg.timestamp)}</span>
+      style={{ display: 'flex', gap: 12, flexDirection: isUser ? 'row-reverse' : 'row', position: 'relative', padding: '6px 0' }}>
+      {isUser ? <UserAvatar profile={userProfile} size={30} /> : <ModelAvatar model={model} size={30} />}
+      <div style={{ maxWidth: isCompact ? '88%' : '80%', display: 'flex', flexDirection: 'column', gap: 5, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexDirection: isUser ? 'row-reverse' : 'row' }}>
+          <span style={{ fontSize: 11.5, fontWeight: 700, color: isUser ? 'var(--text-muted)' : (model?.color || 'var(--text-main)'), letterSpacing: '0.01em' }}>{isUser ? 'You' : (model?.name || 'AI')}</span>
+          <span style={{ fontSize: 10, color: 'var(--text-faint)', fontFamily: "'JetBrains Mono',monospace" }}>{formatTime(msg.timestamp)}</span>
         </div>
-        <div style={{ background: isUser ? 'var(--bg-hover)' : 'transparent', border: isUser ? '1px solid var(--border-light)' : 'none', padding: isUser ? '10px 14px' : '2px 0', borderRadius: isUser ? '14px 4px 14px 14px' : 0, wordBreak: 'break-word' }}>
+        <div style={{ background: isUser ? 'var(--bg-hover)' : 'transparent', border: isUser ? '1px solid var(--border-light)' : 'none', borderLeft: !isUser ? '2px solid ' + (model?.color || 'var(--accent)') + '30' : 'none', padding: isUser ? '11px 15px' : '2px 0 2px 14px', borderRadius: isUser ? '16px 4px 16px 16px' : 0, wordBreak: 'break-word', backdropFilter: isUser ? 'var(--panel-blur)' : 'none' }}>
           {msg.isStreaming ? <TypingIndicator /> : <div dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.content) }} />}
         </div>
         {!isUser && !msg.isStreaming && msg.content && (
@@ -1497,8 +1511,8 @@ function AdvancedInput({ input, setInput, onSend, activeModels, isMultiChatMode,
           </div>
         )}
 
-        <motion.div animate={{ borderColor: focused ? 'var(--border-focus)' : 'var(--border-med)', boxShadow: focused ? '0 0 0 1px rgba(255,255,255,0.04), var(--shadow-md)' : 'var(--shadow-sm)' }}
-          style={{ background: 'var(--bg-input)', border: '1px solid var(--border-med)', borderRadius: 16, overflow: 'visible' }}>
+        <motion.div animate={{ borderColor: focused ? 'var(--border-focus)' : 'var(--border-med)', boxShadow: focused ? 'var(--glow-gold-strong), 0 0 0 1px rgba(255,217,61,0.08)' : 'var(--shadow-sm)' }}
+          style={{ background: 'var(--bg-input)', border: '1px solid var(--border-med)', borderRadius: 18, overflow: 'visible', backdropFilter: 'var(--panel-blur)', transition: 'border-color 0.3s' }}>
 
           {/* Multi-model tags */}
           {activeModels.length > 1 && (
@@ -1512,7 +1526,7 @@ function AdvancedInput({ input, setInput, onSend, activeModels, isMultiChatMode,
             onFocus={() => setFocused(true)} onBlur={() => setTimeout(() => setFocused(false), 200)}
             placeholder={isMultiChatMode ? `Ask ${activeModels.length} models at once… (/ for commands)` : `Message ${activeModels[0]?.name || 'AI'}… (/ commands · ↑ history)`}
             rows={1}
-            style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: 14.5, fontFamily: "'Outfit',sans-serif", color: overLimit ? 'var(--red)' : 'var(--text-main)', lineHeight: 1.65, padding: '13px 16px', resize: 'none', maxHeight: 220, minHeight: 52, caretColor: 'var(--accent)' }} />
+            style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: 14.5, fontFamily: "'Outfit',sans-serif", color: overLimit ? 'var(--red)' : 'var(--text-main)', lineHeight: 1.65, padding: '14px 18px', resize: 'none', maxHeight: 220, minHeight: 54, caretColor: 'var(--accent)' }} />
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px 10px', borderTop: '1px solid var(--border-light)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -1530,7 +1544,7 @@ function AdvancedInput({ input, setInput, onSend, activeModels, isMultiChatMode,
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               {input.length > 0 && <span style={{ fontSize: 11, fontFamily: "'JetBrains Mono',monospace", color: overLimit ? 'var(--red)' : 'var(--text-faint)' }}>{tokens.toLocaleString()}</span>}
               <motion.button onClick={handleSend} disabled={!input.trim()} whileTap={{ scale: .9 }}
-                style={{ padding: '7px 18px', borderRadius: 10, background: input.trim() ? 'var(--text-main)' : 'transparent', color: input.trim() ? 'var(--bg-base)' : 'var(--text-faint)', border: `1px solid ${input.trim() ? 'transparent' : 'var(--border-light)'}`, cursor: input.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 700, fontFamily: "'Outfit',sans-serif", transition: 'all .18s' }}>
+                style={{ padding: '8px 20px', borderRadius: 11, background: input.trim() ? 'var(--accent)' : 'transparent', color: input.trim() ? 'var(--bg-base)' : 'var(--text-faint)', border: `1px solid ${input.trim() ? 'transparent' : 'var(--border-light)'}`, cursor: input.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 700, fontFamily: "'Outfit',sans-serif", transition: 'all .22s', boxShadow: input.trim() ? 'var(--glow-gold)' : 'none' }}>
                 {sending ? <span className="spin"><IC.Send /></span> : <IC.Send />}
                 {isMultiChatMode && input.trim() && <span style={{ fontSize: 10, opacity: .7 }}>×{activeModels.length}</span>}
               </motion.button>
@@ -1884,25 +1898,25 @@ export default function ChatPage() {
       {/* ═══ SIDEBAR ═══ */}
       <AnimatePresence>
         {sidebarOpen && (
-          <motion.aside initial={{ width: 0, opacity: 0 }} animate={{ width: 256, opacity: 1 }} exit={{ width: 0, opacity: 0 }} transition={{ duration: .2, ease: 'easeInOut' }}
-            style={{ borderRight: '1px solid var(--border-light)', background: 'var(--bg-panel)', display: 'flex', flexDirection: 'column', overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
+          <motion.aside initial={{ width: 0, opacity: 0 }} animate={{ width: 260, opacity: 1 }} exit={{ width: 0, opacity: 0 }} transition={{ duration: .25, ease: [0.16, 1, 0.3, 1] }}
+            style={{ borderRight: '1px solid var(--border-light)', background: 'var(--bg-panel)', backdropFilter: 'var(--panel-blur-strong)', display: 'flex', flexDirection: 'column', overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
 
             {/* Logo */}
             <div style={{ padding: '16px 16px 12px', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-              <div style={{ width: 28, height: 28, borderRadius: 7, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                <img src="/logo.png" alt="O" style={{ width: 18 }} onError={e => e.target.style.display = 'none'} />
+              <div style={{ width: 30, height: 30, borderRadius: 9, background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', boxShadow: '0 0 20px rgba(255,217,61,0.2)', animation: 'glow-pulse 3s ease-in-out infinite' }}>
+                <img src="/logo.png" alt="O" style={{ width: 18, filter: 'brightness(0)' }} onError={e => { e.target.style.display = 'none'; }} />
               </div>
               <div>
-                <div style={{ fontWeight: 800, fontSize: 13, letterSpacing: '-.02em', color: 'var(--text-main)' }}>OMNI AI PRO</div>
-                <div style={{ fontSize: 9.5, color: 'var(--text-faint)', fontWeight: 500 }}>68 Models · 4 Modes</div>
+                <div style={{ fontWeight: 800, fontSize: 14, letterSpacing: '-.02em', color: 'var(--text-main)', fontFamily: "'Outfit',sans-serif" }}>OMNI AI <span style={{ color: 'var(--accent)' }}>PRO</span></div>
+                <div style={{ fontSize: 9.5, color: 'var(--text-faint)', fontWeight: 500, letterSpacing: '0.04em' }}>68 Models · 4 Modes</div>
               </div>
             </div>
 
             {/* New chat + search */}
             <div style={{ padding: '0 10px 10px', display: 'flex', gap: 5, flexShrink: 0 }}>
               <button onClick={handleNewConv}
-                style={{ flex: 1, padding: '8px 12px', background: 'var(--text-main)', color: 'var(--bg-base)', borderRadius: 9, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 12.5, display: 'flex', alignItems: 'center', gap: 6, fontFamily: "'Outfit',sans-serif", transition: 'opacity .14s' }}
-                onMouseEnter={e => e.currentTarget.style.opacity = '.82'} onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
+                style={{ flex: 1, padding: '9px 12px', background: 'var(--accent)', color: 'var(--bg-base)', borderRadius: 10, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 12.5, display: 'flex', alignItems: 'center', gap: 6, fontFamily: "'Outfit',sans-serif", transition: 'all .2s', boxShadow: 'var(--glow-gold)' }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--glow-gold-strong)'; e.currentTarget.style.transform = 'translateY(-1px)'; }} onMouseLeave={e => { e.currentTarget.style.boxShadow = 'var(--glow-gold)'; e.currentTarget.style.transform = 'translateY(0)'; }}>
                 <IC.Plus /> New Chat
               </button>
               <button onClick={() => setShowSearch(p => !p)} title="Search (⌘K)"
@@ -1970,7 +1984,8 @@ export default function ChatPage() {
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
 
         {/* Header */}
-        <header style={{ height: 54, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 18px', borderBottom: '1px solid var(--border-light)', background: 'var(--bg-panel)', flexShrink: 0, gap: 10 }}>
+        <header style={{ height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 18px', borderBottom: '1px solid var(--border-light)', background: 'var(--bg-panel)', backdropFilter: 'var(--panel-blur)', flexShrink: 0, gap: 10, position: 'relative' }}>
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, var(--accent-low), transparent)', pointerEvents: 'none' }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 9, minWidth: 0 }}>
             <button onClick={() => setSidebarOpen(p => !p)} title="Toggle sidebar (⌘\\)"
               style={{ width: 32, height: 32, background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .14s' }}
