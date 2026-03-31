@@ -111,7 +111,7 @@ export function ImageSection({ addToast }) {
       </div>
 
       {/* ── Results area ── */}
-      <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '24px 20px', background: 'var(--img-bg)' }}>
+      <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '24px 20px 80px', background: 'var(--img-bg)' }}>
         {results.length === 0 ? (
           <ImageEmptyState onQuickPrompt={p => setPrompt(p)} />
         ) : (
@@ -316,7 +316,7 @@ export function VoiceSection({ addToast }) {
       <audio ref={audioRef} onEnded={() => setIsPlaying(false)} style={{ display: 'none' }} />
 
       {/* Tab row */}
-      <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border-light)', background: 'var(--bg-panel)', display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
+      <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border-light)', background: 'var(--bg-panel)', display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0, flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', gap: 3, background: 'var(--bg-hover)', borderRadius: 8, padding: 3, border: '1px solid var(--border-light)' }}>
           {[['stt', '🎙 Speech to Text'], ['tts', '🔊 Text to Speech']].map(([id, label]) => (
             <button key={id} onClick={() => setTab(id)}
@@ -332,7 +332,7 @@ export function VoiceSection({ addToast }) {
         </div>
       </div>
 
-      <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '28px 20px' }}>
+      <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '28px 20px 80px' }}>
         <div style={{ maxWidth: 680, margin: '0 auto' }}>
           {tab === 'stt' ? (
             /* ── STT ── */
@@ -550,7 +550,7 @@ export function VideoSection({ addToast }) {
       </div>
 
       {/* Results */}
-      <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '24px 20px', background: 'var(--img-bg)' }}>
+      <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '24px 20px 80px', background: 'var(--img-bg)' }}>
         {results.length === 0 ? (
           <VideoEmptyState onQuickPrompt={setPrompt} />
         ) : (

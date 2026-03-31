@@ -405,12 +405,10 @@ export default function ChatPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 3 : 6, minWidth: 0, flexShrink: 0 }}>
             {activeSection === 'chat' && (
               <>
-                {!isMobile && (
-                  <button onClick={() => setIsMultiMode(p => !p)}
-                    style={{ padding: '5px 11px', borderRadius: 8, background: isMultiMode ? 'var(--accent-low)' : 'var(--bg-hover)', border: `1px solid ${isMultiMode ? 'rgba(232,168,95,.3)' : 'var(--border-light)'}`, fontSize: 12, cursor: 'pointer', color: isMultiMode ? 'var(--accent)' : 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5, fontFamily: "'Outfit',sans-serif", transition: 'all .18s' }}>
-                    <IC.Layers />{isMultiMode ? `Multi (${activeModels.length})` : 'Multi-Model'}
-                  </button>
-                )}
+                <button onClick={() => setIsMultiMode(p => !p)}
+                  style={{ padding: isMobile ? '5px 8px' : '5px 11px', borderRadius: 8, background: isMultiMode ? 'var(--accent-low)' : 'var(--bg-hover)', border: `1px solid ${isMultiMode ? 'rgba(232,168,95,.3)' : 'var(--border-light)'}`, fontSize: 12, cursor: 'pointer', color: isMultiMode ? 'var(--accent)' : 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5, fontFamily: "'Outfit',sans-serif", transition: 'all .18s' }}>
+                  <IC.Layers />{!isMobile && (isMultiMode ? `Multi (${activeModels.length})` : 'Multi-Model')}
+                </button>
                 <button onClick={() => setShowModelSel(true)} className="chat-model-btn-mobile"
                   style={{ padding: isMobile ? '6px 8px' : '5px 11px', borderRadius: 9, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', fontSize: isMobile ? 12 : 12, cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: isMobile ? 4 : 5, fontWeight: 500, fontFamily: "'Outfit',sans-serif", transition: 'all .14s', maxWidth: isMobile ? 100 : 'none', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', flexShrink: 0 }}
                   onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-focus)'}

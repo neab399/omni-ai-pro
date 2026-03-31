@@ -55,7 +55,7 @@ export default function GlobalFeedback() {
       id="omni-feedback-btn"
       onClick={handleClick}
       style={{ zIndex: 999999 }}
-      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 bg-[#FFD93D] hover:bg-[#FFD93D]/90 text-black font-sans font-semibold text-sm p-3 md:px-5 md:py-3.5 rounded-full md:rounded-2xl shadow-[0_5px_30px_rgba(255,217,61,0.4)] flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 border border-[#FFD93D]/50 group"
+      className="hidden md:flex fixed bottom-4 right-4 md:bottom-6 md:right-6 bg-[#FFD93D] hover:bg-[#FFD93D]/90 text-black font-sans font-semibold text-sm p-3 md:px-5 md:py-3.5 rounded-full md:rounded-2xl shadow-[0_5px_30px_rgba(255,217,61,0.4)] items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 border border-[#FFD93D]/50 group"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-rotate-12 transition-transform">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
