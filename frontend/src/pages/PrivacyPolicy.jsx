@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { NoiseBg } from './landingComponents';
 
 const Section = ({ number, title, children }) => (
   <section className="pb-10 border-b border-white/5 last:border-0">
@@ -26,12 +27,18 @@ export default function PrivacyPolicy() {
 
   return (
     <div className="min-h-screen bg-omin-black text-white font-sans relative">
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.025] mix-blend-screen pointer-events-none z-10" />
+      <NoiseBg />
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 h-16 border-b border-white/8 bg-omin-black/90 backdrop-blur-xl z-50 flex items-center px-6 md:px-12">
         <Link to="/" className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-omin-gold rounded-lg flex items-center justify-center text-black font-display font-black text-sm shadow-[0_0_15px_rgba(255,217,61,0.3)]">O</div>
+          <motion.div
+            animate={{ boxShadow: ['0 0 10px rgba(255,217,61,0.25)', '0 0 22px rgba(255,217,61,0.55)', '0 0 10px rgba(255,217,61,0.25)'] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-8 h-8 bg-omin-gold rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0"
+          >
+            <img src="/logo.png" alt="O" className="w-5 h-5 object-contain" style={{ filter: 'brightness(0)' }} />
+          </motion.div>
           <span className="font-display font-bold tracking-wide hidden sm:block">OMNI AI <span className="text-omin-gold">PRO</span></span>
         </Link>
         <div className="flex-1" />
