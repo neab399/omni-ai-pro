@@ -107,7 +107,7 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
   };
 
-  const isMobileView = typeof window !== 'undefined' && window.innerWidth < 640;
+  const isMobileView = typeof window !== 'undefined' && window.innerWidth < 768;
 
   return (
     <div style={{ padding: isMobileView ? '8px 0 12px' : '12px 0 24px', background: 'var(--bg-base)', position: 'relative', flexShrink: 0 }} onDragOver={e => e.preventDefault()} onDrop={handleDrop}>
@@ -186,7 +186,7 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
             onBlur={() => setTimeout(() => setFocused(false), 200)}
             placeholder={isMultiChatMode ? `Ask ${activeModels.length} models…` : `Message ${activeModels[0]?.name || 'AI'}…`}
             rows={1}
-            style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: isMobileView ? 14 : 14.5, fontFamily: "'Outfit',sans-serif", color: overLimit ? 'var(--red)' : 'var(--text-main)', lineHeight: 1.55, padding: isMobileView ? '10px 14px' : '14px 18px', resize: 'none', maxHeight: isMobileView ? 120 : 220, minHeight: isMobileView ? 44 : 54, caretColor: 'var(--accent)' }}
+            style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: isMobileView ? 15 : 14.5, fontFamily: "'Outfit',sans-serif", color: overLimit ? 'var(--red)' : 'var(--text-main)', lineHeight: 1.55, padding: isMobileView ? '12px 14px' : '14px 18px', resize: 'none', maxHeight: isMobileView ? 120 : 220, minHeight: isMobileView ? 46 : 54, caretColor: 'var(--accent)', overflowX: 'hidden' }}
           />
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: isMobileView ? '6px 8px 8px' : '8px 10px 10px', borderTop: '1px solid var(--border-light)' }}>
@@ -202,10 +202,10 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
                 </span>
               )}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: isMobileView ? 4 : 8 }}>
               {input.length > 0 && <span style={{ fontSize: 11, fontFamily: "'JetBrains Mono',monospace", color: overLimit ? 'var(--red)' : 'var(--text-faint)' }}>{tokens.toLocaleString()}</span>}
               <motion.button onClick={handleSend} disabled={!input.trim()} whileTap={{ scale: .9 }}
-                style={{ padding: isMobileView ? '8px 12px' : '8px 20px', borderRadius: isMobileView ? 10 : 11, background: input.trim() ? 'var(--accent)' : 'transparent', color: input.trim() ? 'var(--bg-base)' : 'var(--text-faint)', border: `1px solid ${input.trim() ? 'transparent' : 'var(--border-light)'}`, cursor: input.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 700, fontFamily: "'Outfit',sans-serif", transition: 'all .22s', boxShadow: input.trim() ? 'var(--glow-gold)' : 'none' }}>
+                style={{ padding: isMobileView ? '7px 14px' : '8px 20px', borderRadius: isMobileView ? 12 : 11, background: input.trim() ? 'var(--accent)' : 'var(--bg-hover)', color: input.trim() ? 'var(--bg-base)' : 'var(--text-muted)', border: `1px solid ${input.trim() ? 'transparent' : 'var(--border-light)'}`, cursor: input.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 700, fontFamily: "'Outfit',sans-serif", transition: 'all .22s', boxShadow: input.trim() ? 'var(--glow-gold)' : 'none' }}>
                 {sending ? <span className="spin"><IC.Send /></span> : <IC.Send />}
                 {isMultiChatMode && input.trim() && !isMobileView && <span style={{ fontSize: 10, opacity: .7 }}>×{activeModels.length}</span>}
               </motion.button>

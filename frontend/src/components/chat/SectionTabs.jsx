@@ -17,7 +17,7 @@ export const SECTIONS = [
 ══════════════════════════════════════════════════════════ */
 export default function SectionTabs({ active, onChange }) {
   return (
-    <div className="chat-section-tabs-mobile" style={{ display: 'flex', gap: 2, background: 'var(--bg-hover)', borderRadius: 11, padding: 3, border: '1px solid var(--border-light)', backdropFilter: 'var(--panel-blur)', flexShrink: 0 }}>
+    <div className="chat-section-tabs-mobile" style={{ display: 'flex', gap: 2, background: 'var(--bg-hover)', borderRadius: 11, padding: 4, border: '1px solid var(--border-light)', backdropFilter: 'var(--panel-blur)' }}>
       {SECTIONS.map(s => {
         const isActive = s.id === active;
         const Icon = s.icon;
@@ -38,11 +38,12 @@ export default function SectionTabs({ active, onChange }) {
               fontFamily: "'Outfit',sans-serif",
               letterSpacing: isActive ? '0.02em' : '0',
               whiteSpace: 'nowrap',
+              flexShrink: 0,
             }}
           >
             <Icon />
-            <span className="hidden sm:inline">{s.label}</span>
-            {isActive && <span className="sm:hidden" style={{ fontSize: 10, fontWeight: 700 }}>{s.label}</span>}
+            <span className="hidden sm:inline" style={{ display: typeof window !== 'undefined' && window.innerWidth < 640 ? 'none' : 'inline' }}>{s.label}</span>
+            {isActive && <span className="sm:hidden" style={{ fontSize: 11, fontWeight: 700, display: typeof window !== 'undefined' && window.innerWidth < 640 ? 'inline' : 'none' }}>{s.label}</span>}
           </button>
         );
       })}
