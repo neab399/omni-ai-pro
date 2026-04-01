@@ -289,14 +289,23 @@ export const estimateTokens = t => Math.ceil((t || '').length / 4);
 export const parseMarkdown = (text) => {
   if (!text) return '';
   return text
-    .replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) =>
-      `<div class="code-block" data-lang="${lang || 'code'}">
-        <div class="code-header"><span class="code-lang">${lang || 'code'}</span>
-          <button class="code-copy-btn" onclick="navigator.clipboard.writeText(this.closest('.code-block').querySelector('pre').innerText).then(()=>{this.textContent='✓ Copied';setTimeout(()=>this.textContent='Copy',1500)})">Copy</button>
+    .replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+      const displayLang = lang || 'code';
+      const cleanCode = code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const isRenderable = ['html', 'javascript', 'js', 'css', 'mermaid'].includes(displayLang.toLowerCase());
+      
+      // We use a custom attribute to identify and a button to trigger
+      return `<div class="code-block" data-lang="${displayLang}">
+        <div class="code-header">
+          <span class="code-lang">${displayLang}</span>
+          <div style="display: flex; gap: 8px;">
+            ${isRenderable ? `<button class="code-copy-btn artifact-view-btn" onclick="window.dispatchEvent(new CustomEvent('omni-view-artifact', { detail: { code: \`${code.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`, lang: '${displayLang}' } }))">View In Labs</button>` : ''}
+            <button class="code-copy-btn" onclick="navigator.clipboard.writeText(this.closest('.code-block').querySelector('pre').innerText).then(() => { const b=this; const t=b.textContent; b.textContent='✓ Copied'; setTimeout(()=>b.textContent=t,1500); })">Copy</button>
+          </div>
         </div>
-        <pre><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>
-      </div>`
-    )
+        <pre><code>${cleanCode}</code></pre>
+      </div>`;
+    })
     .replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
@@ -399,6 +408,12 @@ export const GLOBAL_STYLES = `
   .omni-scroll::-webkit-scrollbar-track{background:transparent;}
   .omni-scroll::-webkit-scrollbar-thumb{background:var(--border-med);border-radius:10px;transition:background .3s;}
   .omni-scroll::-webkit-scrollbar-thumb:hover{background:var(--accent);box-shadow:0 0 8px var(--accent-low);}
+
+  .artifact-view-btn{background:var(--accent-low);border-color:rgba(255,217,61,0.3);color:var(--accent);font-weight:700;}
+  .artifact-view-btn:hover{background:var(--accent);color:#000;border-color:var(--accent);box-shadow:0 0 14px var(--accent-low);}
+  
+  .chat-layout{transition:all .35s cubic-bezier(0.16, 1, 0.3, 1);}
+  .chat-layout.side-panel-open{padding-right:min(90vw, 800px);}
 
   .md-p{margin:0 0 14px;line-height:1.8;color:var(--text-sec);font-size:14.5px;letter-spacing:0.01em;word-break:break-word;overflow-wrap:break-word;max-width:100%;}
   .md-p:last-child{margin-bottom:0;}

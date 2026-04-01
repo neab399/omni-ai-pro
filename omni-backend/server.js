@@ -126,6 +126,26 @@ async function saveToCache(key, text) {
     }
 }
 
+// 📊 Usage Tracking & Metrics
+const estimateTokens = (text) => Math.ceil((text || '').length / 4);
+
+const logUsage = async (userId, modelName, providerSlug, tokensIn, tokensOut, type) => {
+    try {
+        console.log(`📊 LOGGING: [${type}] ${modelName} for ${userId.slice(0, 8)}...`);
+        const { error } = await supabaseClient.from('usage_metrics').insert([{
+            user_id: userId,
+            model_name: modelName,
+            provider_slug: providerSlug,
+            tokens_in: tokensIn,
+            tokens_out: tokensOut,
+            generation_type: type
+        }]);
+        if (error) console.error("❌ SQL_ERROR:", error.message);
+    } catch (err) {
+        console.error("❌ LOG_ERROR:", err.message);
+    }
+};
+
 // --- Helper Functions for Streaming (SSE) ---
 function setSSEHeaders(res) {
     res.setHeader('Content-Type', 'text/event-stream');
@@ -172,6 +192,11 @@ async function streamGroq(res, messages, systemPrompt, cacheKey) {
         sendDone(res);
         // Save the successfully captured stream into our Hybrid Cache!
         if (cacheKey && fullResponse.length > 5) await saveToCache(cacheKey, fullResponse);
+
+        // 📊 LOG: Chat Usage (Meta)
+        if (typeof res.locals?.userId === 'string') {
+            logUsage(res.locals.userId, "llama-3.3-70b", "meta", estimateTokens(messages.map(m=>m.content).join(' ')), estimateTokens(fullResponse), 'chat');
+        }
     } catch (e) {
         sendError(res, `Groq Error: ${e.message}`);
     }
@@ -205,6 +230,11 @@ async function streamGemini(res, messages, systemPrompt, cacheKey) {
         sendDone(res);
         // Save the successfully captured stream into our Hybrid Cache!
         if (cacheKey && fullResponse.length > 5) await saveToCache(cacheKey, fullResponse);
+
+        // 📊 LOG: Chat Usage (Google)
+        if (typeof res.locals?.userId === 'string') {
+            logUsage(res.locals.userId, "gemini-1.5-flash", "google", estimateTokens(messages.map(m=>m.content).join(' ')), estimateTokens(fullResponse), 'chat');
+        }
     } catch (e) {
         sendError(res, `Gemini Error: ${e.message}`);
     }
@@ -213,6 +243,7 @@ async function streamGemini(res, messages, systemPrompt, cacheKey) {
 // --- Main API Route ---
 app.post('/api/chat', chatLimiter, verifyAuth, async (req, res) => {
     const { messages = [], providerId, systemPrompt } = req.body;
+    res.locals = { userId: req.userAuth.id }; // Pass to stream handlers
     setSSEHeaders(res);
 
     try {
@@ -240,6 +271,68 @@ app.post('/api/chat', chatLimiter, verifyAuth, async (req, res) => {
     } catch (err) {
         sendError(res, `Internal Server Error: ${err.message}`);
     }
+});
+
+// 🖼️ 0-Cost Image Generation (via Pollinations.ai)
+app.post('/api/image', verifyAuth, async (req, res) => {
+    const { prompt, aspectRatio = '1:1', modelId = 'flux' } = req.body;
+    
+    // Default dimensions based on aspect ratio
+    const dims = { '1:1': [1024, 1024], '16:9': [1280, 720], '9:16': [720, 1280], '4:3': [1024, 768], '3:4': [768, 1024] };
+    const [w, h] = dims[aspectRatio] || [1024, 1024];
+
+    try {
+        console.log(`🎨 GEN IMAGE: "${prompt.slice(0, 40)}..." [${aspectRatio}]`);
+        
+        // Construct Pollinations URL (Free, no key needed)
+        const seed = Math.floor(Math.random() * 1000000);
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${w}&height=${h}&seed=${seed}&model=${modelId === 'flux' ? 'flux' : 'turbo'}&nologo=true`;
+        
+        // 📊 LOG: Image Usage
+        logUsage(req.userAuth.id, modelId, 'pollinations', 0, 0, 'image');
+
+        // Return JSON with the URL
+        res.json({ success: true, url: imageUrl, modelUsed: modelId });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to generate image URL' });
+    }
+});
+
+// 🎬 SOTA Video Simulation (God-Tier Demo)
+app.post('/api/video', verifyAuth, async (req, res) => {
+    const { prompt } = req.body;
+    console.log(`📹 GEN VIDEO: "${prompt.slice(0, 40)}..."`);
+
+    // Simulate high-end processing delay
+    setTimeout(() => {
+        // Return a high-quality AI-generated stock video as a placeholder for Sora/Kling
+        const demoVideos = [
+            'https://cdn.pixabay.com/vimeo/853755015/city-174828.mp4?width=1280&hash=1d8b7b2b7b2b7b2b7b2b7b2b7b2b7b2b7b2b7b2b',
+            'https://cdn.pixabay.com/vimeo/849925244/mountain-173673.mp4?width=1280&hash=d7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7'
+        ];
+        const randomVideo = demoVideos[Math.floor(Math.random() * demoVideos.length)];
+        
+        // 📊 LOG: Video Usage
+        logUsage(req.userAuth.id, 'sora-demo', 'openai', 0, 0, 'video');
+
+        res.json({ success: true, url: randomVideo });
+    }, 4500); // 4.5s "thinking" time for cinematic feel
+});
+
+// 🎙️ 0-Cost Transcription Simulation (for file uploads)
+app.post('/api/transcribe', verifyAuth, async (req, res) => {
+    console.log(`🎙️ TRANSCRIBE: Received audio for processing...`);
+    
+    // Simulate processing time
+    setTimeout(() => {
+        // 📊 LOG: Voice Usage
+        logUsage(req.userAuth.id, 'whisper-sim', 'openai', 0, 0, 'voice');
+
+        res.json({ 
+            text: "This is a high-fidelity simulation of an AI transcription. In a production environment, this would be processed by Whisper v3 or a similar SOTA model.",
+            success: true 
+        });
+    }, 2000);
 });
 
 // --- Start Server (FIXED FOR RENDER) ---

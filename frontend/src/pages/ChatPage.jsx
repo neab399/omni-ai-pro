@@ -24,8 +24,9 @@ import MessageBubble           from '../components/chat/MessageBubble';
 import { EmptyState }          from '../components/chat/EmptyState';
 import AdvancedInput           from '../components/chat/AdvancedInput';
 import ChatSidebar             from '../components/chat/ChatSidebar';
-import { BrandLogo, ModelAvatar } from '../components/chat/ChatUIKit';
 import { ImageSection, VoiceSection, VideoSection } from '../components/chat/MediaSections';
+import { useArtifacts } from '../context/ArtifactContext';
+import ArtifactPanel from '../components/chat/ArtifactPanel';
 
 /* ══════════════════════════════════════════════════════════
    CHAT PAGE — state + handlers only (~250 lines)
@@ -357,8 +358,10 @@ export default function ChatPage() {
   /* ══════════════════════════════════════════════════════════
      RENDER
   ══════════════════════════════════════════════════════════ */
+  const { isOpen: isArtifactOpen } = useArtifacts();
+
   return (
-    <div className="chat-page-root" style={{ display: 'flex', height: '100dvh', background: 'var(--bg-base)', color: 'var(--text-main)', overflow: 'hidden', fontFamily: "'Outfit',sans-serif" }}>
+    <div className={`chat-page-root chat-layout ${isArtifactOpen ? 'side-panel-open' : ''}`} style={{ display: 'flex', height: '100dvh', background: 'var(--bg-base)', color: 'var(--text-main)', overflow: 'hidden', fontFamily: "'Outfit',sans-serif", position: 'relative' }}>
       <style>{GLOBAL_STYLES}</style>
 
       {/* Mobile sidebar backdrop */}
@@ -627,6 +630,7 @@ export default function ChatPage() {
         )}
       </AnimatePresence>
 
+      <ArtifactPanel />
       <Toast toasts={toasts} removeToast={removeToast} />
     </div>
   );

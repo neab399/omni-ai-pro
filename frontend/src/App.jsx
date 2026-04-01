@@ -5,6 +5,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import SplashScreen from './components/SplashScreen';
 import CookieNotice from './components/CookieNotice';
 import GlobalFeedback from './components/GlobalFeedback';
+import { ArtifactProvider } from './context/ArtifactContext';
 
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const ChatPage = lazy(() => import('./pages/ChatPage'));
@@ -19,7 +20,7 @@ function App() {
   const handleSplashComplete = useCallback(() => setShowSplash(false), []);
 
   return (
-    <>
+    <ArtifactProvider>
       {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
       <Router>
         <Suspense fallback={<div className="min-h-screen bg-omin-black flex items-center justify-center"><div className="w-10 h-10 border-2 border-omin-gold/20 border-t-omin-gold rounded-full animate-spin" /></div>}>
@@ -38,7 +39,7 @@ function App() {
       <CookieNotice />
       <Analytics />
       <SpeedInsights />
-    </>
+    </ArtifactProvider>
   );
 }
 

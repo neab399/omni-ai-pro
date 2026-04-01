@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ALL_IMAGE_MODELS, ALL_AUDIO_MODELS, ALL_VIDEO_MODELS, IMAGE_PROVIDERS, AUDIO_PROVIDERS, VIDEO_PROVIDERS, IC, genId } from '../../lib/models';
 import { BrandLogo, ModelAvatar } from './ChatUIKit';
 import ModelSelectorModal from './ModelSelectorModal';
+import { supabase } from '../../pages/landingData';
 
 const API_BASE = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:5000` : 'http://localhost:5000');
 
@@ -32,9 +33,16 @@ export function ImageSection({ addToast }) {
 
     models.forEach(async (model, idx) => {
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token || '';
+
         const fullPrompt = `${prompt}${style !== 'photorealistic' ? `, ${style} style` : ''}`;
         const response = await fetch(`${API_BASE}/api/image`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          method: 'POST', 
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
           body: JSON.stringify({ prompt: fullPrompt, negativePrompt: negPrompt, modelId: model.id, providerId: model.providerId, aspectRatio: ar, quality })
         });
         const data = await response.json();
@@ -299,16 +307,26 @@ export function VoiceSection({ addToast }) {
   const handleTTS = async () => {
     if (!ttsText.trim()) return;
     setIsPlaying(true);
+    
     try {
-      const res = await fetch(`${API_BASE}/api/tts`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: ttsText, voice, speed, modelId: activeTTSModel?.id })
-      });
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      if (audioRef.current) { audioRef.current.src = url; audioRef.current.play(); }
-    } catch (err) { addToast('TTS failed: ' + err.message, 'error'); }
-    setIsPlaying(false);
+      // 0-Cost Native Browser Speech
+      const utterance = new SpeechSynthesisUtterance(ttsText);
+      utterance.rate = speed;
+      
+      // Match voice if possible
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const selected = voices.find(v => v.name.toLowerCase().includes(voice)) || voices[0];
+        utterance.voice = selected;
+      }
+      
+      utterance.onend = () => setIsPlaying(false);
+      utterance.onerror = () => setIsPlaying(false);
+      window.speechSynthesis.speak(utterance);
+    } catch (err) { 
+      addToast('Browser text-to-speech failed', 'error'); 
+      setIsPlaying(false);
+    }
   };
 
   const copyTranscript = () => { navigator.clipboard.writeText(transcript); addToast('Copied!', 'success'); };
@@ -499,8 +517,15 @@ export function VideoSection({ addToast }) {
 
     models.forEach(async (model, idx) => {
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token || '';
+
         const res = await fetch(`${API_BASE}/api/video`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          method: 'POST', 
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
           body: JSON.stringify({ prompt, modelId: model.id, providerId: model.providerId, duration, motion })
         });
         const data = await res.json();

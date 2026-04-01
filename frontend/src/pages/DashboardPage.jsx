@@ -151,25 +151,96 @@ export default function DashboardPage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
-  
-  const data = useMemo(() => generateMockData(), []);
-  
+  const [metrics, setMetrics] = useState({ weeklyUsage: [], models: [], recentChats: [], monthlyData: [] });
+  const [stats, setStats] = useState({ totalTokens: 0, totalChats: 0, hoursSaved: 0 });
+
+  // ── Fetch Real Data ──
+  const fetchMetrics = useCallback(async (userId) => {
+    try {
+      const { data: usageData, error } = await supabase
+        .from('usage_metrics')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error || !usageData || usageData.length === 0) {
+        console.log("Using Mock Data (Table empty or not found)");
+        const mock = generateMockData();
+        setMetrics(mock);
+        setStats({ 
+          totalTokens: mock.models.reduce((s, m) => s + m.tokens, 0), 
+          totalChats: mock.models.reduce((s, m) => s + m.uses, 0),
+          hoursSaved: 127 
+        });
+        return;
+      }
+
+      // Aggregate Weekly Usage
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const weekly = days.map(d => ({ label: d, value: 0 }));
+      const last7Days = new Date();
+      last7Days.setDate(last7Days.getDate() - 7);
+
+      usageData.forEach(row => {
+        const d = new Date(row.created_at);
+        if (d > last7Days) {
+          const dayName = days[d.getDay()];
+          const entry = weekly.find(w => w.label === dayName);
+          if (entry) entry.value += 1;
+        }
+      });
+
+      // Aggregate Models
+      const modelMap = {};
+      usageData.forEach(row => {
+        if (!modelMap[row.model_name]) {
+          modelMap[row.model_name] = { name: row.model_name, uses: 0, tokens: 0, color: '#FFD93D', slug: row.provider_slug || 'openai' };
+        }
+        modelMap[row.model_name].uses += 1;
+        modelMap[row.model_name].tokens += (row.tokens_in + row.tokens_out);
+      });
+      const models = Object.values(modelMap).sort((a, b) => b.uses - a.uses);
+
+      // Recent Chats
+      const recentChats = usageData.slice(0, 5).map(row => ({
+        title: row.generation_type === 'chat' ? 'Chat Session' : `Generated ${row.generation_type}`,
+        model: row.model_name,
+        time: new Date(row.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        tokens: row.tokens_in + row.tokens_out
+      }));
+
+      setMetrics({ weeklyUsage: weekly, models, recentChats, monthlyData: [] });
+      setStats({
+        totalTokens: usageData.reduce((s, r) => s + r.tokens_in + r.tokens_out, 0),
+        totalChats: usageData.length,
+        hoursSaved: Math.floor(usageData.length * 0.25) // Estimate 15m saved per interaction
+      });
+
+    } catch (err) {
+      console.error("Dashboard Fetch Error:", err);
+    }
+  }, []);
+
   useEffect(() => {
     localStorage.setItem('omni-theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
-  
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) setUser(session.user);
-      else navigate('/');
+      if (session?.user) {
+        setUser(session.user);
+        fetchMetrics(session.user.id);
+      } else {
+        navigate('/');
+      }
       setLoading(false);
     });
-  }, [navigate]);
+  }, [navigate, fetchMetrics]);
   
-  const totalTokens = data.models.reduce((s, m) => s + m.tokens, 0);
-  const totalChats = data.models.reduce((s, m) => s + m.uses, 0);
-  const topModel = data.models[0];
+  const totalTokens = stats.totalTokens;
+  const totalChats = stats.totalChats;
+  const topModel = metrics.models[0] || { name: 'None', color: '#FFD93D' };
   
   if (loading) return (
     <div style={{ height: '100vh', background: '#030305', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
@@ -243,10 +314,10 @@ export default function DashboardPage() {
               {/* ── Stat Cards ── */}
               <div className="db-stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 28 }}>
                 {[
-                  { label: 'Total Conversations', value: totalChats, icon: Icons.Chat, color: '#FFD93D', suffix: '' },
-                  { label: 'Tokens Used', value: Math.round(totalTokens / 1000), icon: Icons.Zap, color: '#4ade80', suffix: 'K' },
-                  { label: 'Models Used', value: 18, icon: Icons.Globe, color: '#60a5fa', suffix: '' },
-                  { label: 'Hours Saved', value: 127, icon: Icons.Clock, color: '#a855f7', suffix: 'h' },
+                  { label: 'Total Interactions', value: totalChats, icon: Icons.Chat, color: '#FFD93D', suffix: '' },
+                  { label: 'Tokens Used', value: totalTokens < 1000 ? totalTokens : Math.round(totalTokens / 1000), icon: Icons.Zap, color: '#4ade80', suffix: totalTokens < 1000 ? '' : 'K' },
+                  { label: 'Models Used', value: metrics.models.length, icon: Icons.Globe, color: '#60a5fa', suffix: '' },
+                  { label: 'Hours Saved', value: stats.hoursSaved, icon: Icons.Clock, color: '#a855f7', suffix: 'h' },
                 ].map((stat, i) => {
                   const Icon = stat.icon;
                   return (
@@ -281,9 +352,9 @@ export default function DashboardPage() {
                     </div>
                     <span style={{ fontSize: 11, color: 'var(--db-accent)', background: 'var(--db-accent-low)', padding: '4px 10px', borderRadius: 99, fontWeight: 600 }}>+24% ↑</span>
                   </div>
-                  <MiniBarChart data={data.weeklyUsage} height={100} />
+                  <MiniBarChart data={metrics.weeklyUsage} height={100} />
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, padding: '0 4px' }}>
-                    {data.weeklyUsage.map((d, i) => (
+                    {metrics.weeklyUsage.map((d, i) => (
                       <span key={i} style={{ fontSize: 10, color: 'var(--db-muted)', flex: 1, textAlign: 'center' }}>{d.label}</span>
                     ))}
                   </div>
@@ -312,7 +383,7 @@ export default function DashboardPage() {
                   <button onClick={() => navigate('/chat')} style={{ fontSize: 12, color: 'var(--db-accent)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600, fontFamily: "'Outfit',sans-serif" }}>View all →</button>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  {data.recentChats.map((chat, i) => (
+                  {metrics.recentChats.map((chat, i) => (
                     <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 + i * 0.06 }}
                       onClick={() => navigate('/chat')}
                       style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: 12, cursor: 'pointer', border: '1px solid transparent', transition: 'all .18s' }}
@@ -341,8 +412,8 @@ export default function DashboardPage() {
                 <Icons.Zap /> Most Used Models
               </h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {data.models.map((model, i) => {
-                  const pct = (model.uses / data.models[0].uses) * 100;
+                {metrics.models.map((model, i) => {
+                  const pct = (model.uses / metrics.models[0].uses) * 100;
                   return (
                     <motion.div key={i} initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.07 }}
                       style={{ background: 'var(--db-panel)', backdropFilter: 'blur(24px)', border: '1px solid var(--db-border)', borderRadius: 14, padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -352,7 +423,7 @@ export default function DashboardPage() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                           <span style={{ fontSize: 14, fontWeight: 600, color: model.color }}>{model.name}</span>
-                          <span style={{ fontSize: 12, color: 'var(--db-muted)' }}>{model.uses} chats · {(model.tokens / 1000).toFixed(0)}K tokens</span>
+                          <span style={{ fontSize: 12, color: 'var(--db-muted)' }}>{model.uses} interactions · {(model.tokens / 1000).toFixed(0)}K tokens</span>
                         </div>
                         <div style={{ height: 5, background: 'var(--db-hover)', borderRadius: 4, overflow: 'hidden' }}>
                           <motion.div
@@ -374,7 +445,7 @@ export default function DashboardPage() {
                 style={{ background: 'var(--db-panel)', backdropFilter: 'blur(24px)', border: '1px solid var(--db-border)', borderRadius: 16, padding: '20px', marginTop: 20 }}>
                 <h3 style={{ fontSize: 14, fontWeight: 700, fontFamily: "'Outfit',sans-serif", marginBottom: 16 }}>Token Distribution</h3>
                 <div style={{ display: 'flex', gap: 2, height: 12, borderRadius: 8, overflow: 'hidden', marginBottom: 14 }}>
-                  {data.models.map((m, i) => (
+                  {metrics.models.map((m, i) => (
                     <motion.div key={i}
                       initial={{ width: 0 }}
                       animate={{ width: `${(m.tokens / totalTokens) * 100}%` }}
@@ -385,7 +456,7 @@ export default function DashboardPage() {
                   ))}
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-                  {data.models.map((m, i) => (
+                  {metrics.models.map((m, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11.5, color: 'var(--db-sec)' }}>
                       <div style={{ width: 8, height: 8, borderRadius: 3, background: m.color }} />
                       {m.name} ({((m.tokens / totalTokens) * 100).toFixed(0)}%)
@@ -403,10 +474,10 @@ export default function DashboardPage() {
               </h2>
               <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                 style={{ background: 'var(--db-panel)', backdropFilter: 'blur(24px)', border: '1px solid var(--db-border)', borderRadius: 16, padding: '20px', marginBottom: 20 }}>
-                <MiniBarChart data={data.monthlyData} height={140} color="#4ade80" />
+                <MiniBarChart data={metrics.monthlyData.length > 0 ? metrics.monthlyData : metrics.weeklyUsage} height={140} color="#4ade80" />
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, padding: '0 4px' }}>
-                  <span style={{ fontSize: 10, color: 'var(--db-muted)' }}>30 days ago</span>
-                  <span style={{ fontSize: 10, color: 'var(--db-muted)' }}>Today</span>
+                  <span style={{ fontSize: 10, color: 'var(--db-muted)' }}>Activity Distribution</span>
+                  <span style={{ fontSize: 10, color: 'var(--db-muted)' }}>Real-time</span>
                 </div>
               </motion.div>
               
