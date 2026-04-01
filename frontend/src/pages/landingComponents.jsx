@@ -58,7 +58,7 @@ export function Marquee({ items, reverse }) {
   return (
     <div className="overflow-hidden flex">
       <motion.div animate={{ x: reverse ? ['-50%', '0%'] : ['0%', '-50%'] }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }} className="marquee-track flex flex-shrink-0" style={{ willChange: 'transform' }}>
-        {all.map((item, i) => <span key={i} className={`inline-flex items-center gap-1.5 md:gap-4 px-2 md:px-10 text-[8px] sm:text-[10px] md:text-[11px] font-bold tracking-[0.15em] md:tracking-[0.2em] uppercase whitespace-nowrap ${i % 2 === 0 ? 'text-omin-gold/70' : 'text-white/40'}`}><span className="text-[5px] md:text-[5px] opacity-30">✦</span>{item}</span>)}
+        {all.map((item, i) => <span key={i} className={`inline-flex items-center gap-1.5 md:gap-4 px-2 md:px-10 font-bold uppercase whitespace-nowrap ${i % 2 === 0 ? 'text-omin-gold/70' : 'text-white/40'}`} style={{ fontSize: 'clamp(7px, 1.8vw, 11px)', letterSpacing: '0.15em', WebkitTextSizeAdjust: 'none' }}><span style={{ fontSize: '5px' }} className="opacity-30">✦</span>{item}</span>)}
       </motion.div>
     </div>
   );
