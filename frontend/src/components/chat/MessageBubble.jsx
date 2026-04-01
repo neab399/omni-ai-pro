@@ -22,9 +22,8 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
       onMouseLeave={() => setShowActions(false)}
       onTouchStart={() => setShowActions(true)}
       style={{ 
-        display: isCompact ? 'flex' : 'grid', 
-        flexDirection: isCompact ? 'column' : undefined,
-        gridTemplateColumns: isCompact ? 'none' : (isUser ? 'minmax(0, 1fr) 32px' : '32px minmax(0, 1fr)'), 
+        display: 'grid', 
+        gridTemplateColumns: isCompact ? 'minmax(0, 1fr)' : (isUser ? 'minmax(0, 1fr) 32px' : '32px minmax(0, 1fr)'), 
         gap: isCompact ? 4 : 10, 
         position: 'relative', 
         padding: '4px 0', 
