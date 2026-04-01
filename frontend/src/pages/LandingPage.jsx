@@ -175,33 +175,43 @@ export default function LandingPage() {
           <motion.div style={{ scale: dashboardScale, rotateX: dashboardRotateX, opacity: dashboardOpacity, y: dashboardY, transformStyle: 'preserve-3d' }} className="dashboard-mockup w-full aspect-[16/10] sm:aspect-[16/9] glass-strong rounded-3xl sm:rounded-[2rem] border border-white/15 shadow-[0_40px_120px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.3)] overflow-hidden flex flex-col will-change-transform">
             <div className="h-12 border-b border-white/10 bg-white/[0.02] flex items-center px-6 gap-2">
               <div className="w-3 h-3 rounded-full bg-red-500/70" /><div className="w-3 h-3 rounded-full bg-yellow-500/70" /><div className="w-3 h-3 rounded-full bg-green-500/70" />
-              <div className="mx-auto flex items-center gap-2 text-[11px] font-medium text-white/25 tracking-widest uppercase"><div className="w-2 h-2 bg-omin-gold rounded-full shadow-[0_0_10px_#FFD93D]" />OMNI AI PRO — Live Preview</div>
+              <div className="mx-auto flex items-center gap-2 text-[11px] font-medium text-white/25 tracking-widest uppercase"><motion.div animate={{ opacity: [1, 0.3, 1], scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }} className="w-2 h-2 bg-omin-gold rounded-full shadow-[0_0_10px_#FFD93D]" />OMNI AI PRO — Live Preview</div>
             </div>
             <div className="flex-1 flex p-6 gap-6 relative">
               <div className="dashboard-sidebar-mock w-60 hidden lg:flex flex-col gap-3 border-r border-white/5 pr-6">
-                <div className="h-10 w-full glass-pill rounded-xl flex items-center px-4 gap-3 bg-white/5"><div className="w-4 h-4 bg-omin-gold/20 rounded" /><div className="h-2 w-20 bg-white/15 rounded-full" /></div>
-                <div className="h-8 w-full rounded-xl flex items-center px-4 gap-3 opacity-40"><div className="w-4 h-4 bg-white/15 rounded" /><div className="h-2 w-16 bg-white/15 rounded-full" /></div>
-                <div className="h-8 w-full rounded-xl flex items-center px-4 gap-3 opacity-40"><div className="w-4 h-4 bg-white/15 rounded" /><div className="h-2 w-24 bg-white/15 rounded-full" /></div>
+                <motion.div animate={{ opacity: [0.7, 1, 0.7] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} className="h-10 w-full glass-pill rounded-xl flex items-center px-4 gap-3 bg-white/5"><div className="w-4 h-4 bg-omin-gold/20 rounded" /><div className="h-2 w-20 bg-white/15 rounded-full" /></motion.div>
+                <motion.div animate={{ opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 4, repeat: Infinity, delay: 0.5, ease: 'easeInOut' }} className="h-8 w-full rounded-xl flex items-center px-4 gap-3"><div className="w-4 h-4 bg-white/15 rounded" /><div className="h-2 w-16 bg-white/15 rounded-full" /></motion.div>
+                <motion.div animate={{ opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 3.5, repeat: Infinity, delay: 1, ease: 'easeInOut' }} className="h-8 w-full rounded-xl flex items-center px-4 gap-3"><div className="w-4 h-4 bg-white/15 rounded" /><div className="h-2 w-24 bg-white/15 rounded-full" /></motion.div>
               </div>
               <div className="flex-1 flex flex-col gap-5 pt-8 px-4 sm:px-8">
                 <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="self-end max-w-[75%] glass-pill bg-white/8 p-5 rounded-2xl rounded-tr-sm">
-                  <div className="h-3 w-48 bg-white/70 rounded-full mb-3" /><div className="h-3 w-32 bg-white/50 rounded-full" />
+                  <motion.div animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }} className="h-3 w-48 bg-white/70 rounded-full mb-3" /><div className="h-3 w-32 bg-white/50 rounded-full opacity-60" />
                 </motion.div>
                 <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.7 }} className="self-start max-w-[80%] relative pl-11">
-                  <div className="absolute left-0 top-0 w-8 h-8 rounded-full bg-omin-gold flex items-center justify-center overflow-hidden shadow-[0_0_12px_rgba(255,217,61,0.4)]">
+                  <motion.div animate={{ boxShadow: ['0 0 10px rgba(255,217,61,0.3)', '0 0 25px rgba(255,217,61,0.8)', '0 0 10px rgba(255,217,61,0.3)'], scale: [1, 1.05, 1] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }} className="absolute left-0 top-0 w-8 h-8 rounded-full bg-omin-gold flex items-center justify-center overflow-hidden z-10">
                     <img src="/logo.png" alt="O" className="w-5 h-5 object-contain" style={{ filter: 'brightness(0)' }} />
-                  </div>
-                  <div className="text-xs font-bold text-omin-gold uppercase tracking-wider mb-2 flex items-center gap-2">Claude 4.6 <span className="px-2 py-0.5 rounded text-[9px] bg-white/10 text-white/60">Reasoning</span></div>
-                  <div className="glass-panel bg-black/30 p-5 rounded-2xl">
-                    <div className="h-3 w-[280px] bg-white/60 rounded-full mb-3" /><div className="h-3 w-[350px] bg-white/40 rounded-full mb-4" />
-                    <div className="mt-4 border border-white/10 rounded-xl bg-[#040404] p-4">
-                      <div className="h-2 w-36 bg-blue-400/50 rounded-full mb-2.5" /><div className="h-2 w-56 bg-emerald-400/50 rounded-full mb-2.5 ml-4" /><div className="h-2 w-28 bg-white/30 rounded-full ml-4" />
+                  </motion.div>
+                  <div className="text-xs font-bold text-omin-gold uppercase tracking-wider mb-2 flex items-center gap-2">Claude 4.6 <motion.span animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 2, repeat: Infinity }} className="px-2 py-0.5 rounded text-[9px] bg-white/10 flex items-center gap-1.5 text-white/80"><span className="w-1.5 h-1.5 rounded-full bg-omin-gold animate-pulse"></span>Reasoning</motion.span></div>
+                  <div className="glass-panel bg-black/30 p-5 rounded-2xl relative overflow-hidden shadow-[inset_0_0_20px_rgba(255,217,61,0.02)]">
+                    <motion.div className="h-3 bg-white/70 rounded-full mb-3" animate={{ width: ['0px', '280px'] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'linear', repeatDelay: 1 }} />
+                    <motion.div className="h-3 bg-white/50 rounded-full mb-4" animate={{ width: ['0px', '350px'] }} transition={{ duration: 2, repeat: Infinity, ease: 'linear', delay: 0.5, repeatDelay: 0.5 }} />
+                    <div className="mt-4 border border-white/10 rounded-xl bg-[#030303] p-4 relative overflow-hidden">
+                      <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0 }} className="h-2 w-36 bg-blue-400/50 rounded-full mb-2.5" />
+                      <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }} className="h-2 w-56 bg-emerald-400/50 rounded-full mb-2.5 ml-4" />
+                      <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.6 }} className="h-2 w-28 bg-white/30 rounded-full ml-4" />
+                      {/* Code block shimmer */}
+                      <motion.div animate={{ x: ['-200%', '300%'] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' }} className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent transform -skew-x-12" />
                     </div>
+                    {/* Inner glowing aura */}
+                    <div className="absolute top-[-30px] right-[-30px] w-[120px] h-[120px] bg-omin-gold/15 blur-[40px] rounded-full pointer-events-none mix-blend-screen" />
                   </div>
                 </motion.div>
               </div>
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-omin-black via-transparent to-transparent opacity-50 pointer-events-none" />
+            {/* Immersive Lighting FX */}
+            <motion.div animate={{ top: ['-100%', '200%'] }} transition={{ duration: 4, repeat: Infinity, ease: 'linear', repeatDelay: 1.5 }} className="absolute left-0 right-0 h-[250px] bg-gradient-to-b from-transparent via-omin-gold/5 to-transparent pointer-events-none blur-xl transform -skew-y-12 mix-blend-screen" />
+            <motion.div animate={{ scale: [1, 1.25, 1], opacity: [0.1, 0.25, 0.1] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] bg-[radial-gradient(ellipse_at_center,rgba(255,217,61,0.15)_0%,transparent_60%)] pointer-events-none mix-blend-screen" />
+            <div className="absolute inset-0 bg-gradient-to-t from-omin-black via-transparent to-transparent opacity-80 pointer-events-none" />
           </motion.div>
         </div>
       </section>
