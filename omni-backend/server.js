@@ -6,6 +6,8 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { createClient } from '@supabase/supabase-js';
+import crypto from 'crypto';
+import Redis from 'ioredis';
 
 // 1. Load Environment Variables
 dotenv.config();
@@ -88,6 +90,42 @@ async function verifyAuth(req, res, next) {
     }
 }
 
+// 6. 🧠 Hybrid Context Caching Engine (Redis / Memory)
+const REDIS_URL = process.env.REDIS_URL;
+let redisClient = null;
+const memoryCache = new Map(); // Fallback RAM Cache if Redis isn't configured
+
+if (REDIS_URL) {
+    redisClient = new Redis(REDIS_URL);
+    console.log("🔥 Connected to Enterprise Redis Cluster");
+}
+
+function hashPrompt(messages, providerId, systemPrompt) {
+    // We only hash the unique context needed to answer
+    const data = JSON.stringify({ messages, providerId, systemPrompt: systemPrompt || '' });
+    return `omni:chat:${crypto.createHash('sha256').update(data).digest('hex')}`;
+}
+
+async function getFromCache(key) {
+    if (redisClient) {
+        return await redisClient.get(key);
+    } else {
+        const entry = memoryCache.get(key);
+        if (entry && entry.expiresAt > Date.now()) return entry.data;
+        if (entry) memoryCache.delete(key);
+        return null;
+    }
+}
+
+async function saveToCache(key, text) {
+    const TTL_SECONDS = 60 * 60 * 24; // Expire duplicate responses after 24 Hours
+    if (redisClient) {
+        await redisClient.set(key, text, 'EX', TTL_SECONDS);
+    } else {
+        memoryCache.set(key, { data: text, expiresAt: Date.now() + (TTL_SECONDS * 1000) });
+    }
+}
+
 // --- Helper Functions for Streaming (SSE) ---
 function setSSEHeaders(res) {
     res.setHeader('Content-Type', 'text/event-stream');
@@ -114,8 +152,9 @@ function sendError(res, message) {
 // --- AI Logic Handlers ---
 
 // 🟣 Meta (Llama via Groq)
-async function streamGroq(res, messages, systemPrompt) {
+async function streamGroq(res, messages, systemPrompt, cacheKey) {
     if (!groq) return sendError(res, 'Groq API setup failed.');
+    let fullResponse = '';
     try {
         const stream = await groq.chat.completions.create({
             model: "llama-3.3-70b-versatile",
@@ -125,17 +164,23 @@ async function streamGroq(res, messages, systemPrompt) {
 
         for await (const chunk of stream) {
             const text = chunk.choices[0]?.delta?.content || '';
-            if (text) sendChunk(res, text);
+            if (text) {
+                fullResponse += text;
+                sendChunk(res, text);
+            }
         }
         sendDone(res);
+        // Save the successfully captured stream into our Hybrid Cache!
+        if (cacheKey && fullResponse.length > 5) await saveToCache(cacheKey, fullResponse);
     } catch (e) {
         sendError(res, `Groq Error: ${e.message}`);
     }
 }
 
 // 🔵 Google Gemini
-async function streamGemini(res, messages, systemPrompt) {
+async function streamGemini(res, messages, systemPrompt, cacheKey) {
     if (!gemini) return sendError(res, 'Gemini API key missing.');
+    let fullResponse = '';
     try {
         const modelInstance = gemini.getGenerativeModel({ 
             model: "gemini-1.5-flash", 
@@ -152,9 +197,14 @@ async function streamGemini(res, messages, systemPrompt) {
 
         for await (const chunk of result.stream) {
             const text = chunk.text();
-            if (text) sendChunk(res, text);
+            if (text) {
+                fullResponse += text;
+                sendChunk(res, text);
+            }
         }
         sendDone(res);
+        // Save the successfully captured stream into our Hybrid Cache!
+        if (cacheKey && fullResponse.length > 5) await saveToCache(cacheKey, fullResponse);
     } catch (e) {
         sendError(res, `Gemini Error: ${e.message}`);
     }
@@ -166,10 +216,24 @@ app.post('/api/chat', chatLimiter, verifyAuth, async (req, res) => {
     setSSEHeaders(res);
 
     try {
+        // 1. Generate Mathematical SHA-256 Fingerprint for Identity
+        const cacheKey = hashPrompt(messages, providerId, systemPrompt);
+        
+        // 2. Check the Blazing Fast Cache!
+        const cachedAnswer = await getFromCache(cacheKey);
+        if (cachedAnswer) {
+            console.log(`⚡ CACHE HIT! (${providerId}) Bypassing API logic.`);
+            sendChunk(res, cachedAnswer); // Instantly reply in 1 packet!
+            return sendDone(res);
+        }
+
+        console.log(`🤖 CACHE MISS (${providerId}). Generating fresh response...`);
+
+        // 3. Fallback to Expensive API Calls if Not Cached
         if (providerId === 'meta') {
-            await streamGroq(res, messages, systemPrompt);
+            await streamGroq(res, messages, systemPrompt, cacheKey);
         } else if (providerId === 'google') {
-            await streamGemini(res, messages, systemPrompt);
+            await streamGemini(res, messages, systemPrompt, cacheKey);
         } else {
             sendError(res, `Provider ${providerId} not configured.`);
         }
