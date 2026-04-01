@@ -229,29 +229,29 @@ export default function LandingPage() {
               <p className="text-white/60 text-[11px] md:text-sm leading-relaxed max-w-[260px] sm:max-w-none mx-auto">Instantly switch between GPT-5, Claude, Gemini, and open-source titans without leaving your thought process.</p>
             </div>
             <div className="flex flex-wrap md:flex-nowrap flex-1 justify-center gap-2 md:gap-4 opacity-70 md:opacity-60 mt-1 md:mt-0">
-              {['openai', 'anthropic', 'googlegemini', 'meta'].map(s => <div key={s} className="w-9 h-9 md:w-14 md:h-14 rounded-[10px] md:rounded-2xl glass-panel flex items-center justify-center animate-float" style={{ animationDelay: `${Math.random() * 2}s` }}><BrandLogo slug={s} color="#fff" size={16} /></div>)}
+              {['openai', 'anthropic', 'googlegemini', 'meta'].map((s, i) => <motion.div key={s} animate={{ y: [0, -15, 0], rotate: [0, i%2?5:-5, 0] }} transition={{ duration: 4 + (i%3), repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }} className="w-9 h-9 md:w-14 md:h-14 rounded-[10px] md:rounded-2xl glass-panel flex items-center justify-center relative"><BrandLogo slug={s} color="#fff" size={16} /></motion.div>)}
             </div>
           </BentoCard>
           <BentoCard delay={0.15} className="min-h-[160px] md:min-h-[280px] flex flex-col justify-between p-6 md:p-8">
-            <div className="text-[2.2rem] md:text-6xl font-display font-black leading-none mb-3 md:mb-0"><CountUp target={20} suffix="M" /></div>
+            <motion.div animate={{ scale: [1, 1.05, 1], textShadow: ["0px 0px 0px rgba(255,217,61,0)", "0px 0px 20px rgba(255,217,61,0.5)", "0px 0px 0px rgba(255,217,61,0)"] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} className="text-[2.2rem] md:text-6xl font-display font-black leading-none mb-3 md:mb-0 text-white"><CountUp target={20} suffix="M" /></motion.div>
             <div><h3 className="text-[1rem] md:text-xl font-bold mb-1 md:mb-2">Massive Context</h3><p className="text-white/50 text-[11px] md:text-sm">Analyze entire codebases, PDFs, and books in a single prompt.</p></div>
           </BentoCard>
           <BentoCard delay={0.3} className="min-h-[160px] md:min-h-[280px] flex flex-col justify-between overflow-hidden p-6 md:p-8">
             <div className="absolute top-0 right-0 w-32 md:w-40 h-32 md:h-40 bg-blue-500/15 blur-[40px] md:blur-[50px]" />
             <div className="flex gap-2.5 md:gap-3 mb-3 md:mb-6 relative z-10">
-              <div className="w-8 h-8 md:w-12 md:h-12 rounded-full glass-pill flex items-center justify-center"><BrandLogo slug="midjourney" color="#fff" size={16} /></div>
-              <div className="w-8 h-8 md:w-12 md:h-12 rounded-full glass-pill flex items-center justify-center shadow-[0_0_15px_rgba(255,217,61,0.2)]"><BrandLogo slug="openai" color="#a855f7" size={16} /></div>
+              <motion.div animate={{ y: [0, -8, 0], scale: [1, 1.1, 1], rotate: [0, 10, -10, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }} className="w-8 h-8 md:w-12 md:h-12 rounded-full glass-pill flex items-center justify-center"><BrandLogo slug="midjourney" color="#fff" size={16} /></motion.div>
+              <motion.div animate={{ y: [0, -10, 0], scale: [1, 1.15, 1], rotate: [0, -10, 10, 0] }} transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }} className="w-8 h-8 md:w-12 md:h-12 rounded-full glass-pill flex items-center justify-center shadow-[0_0_15px_rgba(255,217,61,0.2)]"><BrandLogo slug="openai" color="#a855f7" size={16} /></motion.div>
             </div>
             <div className="relative z-10"><h3 className="text-[1rem] md:text-xl font-bold mb-1 md:mb-2">Image & Video AI</h3><p className="text-white/50 text-[11px] md:text-sm">Generate cinematic Sora videos and Midjourney portraits natively.</p></div>
           </BentoCard>
           <BentoCard delay={0.2} className="min-h-[160px] md:min-h-[280px] flex flex-col justify-between overflow-hidden p-6 md:p-8">
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-cyan-400/15 blur-[40px]" />
-            <div className="text-[1.5rem] md:text-4xl mb-3 md:mb-4">🎤</div>
+            <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }} className="text-[1.5rem] md:text-4xl mb-3 md:mb-4 inline-block origin-left drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">🎤</motion.div>
             <div className="relative z-10"><h3 className="text-[1rem] md:text-xl font-bold mb-1 md:mb-2">Voice & Audio AI</h3><p className="text-white/50 text-[11px] md:text-sm">Whisper transcription, Suno music generation, and real-time voice chat all built in.</p></div>
           </BentoCard>
           <BentoCard delay={0.35} className="min-h-[160px] md:min-h-[280px] flex flex-col justify-between overflow-hidden p-6 md:p-8">
             <div className="absolute top-0 left-0 w-24 h-24 bg-emerald-400/10 blur-[40px]" />
-            <div className="text-[1.5rem] md:text-4xl mb-3 md:mb-4">🔒</div>
+            <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }} className="text-[1.5rem] md:text-4xl mb-3 md:mb-4 inline-block drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]">🔒</motion.div>
             <div className="relative z-10"><h3 className="text-[1rem] md:text-xl font-bold mb-1 md:mb-2">Enterprise Privacy</h3><p className="text-white/50 text-[11px] md:text-sm">End-to-end encryption, zero-retention APIs, and SOC 2 compliant infrastructure.</p></div>
           </BentoCard>
         </div>

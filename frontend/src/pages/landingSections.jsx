@@ -11,8 +11,10 @@ export function LogoCloud() {
         <p className="text-[11px] font-bold tracking-[0.3em] text-white/30 uppercase mb-10">Powered by the world's leading AI providers</p>
         <div className="logo-cloud-grid flex flex-wrap items-center justify-center gap-10 md:gap-16">
           {LOGO_PROVIDERS.map((p, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} className="opacity-40 hover:opacity-90 transition-opacity duration-500 grayscale hover:grayscale-0">
-              <BrandLogo slug={p.slug} color={p.color} name={p.name} size={36} />
+            <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+              <motion.div animate={{ y: [0, -12, 0] }} transition={{ duration: 3 + (i % 3), repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 }} className="opacity-40 hover:opacity-90 transition-opacity duration-500 grayscale hover:grayscale-0">
+                <BrandLogo slug={p.slug} color={p.color} name={p.name} size={36} />
+              </motion.div>
             </motion.div>
           ))}
         </div>
@@ -100,7 +102,7 @@ export function HowItWorks() {
         <div className="hiw-line absolute top-16 left-[16.6%] right-[16.6%] h-px bg-gradient-to-r from-transparent via-omin-gold/30 to-transparent hidden md:block" />
         {steps.map((s, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.7 }} className="text-center relative min-w-[280px] md:min-w-0 snap-center flex-shrink-0">
-            <div className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-6 rounded-[12px] md:rounded-2xl glass-panel border-white/10 flex items-center justify-center text-lg md:text-2xl relative z-10 bg-omin-black">{s.icon}</div>
+            <motion.div animate={{ y: [0, -12, 0], scale: [1, 1.05, 1], rotate: [0, i % 2 ? 4 : -4, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }} className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-6 rounded-[12px] md:rounded-2xl glass-panel border-white/10 flex items-center justify-center text-lg md:text-2xl relative z-10 bg-omin-black">{s.icon}</motion.div>
             <div className="text-omin-gold text-[9.5px] md:text-xs font-bold tracking-[0.2em] uppercase mb-1.5 md:mb-3">{s.num}</div>
             <h3 className="text-[0.95rem] md:text-xl font-display font-bold mb-1.5 md:mb-3">{s.title}</h3>
             <p className="text-white/50 text-[11px] md:text-sm leading-relaxed max-w-[240px] md:max-w-xs mx-auto">{s.desc}</p>
@@ -132,7 +134,7 @@ export function ModelLibrary() {
       <div className="model-grid grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         {visible.map((m, i) => (
           <motion.div key={m.name} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: (i % 8) * 0.05 }} className="glass-panel p-4 md:p-6 rounded-[1rem] md:rounded-[2rem] relative overflow-hidden group hover:border-white/20 transition-all cursor-default">
-            <div className="mb-2 md:mb-4 scale-75 md:scale-100 origin-left"><BrandLogo slug={m.slug} color={m.color} name={m.name} size={28} /></div>
+            <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 3 + (i % 2), repeat: Infinity, ease: 'easeInOut', delay: (i % 5) * 0.15 }} className="mb-2 md:mb-4 scale-75 md:scale-100 origin-left"><BrandLogo slug={m.slug} color={m.color} name={m.name} size={28} /></motion.div>
             <h3 className="font-bold text-[11.5px] md:text-lg text-white mb-0.5 md:mb-1 group-hover:text-omin-gold transition-colors truncate mt-1">{m.name}</h3>
             <p className="text-[8.5px] md:text-xs text-white/40 mb-1.5 md:mb-3 truncate">{m.maker}</p>
             <p className="text-[9.5px] md:text-[11px] font-semibold" style={{ color: m.color }}>{m.use}</p>
