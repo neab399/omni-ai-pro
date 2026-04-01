@@ -165,53 +165,104 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
           </div>
         )}
 
-        <motion.div
-          animate={{ borderColor: focused ? 'var(--border-focus)' : 'var(--border-med)', boxShadow: focused ? 'var(--glow-gold-strong), 0 0 0 1px rgba(255,217,61,0.08)' : 'var(--shadow-sm)' }}
-          style={{ background: 'var(--bg-input)', border: '1px solid var(--border-med)', borderRadius: isMobileView ? 14 : 18, overflow: 'visible', backdropFilter: 'var(--panel-blur)', transition: 'border-color 0.3s' }}>
+        {isMobileView ? (
+          /* ── MOBILE COMPACT INPUT ── */
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
+            <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.txt,.md,.csv,.json,.js,.ts,.py" style={{ display: 'none' }} onChange={e => addFiles(Array.from(e.target.files))} />
+            
+            <button onClick={() => fileRef.current?.click()} 
+              style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--bg-hover)', border: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-main)', flexShrink: 0, padding: 0, marginBottom: 4, cursor: 'pointer' }}>
+              <span style={{ fontSize: 24, marginTop: -2, fontWeight: 300 }}>+</span>
+            </button>
 
-          {/* Multi-model tags */}
-          {activeModels.length > 1 && (
-            <div style={{ padding: '9px 14px 0', display: 'flex', gap: 5, flexWrap: 'wrap', alignItems: 'center' }}>
-              <span style={{ fontSize: 9.5, color: 'var(--text-faint)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', marginRight: 3 }}>Sending to:</span>
-              {activeModels.map((m, i) => <span key={i} style={{ padding: '2px 9px', borderRadius: 99, fontSize: 11, fontWeight: 600, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', color: m.color }}>{m.name}</span>)}
-            </div>
-          )}
-
-          <textarea
-            ref={inputEl}
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setTimeout(() => setFocused(false), 200)}
-            placeholder={isMultiChatMode ? `Ask ${activeModels.length} models…` : `Message ${activeModels[0]?.name || 'AI'}…`}
-            rows={1}
-            style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: isMobileView ? 15 : 14.5, fontFamily: "'Outfit',sans-serif", color: overLimit ? 'var(--red)' : 'var(--text-main)', lineHeight: 1.55, padding: isMobileView ? '12px 14px' : '14px 18px', resize: 'none', maxHeight: isMobileView ? 120 : 220, minHeight: isMobileView ? 46 : 54, caretColor: 'var(--accent)', overflowX: 'hidden' }}
-          />
-
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: isMobileView ? '6px 8px 8px' : '8px 10px 10px', borderTop: '1px solid var(--border-light)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.txt,.md,.csv,.json,.js,.ts,.py" style={{ display: 'none' }} onChange={e => addFiles(Array.from(e.target.files))} />
-              <InputTBtn title="Attach" onClick={() => fileRef.current?.click()}><IC.Paperclip /></InputTBtn>
-              <InputTBtn title="Boost prompt with AI" onClick={handleBoost} disabled={!input.trim() || isBoosting} active={boostDone}>
-                {isBoosting ? <span className="spin"><IC.Sparkle /></span> : boostDone ? <span style={{ color: 'var(--green)' }}>✓</span> : <IC.Sparkle />}
-              </InputTBtn>
-              {(isBoosting || boostDone) && (
-                <span style={{ fontSize: 11, color: isBoosting ? 'var(--text-muted)' : 'var(--green)', animation: isBoosting ? 'omni-pulse 1.2s ease infinite' : 'none', fontWeight: 600 }}>
-                  {isBoosting ? 'Boosting…' : 'Boosted!'}
-                </span>
+            <motion.div
+              animate={{ borderColor: focused ? 'var(--border-focus)' : 'var(--border-med)', boxShadow: focused ? 'var(--glow-gold-strong), 0 0 0 1px rgba(255,217,61,0.08)' : 'var(--shadow-sm)' }}
+              style={{ flex: 1, background: 'var(--bg-input)', border: '1px solid var(--border-med)', borderRadius: 22, overflow: 'hidden', backdropFilter: 'var(--panel-blur)' }}>
+              
+              {activeModels.length > 1 && (
+                <div style={{ padding: '6px 12px 0', display: 'flex', gap: 4, flexWrap: 'wrap', alignItems: 'center' }}>
+                  <span style={{ fontSize: 9, color: 'var(--text-faint)', fontWeight: 700, textTransform: 'uppercase' }}>Sending to:</span>
+                  {activeModels.map((m, i) => <span key={i} style={{ fontSize: 10, color: m.color, fontWeight: 600 }}>{m.name}</span>)}
+                </div>
               )}
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: isMobileView ? 4 : 8 }}>
-              {input.length > 0 && <span style={{ fontSize: 11, fontFamily: "'JetBrains Mono',monospace", color: overLimit ? 'var(--red)' : 'var(--text-faint)' }}>{tokens.toLocaleString()}</span>}
-              <motion.button onClick={handleSend} disabled={!input.trim()} whileTap={{ scale: .9 }}
-                style={{ padding: isMobileView ? '7px 14px' : '8px 20px', borderRadius: isMobileView ? 12 : 11, background: input.trim() ? 'var(--accent)' : 'var(--bg-hover)', color: input.trim() ? 'var(--bg-base)' : 'var(--text-muted)', border: `1px solid ${input.trim() ? 'transparent' : 'var(--border-light)'}`, cursor: input.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 700, fontFamily: "'Outfit',sans-serif", transition: 'all .22s', boxShadow: input.trim() ? 'var(--glow-gold)' : 'none' }}>
-                {sending ? <span className="spin"><IC.Send /></span> : <IC.Send />}
-                {isMultiChatMode && input.trim() && !isMobileView && <span style={{ fontSize: 10, opacity: .7 }}>×{activeModels.length}</span>}
-              </motion.button>
-            </div>
+
+              <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 6, paddingRight: 6 }}>
+                <textarea
+                  ref={inputEl}
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  onFocus={() => setFocused(true)}
+                  onBlur={() => setTimeout(() => setFocused(false), 200)}
+                  placeholder={isMultiChatMode ? `Ask ${activeModels.length} models…` : `Message ${activeModels[0]?.name || 'AI'}…`}
+                  rows={1}
+                  style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', fontSize: 15, fontFamily: "'Outfit',sans-serif", color: overLimit ? 'var(--red)' : 'var(--text-main)', lineHeight: 1.5, padding: '10px 14px', resize: 'none', maxHeight: 120, minHeight: 44, caretColor: 'var(--accent)', overflowX: 'hidden' }}
+                />
+
+                <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0, marginBottom: 2 }}>
+                  {input.trim() ? (
+                    <motion.button onClick={handleSend} disabled={sending} whileTap={{ scale: .85 }}
+                      style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--text-main)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--bg-base)', boxShadow: 'var(--glow-gold)' }}>
+                      {sending ? <span className="spin" style={{ display: 'flex' }}><IC.Send /></span> : <span style={{ transform: 'rotate(-45deg)', marginTop: -2, marginRight: -2 }}><IC.ArrowR /></span>}
+                    </motion.button>
+                  ) : (
+                    <button onClick={handleBoost} disabled={isBoosting} style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--bg-hover)', border: 'none', cursor: isBoosting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isBoosting ? 'var(--text-faint)' : 'var(--text-muted)' }}>
+                      <span className={isBoosting ? 'spin' : ''} style={{ display: 'flex' }}><IC.Sparkle /></span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
           </div>
-        </motion.div>
+        ) : (
+          /* ── DESKTOP FULL INPUT ── */
+          <motion.div
+            animate={{ borderColor: focused ? 'var(--border-focus)' : 'var(--border-med)', boxShadow: focused ? 'var(--glow-gold-strong), 0 0 0 1px rgba(255,217,61,0.08)' : 'var(--shadow-sm)' }}
+            style={{ background: 'var(--bg-input)', border: '1px solid var(--border-med)', borderRadius: 18, overflow: 'visible', backdropFilter: 'var(--panel-blur)', transition: 'border-color 0.3s' }}>
+            
+            {activeModels.length > 1 && (
+              <div style={{ padding: '9px 14px 0', display: 'flex', gap: 5, flexWrap: 'wrap', alignItems: 'center' }}>
+                <span style={{ fontSize: 9.5, color: 'var(--text-faint)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', marginRight: 3 }}>Sending to:</span>
+                {activeModels.map((m, i) => <span key={i} style={{ padding: '2px 9px', borderRadius: 99, fontSize: 11, fontWeight: 600, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', color: m.color }}>{m.name}</span>)}
+              </div>
+            )}
+
+            <textarea
+              ref={inputEl}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setTimeout(() => setFocused(false), 200)}
+              placeholder={isMultiChatMode ? `Ask ${activeModels.length} models…` : `Message ${activeModels[0]?.name || 'AI'}…`}
+              rows={1}
+              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: 14.5, fontFamily: "'Outfit',sans-serif", color: overLimit ? 'var(--red)' : 'var(--text-main)', lineHeight: 1.55, padding: '14px 18px', resize: 'none', maxHeight: 220, minHeight: 54, caretColor: 'var(--accent)', overflowX: 'hidden' }}
+            />
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px 10px', borderTop: '1px solid var(--border-light)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.txt,.md,.csv,.json,.js,.ts,.py" style={{ display: 'none' }} onChange={e => addFiles(Array.from(e.target.files))} />
+                <InputTBtn title="Attach" onClick={() => fileRef.current?.click()}><IC.Paperclip /></InputTBtn>
+                <InputTBtn title="Boost prompt with AI" onClick={handleBoost} disabled={!input.trim() || isBoosting} active={boostDone}>
+                  {isBoosting ? <span className="spin"><IC.Sparkle /></span> : boostDone ? <span style={{ color: 'var(--green)' }}>✓</span> : <IC.Sparkle />}
+                </InputTBtn>
+                {(isBoosting || boostDone) && (
+                  <span style={{ fontSize: 11, color: isBoosting ? 'var(--text-muted)' : 'var(--green)', animation: isBoosting ? 'omni-pulse 1.2s ease infinite' : 'none', fontWeight: 600 }}>
+                    {isBoosting ? 'Boosting…' : 'Boosted!'}
+                  </span>
+                )}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                {input.length > 0 && <span style={{ fontSize: 11, fontFamily: "'JetBrains Mono',monospace", color: overLimit ? 'var(--red)' : 'var(--text-faint)' }}>{tokens.toLocaleString()}</span>}
+                <motion.button onClick={handleSend} disabled={!input.trim()} whileTap={{ scale: .9 }}
+                  style={{ padding: '8px 20px', borderRadius: 11, background: input.trim() ? 'var(--accent)' : 'var(--bg-hover)', color: input.trim() ? 'var(--bg-base)' : 'var(--text-muted)', border: `1px solid ${input.trim() ? 'transparent' : 'var(--border-light)'}`, cursor: input.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 700, fontFamily: "'Outfit',sans-serif", transition: 'all .22s', boxShadow: input.trim() ? 'var(--glow-gold)' : 'none' }}>
+                  {sending ? <span className="spin"><IC.Send /></span> : <IC.Send />}
+                  {isMultiChatMode && input.trim() && <span style={{ fontSize: 10, opacity: .7 }}>×{activeModels.length}</span>}
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {!isMobileView && (
           <div style={{ textAlign: 'center', marginTop: 8, fontSize: 10.5, color: 'var(--text-faint)' }}>
