@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BrandLogo, BentoCard, CountUp, Typewriter, SectionHeader, Marquee } from './landingComponents';
+import { BrandLogo, BentoCard, CountUp, Typewriter, SectionHeader, Marquee, ScrambleText, LoopTypewriter } from './landingComponents';
 import { MODELS, MARQUEE_ITEMS, COMPARE_DATA, PRICING, FAQ_DATA, TESTIMONIALS, LOGO_PROVIDERS } from './landingData';
 
 /* ═══ 1. LOGO CLOUD ═══ */
@@ -25,32 +25,54 @@ export function LogoCloud() {
 
 /* ═══ 2. LIVE AI DEMO ═══ */
 export function LiveAIDemo() {
-  const [phase, setPhase] = useState(0);
-  const userPrompt = "Write a Python function that finds the longest palindrome in a string.";
-  const aiResponse = `def longest_palindrome(s: str) -> str:
-    if len(s) < 2:
-        return s
-    
-    start, max_len = 0, 1
-    
-    def expand(left, right):
-        nonlocal start, max_len
-        while left >= 0 and right < len(s) and s[left] == s[right]:
-            if right - left + 1 > max_len:
-                start = left
-                max_len = right - left + 1
-            left -= 1
-            right += 1
-    
-    for i in range(len(s)):
-        expand(i, i)      # odd length
-        expand(i, i + 1)  # even length
-    
-    return s[start:start + max_len]`;
+  const sequences = [
+    {
+      label: "Claude 4.6 Opus",
+      tag: "Python",
+      color: "text-emerald-300/90",
+      text: `def analyze_data(data):
+    # Analyzing neural patterns...
+    result = [x * 2 for x in data if x > 0]
+    return sorted(result, reverse=True)`
+    },
+    {
+      label: "System",
+      tag: "Thinking",
+      color: "text-white/40",
+      text: `> Optimizing for performance...
+> Switching context to React...
+> Pre-rendering virtual DOM...`
+    },
+    {
+      label: "Gemini 3.1 Pro",
+      tag: "React",
+      color: "text-blue-300/90",
+      text: `export function Dashboard() {
+  return (
+    <div className="grid gap-6">
+      <StatCard title="Revenue" value="$42k" />
+      <Chart type="area" data={revenue} />
+    </div>
+  );
+}`
+    },
+    {
+      label: "GPT-5.4 Turbo",
+      tag: "Rust",
+      color: "text-orange-300/90",
+      text: `pub fn main() {
+    let mut vec = Vec::new();
+    for i in 0..10 {
+        vec.push(i * i);
+    }
+    println!("Vector: {:?}", vec);
+}`
+    }
+  ];
 
   return (
     <section className="section-content py-12 md:py-32 px-6 max-w-[1000px] mx-auto relative z-20">
-      <SectionHeader badge="✦ Live Demo" title="See it in action." subtitle="Watch OMNI AI generate real code in real-time. No signup needed to be impressed." />
+      <SectionHeader badge="✦ Live Demo" title="See it in action." subtitle="Watch OMNI AI generate real code in real-time across multiple stacks." scramble={true} />
       <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="demo-terminal glass-strong rounded-[2rem] overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.6)]">
         {/* Terminal Header */}
         <div className="h-14 border-b border-white/10 bg-white/[0.02] flex items-center px-6 gap-2">
@@ -63,24 +85,16 @@ export function LiveAIDemo() {
           <div className="flex gap-3 md:gap-4 items-start">
             <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/10 flex items-center justify-center text-[10px] md:text-xs font-bold text-white/60 flex-shrink-0">U</div>
             <div className="glass-pill bg-white/5 p-3 md:p-4 rounded-xl md:rounded-2xl rounded-tl-sm max-w-[90%]">
-              <Typewriter text={userPrompt} speed={25} startDelay={500} onDone={() => setTimeout(() => setPhase(1), 600)} />
+              <span className="text-white/80 italic">Explain a complex algorithm or build a UI component...</span>
             </div>
           </div>
-          {/* AI Response */}
-          {phase >= 1 && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3 md:gap-4 items-start">
-              <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-omin-gold flex items-center justify-center text-[10px] md:text-xs font-display font-black text-black flex-shrink-0">O</div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-omin-gold text-[9.5px] md:text-[11px] font-bold uppercase tracking-wider">Claude 4.6 Opus</span>
-                  <span className="text-[8px] md:text-[9px] px-2 py-0.5 rounded bg-white/10 text-white/60">Code</span>
-                </div>
-                <div className="border border-white/10 rounded-lg md:rounded-xl bg-[#050505] p-3 md:p-5 overflow-x-auto">
-                  <pre className="text-[9.5px] md:text-[12.5px] leading-relaxed text-emerald-300/90 whitespace-pre"><Typewriter text={aiResponse} speed={12} startDelay={0} /></pre>
-                </div>
-              </div>
-            </motion.div>
-          )}
+          {/* AI Response Loop */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3 md:gap-4 items-start">
+            <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-omin-gold flex items-center justify-center text-[10px] md:text-xs font-display font-black text-black flex-shrink-0">O</div>
+            <div className="flex-1">
+              <LoopTypewriter sequences={sequences} />
+            </div>
+          </motion.div>
         </div>
       </motion.div>
     </section>
@@ -96,7 +110,7 @@ export function HowItWorks() {
   ];
   return (
     <section className="section-content py-12 md:py-32 px-6 max-w-[1100px] mx-auto relative z-20">
-      <SectionHeader badge="How It Works" title="Three steps. Infinite power." />
+      <SectionHeader badge="How It Works" title="Three steps. Infinite power." scramble={true} />
       <div className="hiw-grid flex md:grid md:grid-cols-3 gap-6 md:gap-8 relative overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-8 -mx-6 px-6 md:mx-0 md:px-0">
         {/* Connecting line */}
         <div className="hiw-line absolute top-16 left-[16.6%] right-[16.6%] h-px bg-gradient-to-r from-transparent via-omin-gold/30 to-transparent hidden md:block" />
@@ -185,7 +199,7 @@ export function TestimonialsSection() {
   useEffect(() => { const t = setInterval(() => setActive(p => (p + 1) % TESTIMONIALS.length), 5000); return () => clearInterval(t); }, []);
   return (
     <section className="section-content py-12 md:py-32 px-6 max-w-[1000px] mx-auto relative z-20">
-      <SectionHeader badge="Testimonials" title="Loved by builders." subtitle="See what professionals are saying about OMNI AI PRO." />
+      <SectionHeader badge="The Library" title="Build with the Best." subtitle="Instantly deploy your apps using any of our 68+ premium integrated AI models." scramble={true} />
       <div className="testimonial-container relative h-[280px] sm:h-[240px]">
         <AnimatePresence mode="wait">
           {TESTIMONIALS.map((t, i) => i === active && (

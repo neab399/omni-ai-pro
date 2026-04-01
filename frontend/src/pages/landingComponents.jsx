@@ -134,6 +134,54 @@ export function CursorGlow() {
   return <div className="fixed pointer-events-none z-10 rounded-full mix-blend-screen" style={{ left: pos.x - 300, top: pos.y - 300, width: 600, height: 600, background: 'radial-gradient(circle, rgba(255,217,61,0.12) 0%, rgba(59,130,246,0.06) 30%, transparent 70%)', filter: 'blur(60px)', willChange: 'transform', transform: 'translateZ(0)' }} />;
 }
 
+/* ─── Scramble Character Reveal ─── */
+function ScrambleChar({ char, delay, index }) {
+  const GLITCH_CHARS = "!<>-_\\\\/[]{}—=+*^?#________";
+  const [charState, setCharState] = useState(char === " " ? "\u00A0" : GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)]);
+  const [isScrambling, setIsScrambling] = useState(char !== " ");
+
+  useEffect(() => {
+    if (char === " ") return;
+    let timeout;
+    const startDelay = delay * 1000 + index * 40;
+    const duration = 300 + Math.random() * 400; 
+
+    const interval = setInterval(() => {
+      setCharState(GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)]);
+    }, 40);
+
+    timeout = setTimeout(() => {
+      clearInterval(interval);
+      setCharState(char);
+      setIsScrambling(false);
+    }, startDelay + duration);
+
+    return () => { clearInterval(interval); clearTimeout(timeout); };
+  }, [char, delay, index]);
+
+  return (
+    <motion.span
+      initial={{ opacity: 0, filter: "blur(4px)" }}
+      whileInView={{ opacity: 1, filter: "blur(0px)" }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.2, delay: delay + index * 0.02 }}
+      className={`inline-block ${isScrambling ? "text-omin-gold opacity-90 font-mono" : ""}`}
+      style={{ minWidth: char === " " ? '0.25em' : 'auto' }}
+    >
+      {charState}
+    </motion.span>
+  );
+}
+
+export function ScrambleText({ text, className, delay = 0 }) {
+  const characters = text.split("");
+  return (
+    <motion.span className={className}>
+      {characters.map((char, i) => <ScrambleChar key={i} char={char} delay={delay} index={i} />)}
+    </motion.span>
+  );
+}
+
 /* ─── Staggered Character Reveal ─── */
 export function StaggeredText({ text, className, delay = 0 }) {
   const characters = text.split("");
@@ -224,7 +272,7 @@ export function Marquee({ items, reverse }) {
   );
 }
 
-/* ─── 3D Bento Card ─── */
+/* ─── 3D Bento Card with Tilt Physics ─── */
 export function BentoCard({ children, className, delay = 0 }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -232,8 +280,8 @@ export function BentoCard({ children, className, delay = 0 }) {
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 20 });
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 20 });
 
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["5deg", "-5deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7deg", "-7deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7deg", "7deg"]);
 
   let spotX = useMotionValue(-1000), spotY = useMotionValue(-1000);
 
@@ -272,13 +320,68 @@ export function BentoCard({ children, className, delay = 0 }) {
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className={`glass-panel glow-border rounded-2xl md:rounded-[2rem] p-5 md:p-8 relative overflow-hidden group h-full w-full`}
+        className={`glass-panel glow-border rounded-2xl md:rounded-[2rem] p-5 md:p-8 relative overflow-hidden group h-full w-full shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-shadow duration-500`}
       >
-        <motion.div className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-300 group-hover:opacity-100" style={{ background: useMotionTemplate`radial-gradient(800px circle at ${spotX}px ${spotY}px, rgba(255,217,61,0.15), transparent 70%)`, transform: "translateZ(1px)" }} />
-        <div className="relative z-10 h-full" style={{ transform: "translateZ(30px)" }}>{children}</div>
+        <motion.div className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-300 group-hover:opacity-100" style={{ background: useMotionTemplate`radial-gradient(800px circle at ${spotX}px ${spotY}px, rgba(255,217,61,0.2), transparent 70%)`, transform: "translateZ(1px)" }} />
+        <div className="relative z-10 h-full" style={{ transform: "translateZ(35px)" }}>{children}</div>
       </motion.div>
     </motion.div>
   );
+}
+
+/* ─── Siri Wave Visualizer ─── */
+export function SiriWave({ className }) {
+  const canvasRef = useRef(null);
+  
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    let animationFrameId;
+    let phase = 0;
+    const colors = ['rgba(34,211,238,0.7)', 'rgba(244,114,182,0.6)', 'rgba(251,191,36,0.5)'];
+    
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      phase += 0.04;
+      
+      colors.forEach((color, i) => {
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        
+        const frequency = 0.015 + i * 0.005;
+        const amplitude = 30 + i * 10;
+        
+        for (let x = 0; x < canvas.width; x++) {
+          const y = (canvas.height / 2) + Math.sin(x * frequency + phase + i) * (amplitude * Math.sin(phase * 0.5));
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      });
+      
+      animationFrameId = requestAnimationFrame(draw);
+    };
+    
+    const handleResize = () => {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    };
+    
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    draw();
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+  
+  return <canvas ref={canvasRef} className={`w-full h-full ${className}`} />;
 }
 
 /* ─── Animated Counter ─── */
@@ -315,12 +418,78 @@ export function Typewriter({ text, speed = 30, onDone, startDelay = 0 }) {
   return <>{displayed}<span className="cursor-blink text-omin-gold">▎</span></>;
 }
 
-/* ─── Section Header ─── */
-export function SectionHeader({ badge, title, subtitle }) {
+/* ─── Specialized Loop Typewriter (for terminal demo) ─── */
+export function LoopTypewriter({ sequences, speed = 30, deleteSpeed = 20, pause = 2000 }) {
+  const [index, setIndex] = useState(0);
+  const [displayed, setDisplayed] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    let timeout;
+    const currentFullText = sequences[index].text;
+
+    if (!isDeleting && displayed === currentFullText) {
+      // Pause then start deleting
+      timeout = setTimeout(() => setIsDeleting(true), pause);
+    } else if (isDeleting && displayed === '') {
+      // Switch to next sequence
+      setIsDeleting(false);
+      setIndex((i) => (i + 1) % sequences.length);
+    } else {
+      // Type or delete
+      const nextChar = isDeleting 
+        ? currentFullText.slice(0, displayed.length - 1)
+        : currentFullText.slice(0, displayed.length + 1);
+      
+      timeout = setTimeout(() => setDisplayed(nextChar), isDeleting ? deleteSpeed : speed);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayed, isDeleting, index, sequences, speed, deleteSpeed, pause]);
+
   return (
-    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="text-center mb-10 md:mb-20">
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-omin-gold text-[9.5px] md:text-[11px] font-bold uppercase tracking-wider">{sequences[index].label}</span>
+        <span className="text-[8px] md:text-[9px] px-2 py-0.5 rounded bg-white/10 text-white/60">{sequences[index].tag}</span>
+      </div>
+      <div className="border border-white/10 rounded-lg md:rounded-xl bg-[#050505] p-3 md:p-5 overflow-x-auto min-h-[120px]">
+        <pre className={`text-[9.5px] md:text-[12.5px] leading-relaxed whitespace-pre ${sequences[index].color || 'text-white/80'}`}>
+          {displayed}<span className="cursor-blink text-omin-gold">▎</span>
+        </pre>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Floating 3D Orb ─── */
+import Spline from '@splinetool/react-spline';
+
+export function Floating3DOrb({ className, scene = "https://prod.spline.design/6Wq1Q7YEjHiaVcyE/scene.splinecode" }) {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: loaded ? 1 : 0 }} 
+      transition={{ duration: 1 }}
+      className={`pointer-events-none ${className}`}
+    >
+      <Spline 
+        scene={scene} 
+        onLoad={() => setLoaded(true)}
+      />
+    </motion.div>
+  );
+}
+
+/* ─── Section Header ─── */
+export function SectionHeader({ badge, title, subtitle, scramble = false }) {
+  return (
+    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="text-center mb-10 md:md:mb-20">
       {badge && <div className="text-omin-gold text-[9px] md:text-xs font-bold tracking-[0.25em] uppercase mb-3 md:mb-5">{badge}</div>}
-      <h2 className="font-display font-bold text-[1.75rem] md:text-[clamp(2.5rem,5vw,4.5rem)] tracking-tight mb-3 md:mb-6 leading-[1.1] md:leading-tight">{title}</h2>
+      <h2 className="font-display font-bold text-[1.75rem] md:text-[clamp(2.5rem,5vw,4.5rem)] tracking-tight mb-3 md:mb-6 leading-[1.1] md:leading-tight">
+        {scramble ? <ScrambleText text={title} /> : title}
+      </h2>
       {subtitle && <p className="text-white/50 text-[11px] md:text-lg max-w-[280px] md:max-w-2xl mx-auto leading-relaxed px-2 md:px-0">{subtitle}</p>}
     </motion.div>
   );

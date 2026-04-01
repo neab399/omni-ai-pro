@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase, MODELS } from './landingData';
-import { CanvasBackground, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp, StaggeredText } from './landingComponents';
+import { CanvasBackground, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp, StaggeredText, ScrambleText, SiriWave, Floating3DOrb } from './landingComponents';
 import InteractiveLogo from '../components/InteractiveLogo';
 import { LogoCloud, LiveAIDemo, HowItWorks, ModelLibrary, CompareTable, TestimonialsSection, PricingSection, FAQSection, MarqueeSection } from './landingSections';
+import Spline from '@splinetool/react-spline';
+import confetti from 'canvas-confetti';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -62,7 +64,30 @@ export default function LandingPage() {
     setLoading(false); if (error) alert(error.message); else setEmailSent(true);
   };
   const handleLogout = async () => await supabase.auth.signOut();
-  const triggerAuth = () => user ? navigate('/chat') : setShowAuthModal(true);
+  const triggerAuth = (e) => {
+    if (e && e.clientX) {
+      const scalar = 2;
+      const gold = confetti.shapeFromText({ text: '✦', scalar });
+      const star = confetti.shapeFromText({ text: '★', scalar });
+
+      confetti({
+        particleCount: 200,
+        spread: 90,
+        origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight },
+        colors: ['#FFD93D', '#FFFFFF', '#FFB800', '#4ade80', '#3b82f6'],
+        ticks: 300,
+        gravity: 1,
+        decay: 0.96,
+        startVelocity: 40,
+        shapes: [gold, star, 'circle'],
+        zIndex: 999999
+      });
+    }
+    user ? navigate('/chat') : setShowAuthModal(true);
+  };
+
+  // 3D Hero Scene State
+  const [splineLoaded, setSplineLoaded] = useState(false);
 
   const heroWords1 = "68 AI MODELS.".split(" ");
   const heroWords2 = "ONE DASHBOARD.".split(" ");
@@ -132,6 +157,20 @@ export default function LandingPage() {
 
       {/* ═══ 1. HERO ═══ */}
       <motion.section style={{ opacity: heroOpacity, scale: heroScale, y: heroY }} className="hero-section relative flex flex-col items-center justify-center min-h-[95vh] text-center px-4 pt-32 pb-10">
+        {/* ═══ 3D INTERACTIVE CORE (Sits behind text) ═══ */}
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: splineLoaded ? 1 : 0 }} 
+          transition={{ duration: 1 }}
+          className="absolute inset-0 z-0 pointer-events-none sm:pointer-events-auto"
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(5,5,5,0)_0%,rgba(5,5,5,1)_80%)] z-10" />
+          <Spline 
+            scene="https://prod.spline.design/6Wq1Q7YEjHiaVcyE/scene.splinecode" 
+            onLoad={() => setSplineLoaded(true)}
+          />
+        </motion.div>
+
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="relative z-10 mb-6 md:mb-10">
           <span className="glass-pill px-4 md:px-6 py-2 md:py-2.5 rounded-full text-[8.5px] md:text-[10px] sm:text-xs font-bold tracking-[0.25em] text-white uppercase shadow-[0_0_30px_rgba(255,255,255,0.05)]">
             <span className="text-omin-gold mr-2">✦</span>The Ultimate AI Aggregator
@@ -139,14 +178,34 @@ export default function LandingPage() {
         </motion.div>
         <h1 className="hero-heading relative z-10 font-display font-bold text-[2rem] sm:text-[3rem] md:text-[clamp(3.5rem,8vw,9rem)] leading-[0.9] tracking-tighter mb-6 md:mb-10 max-w-6xl mx-auto flex flex-col items-center">
           <div className="overflow-hidden flex gap-[clamp(0.4rem,2vw,1.5rem)] flex-wrap justify-center">
-            {heroWords1.map((w, i) => <motion.span key={i} initial={{ y: "120%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.9, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }} className="inline-block text-white pb-1 md:pb-2">{w}</motion.span>)}
+            {heroWords1.map((w, i) => (
+              <motion.span 
+                key={i} 
+                initial={{ y: "120%", opacity: 0 }} 
+                animate={{ y: 0, opacity: 1 }} 
+                transition={{ duration: 0.9, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }} 
+                className="inline-block text-white pb-1 md:pb-2"
+              >
+                <ScrambleText text={w} delay={i * 0.1} />
+              </motion.span>
+            ))}
           </div>
           <div className="overflow-hidden flex gap-[clamp(0.4rem,2vw,1.5rem)] flex-wrap justify-center">
-            {heroWords2.map((w, i) => <motion.span key={i} initial={{ y: "120%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.9, delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] }} className="inline-block text-transparent bg-clip-text bg-[linear-gradient(110deg,#FFD93D,45%,#fff,55%,#FFD93D)] bg-[length:250%_100%] animate-shimmer pb-2 md:pb-4">{w}</motion.span>)}
+            {heroWords2.map((w, i) => (
+              <motion.span 
+                key={i} 
+                initial={{ y: "120%", opacity: 0 }} 
+                animate={{ y: 0, opacity: 1 }} 
+                transition={{ duration: 0.9, delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] }} 
+                className="inline-block text-transparent bg-clip-text bg-[linear-gradient(110deg,#FFD93D,45%,#fff,55%,#FFD93D)] bg-[length:250%_100%] animate-shimmer pb-2 md:pb-4"
+              >
+                <ScrambleText text={w} delay={0.3 + i * 0.1} />
+              </motion.span>
+            ))}
           </div>
         </h1>
         <div className="hero-subtitle relative z-10 text-white/50 text-[11px] md:text-[clamp(0.95rem,2vw,1.25rem)] max-w-[280px] md:max-w-3xl leading-[1.6] md:leading-relaxed mb-8 md:mb-12 font-medium">
-          <StaggeredText 
+          <ScrambleText 
             text="GPT-5.4, Claude 4.6 Opus, Gemini 3.1 Pro, Midjourney, and Sora Video. Everything you need for Code, Copy, Audio, and Video — starting at just ₹249."
             delay={0.6}
           />
@@ -233,6 +292,7 @@ export default function LandingPage() {
 
       {/* ═══ 6. BENTO FEATURES ═══ */}
       <section id="features" className="bento-section section-content py-20 md:py-32 px-5 md:px-6 max-w-[1400px] mx-auto relative z-20 flex flex-col lg:flex-row gap-8 lg:gap-20">
+        <Floating3DOrb className="absolute -top-20 -left-40 w-[600px] h-[600px] opacity-20 blur-3xl" />
         <div className="bento-sidebar lg:w-1/3 lg:sticky lg:top-40 h-fit text-center lg:text-left">
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
             <h2 className="font-display font-bold text-[2rem] md:text-[clamp(3.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight mb-4 md:mb-6">Unfair<br className="hidden lg:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-omin-gold to-yellow-100 pl-2 lg:pl-0">Advantage.</span></h2>
@@ -244,7 +304,9 @@ export default function LandingPage() {
           <BentoCard className="bento-card-wide md:col-span-2 min-h-[200px] md:min-h-[300px] flex flex-col md:flex-row gap-5 md:gap-8 items-center text-center md:text-left p-6 md:p-8">
             <div className="w-full md:w-3/5">
               <div className="text-omin-gold text-[9px] md:text-xs font-bold tracking-[0.2em] uppercase mb-2 md:mb-3">Model Ecosystem</div>
-              <h3 className="text-[1.5rem] md:text-4xl font-display font-bold mb-2 md:mb-4 leading-tight"><CountUp target={68} /> God-Tier AIs.</h3>
+              <h3 className="text-[1.5rem] md:text-4xl font-display font-bold mb-2 md:mb-4 leading-tight">
+                <CountUp target={68} /> <ScrambleText text="God-Tier AIs." />
+              </h3>
               <p className="text-white/60 text-[11px] md:text-sm leading-relaxed max-w-[260px] sm:max-w-none mx-auto">Instantly switch between GPT-5, Claude, Gemini, and open-source titans without leaving your thought process.</p>
             </div>
             <div className="flex flex-wrap md:flex-nowrap flex-1 justify-center gap-2 md:gap-4 opacity-70 md:opacity-60 mt-1 md:mt-0">
@@ -265,8 +327,15 @@ export default function LandingPage() {
           </BentoCard>
           <BentoCard delay={0.2} className="min-h-[160px] md:min-h-[280px] flex flex-col justify-between overflow-hidden p-6 md:p-8">
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-cyan-400/15 blur-[40px]" />
-            <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }} className="text-[1.5rem] md:text-4xl mb-3 md:mb-4 inline-block origin-left drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">🎤</motion.div>
-            <div className="relative z-10"><h3 className="text-[1rem] md:text-xl font-bold mb-1 md:mb-2">Voice & Audio AI</h3><p className="text-white/50 text-[11px] md:text-sm">Whisper transcription, Suno music generation, and real-time voice chat all built in.</p></div>
+            <div className="flex items-center justify-center h-24 relative z-10">
+              <SiriWave className="opacity-80" />
+            </div>
+            <div className="relative z-10">
+              <h3 className="text-[1rem] md:text-xl font-bold mb-1 md:mb-2">
+                <ScrambleText text="Voice & Audio AI" />
+              </h3>
+              <p className="text-white/50 text-[11px] md:text-sm">Whisper transcription, Suno music generation, and real-time voice chat all built in.</p>
+            </div>
           </BentoCard>
           <BentoCard delay={0.35} className="min-h-[160px] md:min-h-[280px] flex flex-col justify-between overflow-hidden p-6 md:p-8">
             <div className="absolute top-0 left-0 w-24 h-24 bg-emerald-400/10 blur-[40px]" />
