@@ -5,6 +5,7 @@ import OpenAI from 'openai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import { createClient } from '@supabase/supabase-js';
 
 // 1. Load Environment Variables
 dotenv.config();
@@ -57,6 +58,35 @@ const groq = GROQ_KEY ? new OpenAI({
 }) : null;
 
 const gemini = GEMINI_KEY ? new GoogleGenerativeAI(GEMINI_KEY) : null;
+
+// 4. Initialize Supabase Auth Verifier
+const supabaseUrl = process.env.SUPABASE_URL || 'https://chutexfnzoylpuikeblz.supabase.co';
+const supabaseKey = process.env.SUPABASE_ANON_KEY || 'sb_publishable_M_oSfDnhS18elv7J3hsWjw_wcZk6bFp';
+const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+// 5. JWT Secure Guard Middleware
+async function verifyAuth(req, res, next) {
+    if (req.method !== 'POST') return next();
+
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.warn('Blocked unauthenticated request to /api/chat');
+        return res.status(401).json({ type: 'error', message: 'Unauthorized: Missing Supabase Authorization header.' });
+    }
+    
+    const token = authHeader.split(' ')[1];
+    try {
+        const { data: { user }, error } = await supabaseClient.auth.getUser(token);
+        if (error || !user) {
+            console.warn(`Blocked invalid token: ${error?.message}`);
+            return res.status(401).json({ type: 'error', message: 'Unauthorized: Invalid Supabase JWT token.' });
+        }
+        req.userAuth = user;
+        next();
+    } catch (err) {
+        return res.status(500).json({ type: 'error', message: 'Internal Server Error during security auth verification.' });
+    }
+}
 
 // --- Helper Functions for Streaming (SSE) ---
 function setSSEHeaders(res) {
@@ -131,7 +161,7 @@ async function streamGemini(res, messages, systemPrompt) {
 }
 
 // --- Main API Route ---
-app.post('/api/chat', chatLimiter, async (req, res) => {
+app.post('/api/chat', chatLimiter, verifyAuth, async (req, res) => {
     const { messages = [], providerId, systemPrompt } = req.body;
     setSSEHeaders(res);
 

@@ -231,8 +231,16 @@ export default function ChatPage() {
       try {
         const priorMsgs = (chatHistories[activeConvId]?.[key] || []).filter(m => !m.isStreaming).map(m => ({ role: m.role, content: m.content }));
         priorMsgs.push({ role: 'user', content: text });
+        
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token || '';
+
         const response = await fetch('https://omni-ai-pro.onrender.com/api/chat', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          method: 'POST', 
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
           body: JSON.stringify({ messages: priorMsgs, providerId: model.providerId, modelId: model.id }),
         });
         if (!response.ok) throw new Error(`API Error ${response.status}`);
@@ -302,7 +310,18 @@ export default function ChatPage() {
     }));
     try {
       const msgs = (chatHistories[activeConvId]?.[key] || []).filter(m => !m.isStreaming).map(m => ({ role: m.role, content: m.content }));
-      const response = await fetch('https://omni-ai-pro.onrender.com/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: msgs, providerId: model.providerId, modelId: model.id }) });
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token || '';
+
+      const response = await fetch('https://omni-ai-pro.onrender.com/api/chat', { 
+        method: 'POST', 
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }, 
+        body: JSON.stringify({ messages: msgs, providerId: model.providerId, modelId: model.id }) 
+      });
       if (!response.ok) throw new Error(`API Error ${response.status}`);
       const reader = response.body.getReader(); const decoder = new TextDecoder(); let reply = '';
       while (true) {
