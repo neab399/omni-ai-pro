@@ -25,7 +25,7 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
         ? <UserAvatar profile={userProfile} size={32} />
         : <ModelAvatar model={model} size={32} />}
 
-      <div style={{ width: '100%', maxWidth: isCompact ? '88%' : '85%', display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, overflow: 'hidden' }}>
+      <div style={{ flex: 1, maxWidth: '100%', display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, overflow: 'hidden' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexDirection: isUser ? 'row-reverse' : 'row' }}>
           <span style={{ fontSize: 12, fontWeight: 700, color: isUser ? 'var(--text-sec)' : (model?.color || 'var(--text-main)'), letterSpacing: '0.01em' }}>
             {isUser ? 'You' : (model?.name || 'AI')}
