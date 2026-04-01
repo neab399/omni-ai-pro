@@ -109,11 +109,13 @@ html {
     box-shadow: 8px 0 40px rgba(0,0,0,0.6) !important;
   }
   
-  /* Chat header — compact on mobile */
+  /* Chat header — compact on mobile, but allow both rows */
   .chat-header-mobile {
-    height: 50px !important;
-    padding: 0 10px !important;
-    gap: 6px !important;
+    min-height: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    overflow: visible !important;
   }
   
   /* Section tabs — scrollable on mobile */

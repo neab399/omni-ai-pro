@@ -399,14 +399,14 @@ export const GLOBAL_STYLES = `
   .md-ul{margin:12px 0 16px;padding:0;list-style:none;}
   .md-li{padding:5px 0 5px 24px;position:relative;color:var(--text-sec);font-size:14.5px;line-height:1.7;}
   .md-li::before{content:'✦';position:absolute;left:4px;color:var(--accent);font-size:10px;top:10px;filter:drop-shadow(0 0 3px var(--accent-low));}
-  .inline-code{background:var(--accent-low);border:1px solid rgba(255,217,61,0.15);border-radius:7px;padding:2.5px 7px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);font-weight:600;letter-spacing:0.02em;}
+  .inline-code{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:2px 6px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#e0e0e0;font-weight:500;letter-spacing:0.02em;}
   
-  .code-block{background:#08080c;border:1px solid var(--border-med);border-radius:16px;margin:20px 0;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.04);}
-  .code-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:linear-gradient(135deg,rgba(255,217,61,0.04),transparent 60%);backdrop-filter:var(--panel-blur);border-bottom:1px solid var(--border-light);}
-  .code-lang{font-size:10.5px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.12em;text-shadow:0 0 12px var(--accent-low);}
-  .code-block pre{margin:0;padding:22px;overflow-x:auto;font-size:13px;line-height:1.8;color:#c8cacc;font-family:'JetBrains Mono','Fira Code',monospace;letter-spacing:0.02em;}
-  .code-copy-btn{background:rgba(255,255,255,0.03);border:1px solid var(--border-med);border-radius:8px;padding:5px 14px;font-size:11px;color:var(--text-muted);cursor:pointer;font-weight:700;transition:all .25s;backdrop-filter:blur(4px);}
-  .code-copy-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-low);box-shadow:var(--glow-gold);}
+  .code-block{background:#1a1a1e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;margin:16px 0;overflow:hidden;}
+  .code-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#242428;border-bottom:1px solid rgba(255,255,255,0.06);}
+  .code-lang{font-size:11px;color:#a0a0a8;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+  .code-block pre{margin:0;padding:18px;overflow-x:auto;font-size:13px;line-height:1.7;color:#d4d4d8;font-family:'JetBrains Mono','Fira Code',monospace;letter-spacing:0.02em;}
+  .code-copy-btn{background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:4px 12px;font-size:11px;color:#a0a0a8;cursor:pointer;font-weight:600;transition:all .2s;}
+  .code-copy-btn:hover{border-color:rgba(255,255,255,0.25);color:#e0e0e0;background:rgba(255,255,255,0.05);}
 
   @keyframes omni-spin{to{transform:rotate(360deg)}}
   @keyframes omni-pulse{0%,100%{opacity:1}50%{opacity:.3}}

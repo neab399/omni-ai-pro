@@ -18,15 +18,16 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
-      style={{ display: 'flex', gap: 12, flexDirection: isUser ? 'row-reverse' : 'row', position: 'relative', padding: '6px 0' }}
+      onTouchStart={() => setShowActions(true)}
+      style={{ display: 'flex', gap: 10, flexDirection: isUser ? 'row-reverse' : 'row', position: 'relative', padding: '4px 0' }}
     >
       {isUser
-        ? <UserAvatar profile={userProfile} size={30} />
-        : <ModelAvatar model={model} size={30} />}
+        ? <UserAvatar profile={userProfile} size={32} />
+        : <ModelAvatar model={model} size={32} />}
 
-      <div style={{ maxWidth: isCompact ? '88%' : '80%', display: 'flex', flexDirection: 'column', gap: 5, minWidth: 0 }}>
+      <div style={{ maxWidth: isCompact ? '88%' : '78%', display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexDirection: isUser ? 'row-reverse' : 'row' }}>
-          <span style={{ fontSize: 11.5, fontWeight: 700, color: isUser ? 'var(--text-muted)' : (model?.color || 'var(--text-main)'), letterSpacing: '0.01em' }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: isUser ? 'var(--text-sec)' : (model?.color || 'var(--text-main)'), letterSpacing: '0.01em' }}>
             {isUser ? 'You' : (model?.name || 'AI')}
           </span>
           <span style={{ fontSize: 10, color: 'var(--text-faint)', fontFamily: "'JetBrains Mono',monospace" }}>
@@ -35,13 +36,11 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
         </div>
 
         <div style={{
-          background: isUser ? 'var(--bg-hover)' : 'transparent',
-          border: isUser ? '1px solid var(--border-light)' : 'none',
-          borderLeft: !isUser ? '2px solid ' + (model?.color || 'var(--accent)') + '30' : 'none',
-          padding: isUser ? '11px 15px' : '2px 0 2px 14px',
-          borderRadius: isUser ? '16px 4px 16px 16px' : 0,
+          background: isUser ? 'rgba(255,255,255,0.07)' : 'transparent',
+          border: 'none',
+          padding: isUser ? '12px 16px' : '4px 0 4px 2px',
+          borderRadius: isUser ? '20px 4px 20px 20px' : 0,
           wordBreak: 'break-word',
-          backdropFilter: isUser ? 'var(--panel-blur)' : 'none',
         }}>
           {msg.isStreaming
             ? <TypingIndicator />

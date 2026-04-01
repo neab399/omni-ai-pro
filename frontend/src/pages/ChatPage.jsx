@@ -390,10 +390,11 @@ export default function ChatPage() {
             {/* Left: sidebar toggle */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
               <button onClick={() => setSidebarOpen(p => !p)} title="History &amp; conversations"
-                style={{ width: 34, height: 34, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', cursor: 'pointer', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .14s', flexShrink: 0 }}
+                style={{ height: 34, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', color: 'var(--text-muted)', cursor: 'pointer', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, transition: 'all .14s', flexShrink: 0, padding: isMobile ? '0 10px' : '0 8px' }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-focus)'; e.currentTarget.style.color = 'var(--accent)'; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-light)'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
                 <IC.Sidebar />
+                {isMobile && <span style={{ fontSize: 11, fontWeight: 600, fontFamily: "'Outfit',sans-serif" }}>History</span>}
               </button>
               {isMobile && activeSection === 'chat' && (
                 <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-muted)', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
