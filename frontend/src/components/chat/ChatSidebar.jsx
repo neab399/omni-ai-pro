@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IC } from '../../lib/models';
 import { BrandLogo, UserAvatar, PlanBadge, SBtn } from './ChatUIKit';
+import InteractiveLogo from '../InteractiveLogo';
 
 /* ══════════════════════════════════════════════════════════
    CONV ITEM (single conversation row)
@@ -133,9 +134,7 @@ export default function ChatSidebar({
     >
       {/* Logo */}
       <div style={{ padding: '16px 16px 12px', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-        <div style={{ width: 30, height: 30, borderRadius: 9, background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', boxShadow: '0 0 20px rgba(255,217,61,0.2)', animation: 'glow-pulse 3s ease-in-out infinite' }}>
-          <img src="/logo.png" alt="O" style={{ width: 18, filter: 'brightness(0)' }} onError={e => { e.target.style.display = 'none'; }} />
-        </div>
+        <InteractiveLogo size={30} iconSize={18} />
         <div>
           <div style={{ fontWeight: 800, fontSize: 14, letterSpacing: '-.02em', color: 'var(--text-main)', fontFamily: "'Outfit',sans-serif" }}>
             OMNI AI <span style={{ color: 'var(--accent)' }}>PRO</span>
