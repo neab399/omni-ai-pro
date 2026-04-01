@@ -95,11 +95,11 @@ export function HowItWorks() {
   return (
     <section className="section-content py-32 px-6 max-w-[1100px] mx-auto relative z-20">
       <SectionHeader badge="How It Works" title="Three steps. Infinite power." />
-      <div className="hiw-grid grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+      <div className="hiw-grid flex md:grid md:grid-cols-3 gap-6 md:gap-8 relative overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-8 -mx-6 px-6 md:mx-0 md:px-0">
         {/* Connecting line */}
         <div className="hiw-line absolute top-16 left-[16.6%] right-[16.6%] h-px bg-gradient-to-r from-transparent via-omin-gold/30 to-transparent hidden md:block" />
         {steps.map((s, i) => (
-          <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.7 }} className="text-center relative">
+          <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.7 }} className="text-center relative min-w-[280px] md:min-w-0 snap-center flex-shrink-0">
             <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-4 md:mb-6 rounded-[14px] md:rounded-2xl glass-panel border-white/10 flex items-center justify-center text-xl md:text-2xl relative z-10 bg-omin-black">{s.icon}</div>
             <div className="text-omin-gold text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-2 md:mb-3">{s.num}</div>
             <h3 className="text-[1.15rem] md:text-xl font-display font-bold mb-2 md:mb-3">{s.title}</h3>
@@ -129,12 +129,12 @@ export function ModelLibrary() {
           {showAll ? 'Show Less ↑' : `View All 68 Models ↓`}
         </button>
       </div>
-      <div className="model-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="model-grid grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         {visible.map((m, i) => (
-          <motion.div key={m.name} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: (i % 8) * 0.05 }} className="glass-panel p-5 sm:p-6 rounded-2xl md:rounded-[2rem] relative overflow-hidden group hover:border-white/20 transition-all cursor-default">
-            <div className="mb-4"><BrandLogo slug={m.slug} color={m.color} name={m.name} /></div>
-            <h3 className="font-bold text-[1.1rem] md:text-lg text-white mb-1 group-hover:text-omin-gold transition-colors">{m.name}</h3>
-            <p className="text-xs text-white/40 mb-3">{m.maker}</p>
+          <motion.div key={m.name} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: (i % 8) * 0.05 }} className="glass-panel p-4 md:p-6 rounded-[1rem] md:rounded-[2rem] relative overflow-hidden group hover:border-white/20 transition-all cursor-default">
+            <div className="mb-3 md:mb-4 scale-75 md:scale-100 origin-left"><BrandLogo slug={m.slug} color={m.color} name={m.name} /></div>
+            <h3 className="font-bold text-[14px] md:text-lg text-white mb-0.5 md:mb-1 group-hover:text-omin-gold transition-colors truncate">{m.name}</h3>
+            <p className="text-[10px] md:text-xs text-white/40 mb-2 md:mb-3 truncate">{m.maker}</p>
             <p className="text-[11px] font-semibold" style={{ color: m.color }}>{m.use}</p>
             <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full blur-[40px] opacity-20 group-hover:opacity-40 transition-opacity" style={{ background: m.color }} />
           </motion.div>
@@ -152,8 +152,8 @@ export function CompareTable() {
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="compare-wrapper glass-panel rounded-[2rem] overflow-hidden border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.5)] bg-black/60 relative">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-omin-gold/50 to-transparent" />
         
-        {/* Desktop Table */}
-        <div className="hidden md:block overflow-x-auto">
+        {/* Desktop Table - Now strictly enforced on mobile */}
+        <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <table className="w-full min-w-[700px] text-left border-collapse">
             <thead><tr className="border-b border-white/10 bg-white/[0.02]">
               <th className="p-7 text-[11px] font-bold text-white/40 uppercase tracking-[0.2em] w-1/3">Criteria</th>
@@ -164,34 +164,13 @@ export function CompareTable() {
             <tbody className="divide-y divide-white/5">
               {COMPARE_DATA.map((r, i) => (
                 <tr key={i} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="p-6 pl-7 text-sm font-semibold text-white/80">{r.label}</td>
-                  <td className="p-6 text-center text-lg font-bold text-white bg-omin-gold/[0.02] border-x border-omin-gold/10">{r.omni}</td>
-                  <td className="p-6 text-center text-sm font-medium text-white/40">{r.gpt}</td>
-                  <td className="p-6 text-center text-sm font-medium text-white/40">{r.claude}</td>
+                  <td className="p-5 md:p-6 pl-7 text-[13px] md:text-sm font-semibold text-white/80">{r.label}</td>
+                  <td className="p-5 md:p-6 text-center text-base md:text-lg font-bold text-white bg-omin-gold/[0.02] border-x border-omin-gold/10">{r.omni}</td>
+                  <td className="p-5 md:p-6 text-center text-xs md:text-sm font-medium text-white/40">{r.gpt}</td>
+                  <td className="p-5 md:p-6 text-center text-xs md:text-sm font-medium text-white/40">{r.claude}</td>
                 </tr>))}
             </tbody>
           </table>
-        </div>
-
-        {/* Mobile Cards (Stacked) */}
-        <div className="md:hidden flex flex-col divide-y divide-white/10">
-          {COMPARE_DATA.map((r, i) => (
-            <div key={i} className="p-5 flex flex-col gap-4">
-              <div className="text-[12px] font-bold text-white/60 tracking-wider uppercase">{r.label}</div>
-              <div className="bg-omin-gold/[0.05] border border-omin-gold/20 rounded-xl p-4 flex justify-between items-center shadow-[0_0_15px_rgba(255,217,61,0.05)]">
-                <span className="text-[10px] font-black tracking-widest text-omin-gold uppercase">OMNI PRO</span>
-                <span className="text-[1.05rem] font-bold text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.4)]">{r.omni}</span>
-              </div>
-              <div className="flex justify-between items-center px-2 pt-2">
-                <span className="text-[10.5px] text-white/40 uppercase font-semibold">ChatGPT+</span>
-                <span className="text-[12px] text-white/40 font-medium">{r.gpt}</span>
-              </div>
-              <div className="flex justify-between items-center px-2 pb-1">
-                <span className="text-[10.5px] text-white/40 uppercase font-semibold">Claude Pro</span>
-                <span className="text-[12px] text-white/40 font-medium">{r.claude}</span>
-              </div>
-            </div>
-          ))}
         </div>
       </motion.div>
     </section>
@@ -233,10 +212,10 @@ export function PricingSection({ onAction }) {
   return (
     <section id="pricing" className="section-content py-32 px-6 max-w-[1200px] mx-auto relative z-20">
       <SectionHeader badge="Pricing" title="Unfairly affordable." subtitle="Access every AI model on earth for less than a single ChatGPT subscription." />
-      <div className="pricing-grid grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+      <div className="pricing-grid flex md:grid md:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-8 -mx-6 px-6 md:mx-0 md:px-0">
         {PRICING.map((p, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12, duration: 0.7 }}
-            className={`pricing-card rounded-[2rem] p-6 lg:p-8 flex flex-col relative overflow-hidden ${p.popular ? 'pricing-popular-card pricing-popular glass-strong border-omin-gold/30 md:scale-[1.03] z-10' : 'glass-panel'}`}>
+            className={`pricing-card rounded-[2rem] p-6 lg:p-8 flex flex-col relative overflow-hidden min-w-[300px] md:min-w-0 snap-center flex-shrink-0 ${p.popular ? 'pricing-popular-card pricing-popular glass-strong border-omin-gold/30 md:scale-[1.03] z-10' : 'glass-panel'}`}>
             {p.popular && <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-omin-gold/60 via-yellow-200 to-omin-gold/60" />}
             {p.popular && <div className="text-[10px] font-black tracking-[0.3em] text-omin-gold uppercase mb-4">★ Most Popular</div>}
             <h3 className="font-display font-bold text-xl md:text-2xl mb-2">{p.tier}</h3>
