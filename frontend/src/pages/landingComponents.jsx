@@ -1,13 +1,112 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring, useMotionTemplate, AnimatePresence } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useMotionTemplate, useTransform, AnimatePresence } from 'framer-motion';
 
-/* ─── Noise Background ─── */
-export const NoiseBg = () => (
-  <svg className="noise-bg-mobile fixed inset-0 w-full h-full z-[1] pointer-events-none opacity-[0.03] mix-blend-screen">
-    <filter id="omni-noise"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" /><feColorMatrix type="saturate" values="0" /></filter>
-    <rect width="100%" height="100%" filter="url(#omni-noise)" />
-  </svg>
-);
+/* ─── Animated Canvas Particle Network ─── */
+export function CanvasBackground() {
+  const canvasRef = useRef(null);
+  
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    let width, height, particles = [];
+    let mouse = { x: -1000, y: -1000 };
+    let animationFrameId;
+
+    const init = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      particles = [];
+      const numParticles = Math.min(Math.floor((width * height) / 15000), 100);
+      for (let i = 0; i < numParticles; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          radius: Math.random() * 1.5 + 0.5
+        });
+      }
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = 'rgba(255, 217, 61, 0.4)';
+      ctx.lineWidth = 0.5;
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        
+        // Move
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Bounce
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+
+        // Mouse interaction (repel gently)
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const distToMouse = Math.sqrt(dx * dx + dy * dy);
+        if (distToMouse < 150) {
+          const force = (150 - distToMouse) / 150;
+          p.x -= dx * force * 0.05;
+          p.y -= dy * force * 0.05;
+        }
+
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw connections
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dist = Math.sqrt((p.x - p2.x)**2 + (p.y - p2.y)**2);
+          if (dist < 120) {
+            ctx.strokeStyle = `rgba(255, 217, 61, ${0.15 * (1 - dist / 120)})`;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        }
+      }
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
+    const handleMouseMove = (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+
+    const handleMouseLeave = () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    };
+
+    init();
+    draw();
+
+    window.addEventListener('resize', init);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseout', handleMouseLeave);
+
+    return () => {
+      window.removeEventListener('resize', init);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseout', handleMouseLeave);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="fixed inset-0 w-full h-full z-[1] pointer-events-none opacity-40 mix-blend-screen" />;
+}
+
+// Backward-compat alias — pages that import NoiseBg still work
+export const NoiseBg = CanvasBackground;
 
 /* ─── Cursor Glow (throttled with rAF) ─── */
 export function CursorGlow() {
@@ -32,16 +131,77 @@ export function CursorGlow() {
     return () => { window.removeEventListener('mousemove', h); if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [isMobile]);
   if (isMobile) return null;
-  return <div className="fixed pointer-events-none z-10 rounded-full mix-blend-screen" style={{ left: pos.x - 300, top: pos.y - 300, width: 600, height: 600, background: 'radial-gradient(circle, rgba(255,217,61,0.08) 0%, rgba(59,130,246,0.04) 40%, transparent 70%)', willChange: 'transform', transform: 'translateZ(0)' }} />;
+  return <div className="fixed pointer-events-none z-10 rounded-full mix-blend-screen" style={{ left: pos.x - 300, top: pos.y - 300, width: 600, height: 600, background: 'radial-gradient(circle, rgba(255,217,61,0.12) 0%, rgba(59,130,246,0.06) 30%, transparent 70%)', filter: 'blur(60px)', willChange: 'transform', transform: 'translateZ(0)' }} />;
+}
+
+/* ─── Staggered Character Reveal ─── */
+export function StaggeredText({ text, className, delay = 0 }) {
+  const characters = text.split("");
+  return (
+    <motion.span className={className}>
+      {characters.map((char, i) => (
+        <motion.span
+          key={i}
+          initial={{ opacity: 0, filter: "blur(10px)", y: 20 }}
+          whileInView={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+          viewport={{ once: true }}
+          transition={{
+            duration: 0.5,
+            delay: delay + i * 0.03,
+            ease: [0.16, 1, 0.3, 1]
+          }}
+          className="inline-block"
+        >
+          {char === " " ? "\u00A0" : char}
+        </motion.span>
+      ))}
+    </motion.span>
+  );
 }
 
 /* ─── Magnetic Button ─── */
 export function MagBtn({ children, className, onClick }) {
   const ref = useRef(null);
   const x = useMotionValue(0), y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 180, damping: 18 }), sy = useSpring(y, { stiffness: 180, damping: 18 });
-  const onMove = e => { if (!ref.current) return; const r = ref.current.getBoundingClientRect(); x.set((e.clientX - (r.left + r.width / 2)) * 0.3); y.set((e.clientY - (r.top + r.height / 2)) * 0.3); };
-  return <motion.button ref={ref} style={{ x: sx, y: sy }} className={`relative active:scale-95 transition-shadow ${className}`} onMouseMove={onMove} onMouseLeave={() => { x.set(0); y.set(0); }} onClick={onClick}>{children}</motion.button>;
+  const sx = useSpring(x, { stiffness: 220, damping: 16 });
+  const sy = useSpring(y, { stiffness: 220, damping: 16 });
+  const [hovered, setHovered] = useState(false);
+  const onMove = e => {
+    if (!ref.current) return;
+    const r = ref.current.getBoundingClientRect();
+    x.set((e.clientX - (r.left + r.width / 2)) * 0.4);
+    y.set((e.clientY - (r.top + r.height / 2)) * 0.4);
+  };
+  return (
+    <motion.button
+      ref={ref}
+      style={{ x: sx, y: sy }}
+      animate={{
+        boxShadow: hovered
+          ? '0 0 28px rgba(255,217,61,0.4), 0 0 60px rgba(255,217,61,0.12)'
+          : '0 0 0px rgba(255,217,61,0)'
+      }}
+      transition={{ boxShadow: { duration: 0.3 } }}
+      className={`relative overflow-hidden active:scale-95 transition-transform ${className}`}
+      onMouseMove={onMove}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => { x.set(0); y.set(0); setHovered(false); }}
+      onClick={onClick}
+    >
+      {/* Sweeping shimmer on hover */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(105deg, transparent 35%, rgba(255,217,61,0.45) 50%, transparent 65%)',
+          backgroundSize: '250% 100%',
+          backgroundPosition: '200% 0',
+        }}
+        animate={hovered ? { backgroundPosition: ['-200% 0', '200% 0'] } : {}}
+        transition={{ duration: 0.65, ease: 'easeInOut' }}
+      />
+      <span className="relative z-10">{children}</span>
+    </motion.button>
+  );
 }
 
 /* ─── Brand Logo ─── */
@@ -66,12 +226,57 @@ export function Marquee({ items, reverse }) {
 
 /* ─── 3D Bento Card ─── */
 export function BentoCard({ children, className, delay = 0 }) {
-  let mouseX = useMotionValue(0), mouseY = useMotionValue(0);
-  function handleMouseMove({ currentTarget, clientX, clientY }) { let { left, top } = currentTarget.getBoundingClientRect(); mouseX.set(clientX - left); mouseY.set(clientY - top); }
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 20 });
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["5deg", "-5deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-5deg", "5deg"]);
+
+  let spotX = useMotionValue(-1000), spotY = useMotionValue(-1000);
+
+  function handleMouseMove(e) { 
+    const rect = e.currentTarget.getBoundingClientRect(); 
+    spotX.set(e.clientX - rect.left); 
+    spotY.set(e.clientY - rect.top); 
+    
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  }
+
+  function handleMouseLeave() {
+    x.set(0);
+    y.set(0);
+    spotX.set(-1000);
+    spotY.set(-1000);
+  }
+
   return (
-    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }} className={`glass-panel glow-border rounded-2xl md:rounded-[2rem] p-5 md:p-8 relative overflow-hidden group ${className}`} onMouseMove={handleMouseMove}>
-      <motion.div className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-300 group-hover:opacity-100" style={{ background: useMotionTemplate`radial-gradient(650px circle at ${mouseX}px ${mouseY}px, rgba(255,217,61,0.12), transparent 80%)` }} />
-      <div className="relative z-10 h-full">{children}</div>
+    <motion.div 
+      initial={{ opacity: 0, y: 30 }} 
+      whileInView={{ opacity: 1, y: 0 }} 
+      viewport={{ once: true, margin: "-80px" }} 
+      transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }} 
+      style={{ perspective: 1500 }}
+      className={`relative ${className}`}
+    >
+      <motion.div 
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className={`glass-panel glow-border rounded-2xl md:rounded-[2rem] p-5 md:p-8 relative overflow-hidden group h-full w-full`}
+      >
+        <motion.div className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-300 group-hover:opacity-100" style={{ background: useMotionTemplate`radial-gradient(800px circle at ${spotX}px ${spotY}px, rgba(255,217,61,0.15), transparent 70%)`, transform: "translateZ(1px)" }} />
+        <div className="relative z-10 h-full" style={{ transform: "translateZ(30px)" }}>{children}</div>
+      </motion.div>
     </motion.div>
   );
 }

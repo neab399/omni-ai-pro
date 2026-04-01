@@ -53,7 +53,10 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
           </span>
         </div>
 
-        <div style={{
+        <motion.div 
+          animate={msg.isStreaming && msg.content ? { textShadow: ['0 0 8px rgba(255,217,61,0.8)', '0 0 0px rgba(255,217,61,0)'] } : {}}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          style={{
           background: isUser ? 'rgba(255,255,255,0.07)' : 'transparent',
           border: 'none',
           padding: isUser ? '12px 16px' : '4px 0 4px 2px',
@@ -64,10 +67,10 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
           alignSelf: isUser ? 'flex-end' : 'stretch',
           boxSizing: 'border-box'
         }}>
-          {msg.isStreaming
-            ? <TypingIndicator />
-            : <div style={{ width: '100%', minWidth: 0, overflowX: 'auto', overflowY: 'visible', boxSizing: 'border-box' }} dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.content) }} />}
-        </div>
+          {msg.isStreaming && !msg.content
+            ? <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><TypingIndicator /><span style={{fontSize: 10, color: 'var(--accent)', animation: 'pulse-glow 2s infinite'}}>Generating...</span></div>
+            : <div className={msg.isStreaming ? 'streaming-text-glow' : ''} style={{ width: '100%', minWidth: 0, overflowX: 'auto', overflowY: 'visible', boxSizing: 'border-box' }} dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.content) + (msg.isStreaming ? '<span class="cursor-blink text-omin-gold">▎</span>' : '') }} />}
+        </motion.div>
 
         {!isUser && !msg.isStreaming && msg.content && (
           <span style={{ fontSize: 10.5, color: 'var(--text-faint)', paddingLeft: 2 }}>

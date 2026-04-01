@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase, MODELS } from './landingData';
-import { NoiseBg, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp } from './landingComponents';
+import { CanvasBackground, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp, StaggeredText } from './landingComponents';
 import InteractiveLogo from '../components/InteractiveLogo';
 import { LogoCloud, LiveAIDemo, HowItWorks, ModelLibrary, CompareTable, TestimonialsSection, PricingSection, FAQSection, MarqueeSection } from './landingSections';
 
@@ -69,7 +69,7 @@ export default function LandingPage() {
 
   return (
     <div ref={containerRef} className="landing-scroll-container h-screen w-full relative bg-omin-black text-white selection:bg-omin-gold/30 overflow-y-scroll overflow-x-hidden">
-      <NoiseBg />
+      <CanvasBackground />
       <CursorGlow />
 
       {/* ═══ SCROLL PROGRESS BAR ═══ */}
@@ -145,9 +145,12 @@ export default function LandingPage() {
             {heroWords2.map((w, i) => <motion.span key={i} initial={{ y: "120%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.9, delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] }} className="inline-block text-transparent bg-clip-text bg-[linear-gradient(110deg,#FFD93D,45%,#fff,55%,#FFD93D)] bg-[length:250%_100%] animate-shimmer pb-2 md:pb-4">{w}</motion.span>)}
           </div>
         </h1>
-        <motion.p initial={{ opacity: 0, filter: 'blur(10px)' }} animate={{ opacity: 1, filter: 'blur(0px)' }} transition={{ duration: 1, delay: 0.6 }} className="hero-subtitle relative z-10 text-white/50 text-[11px] md:text-[clamp(0.95rem,2vw,1.25rem)] max-w-[280px] md:max-w-3xl leading-[1.6] md:leading-relaxed mb-8 md:mb-12 font-medium">
-          GPT-5.4, Claude 4.6 Opus, Gemini 3.1 Pro, Midjourney, and Sora Video.<br className="hidden sm:block" /> Everything you need for Code, Copy, Audio, and Video — starting at just ₹249.
-        </motion.p>
+        <div className="hero-subtitle relative z-10 text-white/50 text-[11px] md:text-[clamp(0.95rem,2vw,1.25rem)] max-w-[280px] md:max-w-3xl leading-[1.6] md:leading-relaxed mb-8 md:mb-12 font-medium">
+          <StaggeredText 
+            text="GPT-5.4, Claude 4.6 Opus, Gemini 3.1 Pro, Midjourney, and Sora Video. Everything you need for Code, Copy, Audio, and Video — starting at just ₹249."
+            delay={0.6}
+          />
+        </div>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }} className="hero-cta-row relative z-10 flex flex-col sm:flex-row gap-3 md:gap-4 mb-10 md:mb-12">
           <MagBtn onClick={triggerAuth} className="bg-white text-black px-6 py-3.5 md:px-10 md:py-4 rounded-full font-bold text-[12px] md:text-lg hover:bg-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] flex items-center justify-center gap-2 group">
             {user ? 'Go to Dashboard' : 'Start Free — No Card Needed'}<span className="group-hover:translate-x-1 transition-transform">→</span>
