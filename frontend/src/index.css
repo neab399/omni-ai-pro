@@ -500,13 +500,7 @@ html {
     text-align: center;
   }
   
-  /* ── Marquee ── */
-  .marquee-track {
-    gap: 24px !important;
-  }
-  .marquee-track span {
-    font-size: clamp(1.2rem, 4vw, 1.5rem) !important;
-  }
+  /* ── Marquee (Removed hardcoded !important tracking scales to allow JSX specific micro-typography) ── */
     /* ── Parallax orbs — hidden on mobile for perf ── */
   .parallax-orb {
     display: none !important;
