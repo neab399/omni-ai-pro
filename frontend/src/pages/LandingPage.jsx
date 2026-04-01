@@ -296,17 +296,17 @@ export default function LandingPage() {
       </section>
 
       {/* ═══ 14. FOOTER ═══ */}
-      <footer className="border-t border-white/5 bg-[#010101] py-20 px-6 relative z-20">
+      <footer className="border-t border-white/5 bg-[#010101] py-16 md:py-20 px-6 relative z-20">
         <div className="max-w-[1200px] mx-auto">
-          <div className="footer-grid grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
+          <div className="footer-grid grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16">
+            <div className="col-span-2 md:col-span-1 border-b border-white/5 pb-6 md:pb-0 md:border-transparent mb-2 md:mb-0">
+              <div className="flex items-center gap-3 mb-4 md:mb-6">
                 <div className="w-8 h-8 bg-omin-gold rounded-lg flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(255,217,61,0.2)] flex-shrink-0">
                   <img src="/logo.png" alt="OMNI AI PRO" className="w-5 h-5 object-contain" style={{ filter: 'brightness(0)' }} />
                 </div>
                 <span className="font-display font-bold text-sm">OMNI AI PRO</span>
               </div>
-              <p className="text-xs text-white/30 leading-relaxed">The world's most powerful AI aggregator. 68 models, one interface.</p>
+              <p className="text-[11px] md:text-xs text-white/30 leading-relaxed max-w-[200px]">The world's most powerful AI aggregator. 68 models, one interface.</p>
             </div>
             <div>
               <h4 className="text-xs font-bold tracking-[0.2em] uppercase text-white/50 mb-5">Product</h4>

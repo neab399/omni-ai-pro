@@ -100,10 +100,10 @@ export function HowItWorks() {
         <div className="hiw-line absolute top-16 left-[16.6%] right-[16.6%] h-px bg-gradient-to-r from-transparent via-omin-gold/30 to-transparent hidden md:block" />
         {steps.map((s, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.7 }} className="text-center relative">
-            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl glass-panel border-white/10 flex items-center justify-center text-2xl relative z-10 bg-omin-black">{s.icon}</div>
-            <div className="text-omin-gold text-xs font-bold tracking-[0.2em] uppercase mb-3">{s.num}</div>
-            <h3 className="text-xl font-display font-bold mb-3">{s.title}</h3>
-            <p className="text-white/50 text-sm leading-relaxed max-w-xs mx-auto">{s.desc}</p>
+            <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-4 md:mb-6 rounded-[14px] md:rounded-2xl glass-panel border-white/10 flex items-center justify-center text-xl md:text-2xl relative z-10 bg-omin-black">{s.icon}</div>
+            <div className="text-omin-gold text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-2 md:mb-3">{s.num}</div>
+            <h3 className="text-[1.15rem] md:text-xl font-display font-bold mb-2 md:mb-3">{s.title}</h3>
+            <p className="text-white/50 text-[13px] md:text-sm leading-relaxed max-w-[280px] md:max-w-xs mx-auto">{s.desc}</p>
           </motion.div>
         ))}
       </div>
