@@ -298,8 +298,8 @@ export default function LandingPage() {
       {/* ═══ 14. FOOTER ═══ */}
       <footer className="border-t border-white/5 bg-[#010101] py-16 md:py-20 px-6 relative z-20">
         <div className="max-w-[1200px] mx-auto">
-          <div className="footer-grid grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16">
-            <div className="col-span-2 md:col-span-1 border-b border-white/5 pb-6 md:pb-0 md:border-transparent mb-2 md:mb-0">
+          <div className="footer-grid flex flex-col md:grid md:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16">
+            <div className="md:col-span-1 border-b border-white/5 pb-6 md:pb-0 md:border-transparent mb-2 md:mb-0">
               <div className="flex items-center gap-3 mb-4 md:mb-6">
                 <div className="w-8 h-8 bg-omin-gold rounded-lg flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(255,217,61,0.2)] flex-shrink-0">
                   <img src="/logo.png" alt="OMNI AI PRO" className="w-5 h-5 object-contain" style={{ filter: 'brightness(0)' }} />
@@ -308,32 +308,34 @@ export default function LandingPage() {
               </div>
               <p className="text-[11px] md:text-xs text-white/30 leading-relaxed max-w-[200px]">The world's most powerful AI aggregator. 68 models, one interface.</p>
             </div>
-            <div>
-              <h4 className="text-xs font-bold tracking-[0.2em] uppercase text-white/50 mb-5">Product</h4>
-              <ul className="space-y-3">{['Features', 'Models', 'Pricing', 'API'].map(l => <li key={l}><a href="#" className="text-sm text-white/30 hover:text-white transition-colors">{l}</a></li>)}</ul>
-            </div>
-            <div>
-              <h4 className="text-xs font-bold tracking-[0.2em] uppercase text-white/50 mb-5">Company</h4>
-              <ul className="space-y-3">{['About', 'Blog', 'Careers', 'Contact'].map(l => <li key={l}><a href="#" className="text-sm text-white/30 hover:text-white transition-colors">{l}</a></li>)}</ul>
-            </div>
-            <div>
-              <h4 className="text-xs font-bold tracking-[0.2em] uppercase text-white/50 mb-5">Legal</h4>
-              <ul className="space-y-3">
-                {[
-                  { name: 'Privacy', path: '/privacy' },
-                  { name: 'Terms', path: '/terms' },
-                  { name: 'Security', path: '/security' },
-                  { name: 'DPA', path: '/dpa' }
-                ].map(l => (
-                  <li key={l.name}>
-                    {l.path.startsWith('/') ? (
-                      <Link to={l.path} className="text-sm text-white/30 hover:text-white transition-colors">{l.name}</Link>
-                    ) : (
-                      <a href={l.path} className="text-sm text-white/30 hover:text-white transition-colors">{l.name}</a>
-                    )}
-                  </li>
-                ))}
-              </ul>
+            <div className="grid grid-cols-3 md:contents gap-4 w-full">
+              <div>
+                <h4 className="text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase text-white/50 mb-3 md:mb-5">Product</h4>
+                <ul className="space-y-2.5 md:space-y-3">{['Features', 'Models', 'Pricing', 'API'].map(l => <li key={l}><a href="#" className="text-xs md:text-sm text-white/30 hover:text-white transition-colors">{l}</a></li>)}</ul>
+              </div>
+              <div>
+                <h4 className="text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase text-white/50 mb-3 md:mb-5">Company</h4>
+                <ul className="space-y-2.5 md:space-y-3">{['About', 'Blog', 'Careers', 'Contact'].map(l => <li key={l}><a href="#" className="text-xs md:text-sm text-white/30 hover:text-white transition-colors">{l}</a></li>)}</ul>
+              </div>
+              <div>
+                <h4 className="text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase text-white/50 mb-3 md:mb-5">Legal</h4>
+                <ul className="space-y-2.5 md:space-y-3">
+                  {[
+                    { name: 'Privacy', path: '/privacy' },
+                    { name: 'Terms', path: '/terms' },
+                    { name: 'Security', path: '/security' },
+                    { name: 'DPA', path: '/dpa' }
+                  ].map(l => (
+                    <li key={l.name}>
+                      {l.path.startsWith('/') ? (
+                        <Link to={l.path} className="text-xs md:text-sm text-white/30 hover:text-white transition-colors">{l.name}</Link>
+                      ) : (
+                        <a href={l.path} className="text-xs md:text-sm text-white/30 hover:text-white transition-colors">{l.name}</a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
           <div className="footer-bottom border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
