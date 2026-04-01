@@ -27,6 +27,7 @@ import ChatSidebar             from '../components/chat/ChatSidebar';
 import { ImageSection, VoiceSection, VideoSection } from '../components/chat/MediaSections';
 import { useArtifacts } from '../context/ArtifactContext';
 import ArtifactPanel from '../components/chat/ArtifactPanel';
+import { playSendSound, playReceiveSound, playErrorSound, initAudioContext } from '../lib/audio';
 
 /* ══════════════════════════════════════════════════════════
    CHAT PAGE — state + handlers only (~250 lines)
@@ -51,6 +52,7 @@ export default function ChatPage() {
   const [input,         setInput]         = useState('');
   const [isLoading,     setIsLoading]     = useState(true);
   const [activeSection, setActiveSection] = useState('chat');
+  const [soundEnabled,  setSoundEnabled]  = useState(() => localStorage.getItem('omni-sound') !== 'false');
 
   const [showModelSel,  setShowModelSel]  = useState(false);
   const [activeModels,  setActiveModels]  = useState([{
@@ -69,11 +71,15 @@ export default function ChatPage() {
   const chatEndRefs = useRef({});
   const inputRef    = useRef(null);
 
-  /* ── Theme sync ───────────────────────────────────────── */
+  /* ── Theme & Sound sync ───────────────────────────────────────── */
   useEffect(() => {
     localStorage.setItem('omni-theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem('omni-sound', soundEnabled);
+  }, [soundEnabled]);
 
   /* ── Toast helpers ────────────────────────────────────── */
   const addToast = useCallback((message, type = 'info') => {
@@ -210,7 +216,9 @@ export default function ChatPage() {
 
   /* ── Send message ─────────────────────────────────────── */
   const handleSend = async () => {
+    initAudioContext();
     const text = input.trim(); if (!text) return;
+    if (soundEnabled) playSendSound();
     setInput('');
     const userMsg = { id: genId(), role: 'user', content: text, timestamp: Date.now() };
     setChatHistories(prev => {
@@ -275,6 +283,7 @@ export default function ChatPage() {
           saveChatToDB(activeConvId, activeConv?.title || 'Chat', updated[activeConvId], activeConv?.pinned || false);
           return updated;
         });
+        if (soundEnabled) playReceiveSound();
       } catch (err) {
         setChatHistories(prev => {
           const msgs = [...(prev[activeConvId]?.[key] || [])];
@@ -283,6 +292,7 @@ export default function ChatPage() {
           return { ...prev, [activeConvId]: { ...prev[activeConvId], [key]: msgs } };
         });
         addToast(`${model.name}: ${err.message}`, 'error');
+        if (soundEnabled) playErrorSound();
       }
     });
   };
