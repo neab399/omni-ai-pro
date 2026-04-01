@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase, MODELS } from './landingData';
 import { NoiseBg, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp } from './landingComponents';
+import InteractiveLogo from '../components/InteractiveLogo';
 import { LogoCloud, LiveAIDemo, HowItWorks, ModelLibrary, CompareTable, TestimonialsSection, PricingSection, FAQSection, MarqueeSection } from './landingSections';
 
 export default function LandingPage() {
@@ -86,13 +87,7 @@ export default function LandingPage() {
             <motion.div initial={{ scale: 0.95, y: 10 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 10 }} className="w-full max-w-[420px] p-8 rounded-3xl glass-strong relative shadow-[0_0_80px_rgba(255,217,61,0.08)]">
               <button onClick={() => setShowAuthModal(false)} className="absolute top-6 right-6 text-white/30 hover:text-white transition-colors text-xl">✕</button>
               <div className="text-center mb-8">
-                <motion.div
-                animate={{ boxShadow: ['0 0 20px rgba(255,217,61,0.3)', '0 0 40px rgba(255,217,61,0.6)', '0 0 20px rgba(255,217,61,0.3)'] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-                className="w-12 h-12 bg-omin-gold rounded-xl mx-auto mb-4 flex items-center justify-center shadow-[0_0_30px_rgba(255,217,61,0.3)] overflow-hidden"
-              >
-                <img src="/logo.png" alt="OMNI AI PRO" className="w-8 h-8 object-contain" style={{ filter: 'brightness(0)' }} />
-              </motion.div>
+                <InteractiveLogo size={48} iconSize={32} className="mx-auto mb-4" />
                 <h2 className="text-2xl font-display font-bold tracking-tight mb-2">Welcome to OMNI AI</h2>
                 <p className="text-sm text-white/40">Log in or sign up to continue.</p>
               </div>
@@ -121,13 +116,7 @@ export default function LandingPage() {
       {/* ═══ NAV ═══ */}
       <motion.nav style={{ background: navBg, borderBottomColor: navBorder }} className="landing-nav fixed top-[3px] z-[100] w-full h-[72px] flex items-center justify-between px-6 lg:px-12 backdrop-blur-xl border-b border-transparent">
         <div className="flex items-center gap-3">
-          <motion.div
-            animate={{ boxShadow: ['0 0 10px rgba(255,217,61,0.25)', '0 0 22px rgba(255,217,61,0.55)', '0 0 10px rgba(255,217,61,0.25)'] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-8 h-8 bg-omin-gold rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0"
-          >
-            <img src="/logo.png" alt="OMNI AI PRO" className="w-5 h-5 object-contain" style={{ filter: 'brightness(0)' }} />
-          </motion.div>
+          <InteractiveLogo size={32} iconSize={20} />
           <span className="font-display font-bold tracking-tight text-[15px]">OMNI AI <span className="text-omin-gold">PRO</span></span>
         </div>
         <div className="hidden md:flex gap-8">
@@ -301,9 +290,7 @@ export default function LandingPage() {
           <div className="footer-grid flex flex-col md:grid md:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16">
             <div className="md:col-span-1 border-b border-white/5 pb-6 md:pb-0 md:border-transparent mb-2 md:mb-0">
               <div className="flex items-center gap-3 mb-4 md:mb-6">
-                <div className="w-8 h-8 bg-omin-gold rounded-lg flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(255,217,61,0.2)] flex-shrink-0">
-                  <img src="/logo.png" alt="OMNI AI PRO" className="w-5 h-5 object-contain" style={{ filter: 'brightness(0)' }} />
-                </div>
+                <InteractiveLogo size={32} iconSize={20} />
                 <span className="font-display font-bold text-sm">OMNI AI PRO</span>
               </div>
               <p className="text-[11px] md:text-xs text-white/30 leading-relaxed max-w-[200px]">The world's most powerful AI aggregator. 68 models, one interface.</p>
