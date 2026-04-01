@@ -361,7 +361,7 @@ export default function ChatPage() {
   const { isOpen: isArtifactOpen } = useArtifacts();
 
   return (
-    <div className={`chat-page-root chat-layout ${isArtifactOpen ? 'side-panel-open' : ''}`} style={{ display: 'flex', height: '100dvh', background: 'var(--bg-base)', color: 'var(--text-main)', overflow: 'hidden', fontFamily: "'Outfit',sans-serif", position: 'relative' }}>
+    <div className={`chat-page-root chat-layout ${isArtifactOpen && !isMobile ? 'side-panel-open' : ''}`} style={{ display: 'flex', height: '100dvh', background: 'var(--bg-base)', color: 'var(--text-main)', overflow: 'hidden', fontFamily: "'Outfit',sans-serif", position: 'relative' }}>
       <style>{GLOBAL_STYLES}</style>
 
       {/* Mobile sidebar backdrop */}

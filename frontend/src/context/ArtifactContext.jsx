@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
 const ArtifactContext = createContext();
 
@@ -25,7 +25,7 @@ export const ArtifactProvider = ({ children }) => {
   const openPanel = () => setIsOpen(true);
 
   // ── Event Listener for Markdown Parser ──
-  React.useEffect(() => {
+  useEffect(() => {
     const handleView = (e) => {
       const { code, lang } = e.detail;
       const artifact = { 
