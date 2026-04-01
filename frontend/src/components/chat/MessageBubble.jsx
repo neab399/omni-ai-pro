@@ -60,7 +60,8 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
           borderRadius: isUser ? '20px 4px 20px 20px' : 0,
           wordBreak: 'break-word',
           overflowWrap: 'break-word',
-          width: '100%',
+          width: isUser ? 'fit-content' : '100%',
+          alignSelf: isUser ? 'flex-end' : 'stretch',
           boxSizing: 'border-box'
         }}>
           {msg.isStreaming
