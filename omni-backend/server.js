@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import OpenAI from 'openai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 
 // 1. Load Environment Variables
 dotenv.config();
@@ -10,8 +12,39 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(express.json());
+// Security Middlewares
+app.use(helmet()); // Basic HTTP header protection
+
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'https://omni-ai-pro.vercel.app'
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow no origin (like mobile apps/curl) or exactly matched origins, or vercel preview branches
+        if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+            callback(null, true);
+        } else {
+            callback(new Error('Domain Not Allowed by CORS'));
+        }
+    },
+    methods: ['POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Payload limitation to stop memory crashing
+app.use(express.json({ limit: '1mb' }));
+
+// Rate Limiter: Stop spammers from draining the Groq/Gemini APIs
+const chatLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, /* 15 minutes */
+    max: 50, /* 50 requests per IP per window */
+    message: { type: 'error', message: 'Too many active AI requests from this IP. Please wait a few minutes to protect API bandwidth.' },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 
 // 2. API Keys Validation
 const GROQ_KEY = process.env.GROQ_API_KEY;
@@ -98,7 +131,7 @@ async function streamGemini(res, messages, systemPrompt) {
 }
 
 // --- Main API Route ---
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', chatLimiter, async (req, res) => {
     const { messages = [], providerId, systemPrompt } = req.body;
     setSSEHeaders(res);
 

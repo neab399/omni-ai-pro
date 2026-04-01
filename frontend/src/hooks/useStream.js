@@ -60,7 +60,7 @@ export function useStream() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({ error: 'Server error ' + res.status }));
-        onError?.(err.error || 'Server error');
+        onError?.(err.error || err.message || 'Server error');
         setStreaming(false);
         return;
       }
