@@ -19,13 +19,13 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
       onTouchStart={() => setShowActions(true)}
-      style={{ display: 'flex', gap: 10, flexDirection: isUser ? 'row-reverse' : 'row', position: 'relative', padding: '4px 0' }}
+      style={{ display: 'flex', gap: 10, flexDirection: isUser ? 'row-reverse' : 'row', position: 'relative', padding: '4px 0', width: '100%', minWidth: 0, maxWidth: '100%' }}
     >
       {isUser
         ? <UserAvatar profile={userProfile} size={32} />
         : <ModelAvatar model={model} size={32} />}
 
-      <div style={{ maxWidth: isCompact ? '88%' : '78%', display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, overflow: 'hidden' }}>
+      <div style={{ width: '100%', maxWidth: isCompact ? '88%' : '85%', display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, overflow: 'hidden' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexDirection: isUser ? 'row-reverse' : 'row' }}>
           <span style={{ fontSize: 12, fontWeight: 700, color: isUser ? 'var(--text-sec)' : (model?.color || 'var(--text-main)'), letterSpacing: '0.01em' }}>
             {isUser ? 'You' : (model?.name || 'AI')}
@@ -41,11 +41,14 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
           padding: isUser ? '12px 16px' : '4px 0 4px 2px',
           borderRadius: isUser ? '20px 4px 20px 20px' : 0,
           wordBreak: 'break-word',
+          overflowWrap: 'break-word',
           overflow: 'hidden',
+          width: '100%',
+          maxWidth: '100%',
         }}>
           {msg.isStreaming
             ? <TypingIndicator />
-            : <div dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.content) }} />}
+            : <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', wordBreak: 'break-word' }} dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.content) }} />}
         </div>
 
         {!isUser && !msg.isStreaming && msg.content && (
