@@ -22,23 +22,31 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
       onMouseLeave={() => setShowActions(false)}
       onTouchStart={() => setShowActions(true)}
       style={{ 
-        display: 'grid', 
-        gridTemplateColumns: isUser ? 'minmax(0, 1fr) 32px' : '32px minmax(0, 1fr)', 
-        gap: 10, 
+        display: isCompact ? 'flex' : 'grid', 
+        flexDirection: isCompact ? 'column' : undefined,
+        gridTemplateColumns: isCompact ? 'none' : (isUser ? 'minmax(0, 1fr) 32px' : '32px minmax(0, 1fr)'), 
+        gap: isCompact ? 4 : 10, 
         position: 'relative', 
         padding: '4px 0', 
         width: '100%' 
       }}
     >
-      {!isUser && (
+      {!isCompact && !isUser && (
         <div style={{ width: 32, height: 32 }}>
           <ModelAvatar model={model} size={32} />
         </div>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, width: '100%', position: 'relative' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexDirection: isUser ? 'row-reverse' : 'row' }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: isUser ? 'var(--text-sec)' : (model?.color || 'var(--text-main)'), letterSpacing: '0.01em' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: isCompact ? 6 : 8, flexDirection: isUser ? 'row-reverse' : 'row' }}>
+          
+          {isCompact && (
+            <div style={{ width: 22, height: 22 }}>
+              {isUser ? <UserAvatar profile={userProfile} size={22} /> : <ModelAvatar model={model} size={22} />}
+            </div>
+          )}
+
+          <span style={{ fontSize: isCompact ? 11.5 : 12, fontWeight: 700, color: isUser ? 'var(--text-sec)' : (model?.color || 'var(--text-main)'), letterSpacing: '0.01em' }}>
             {isUser ? 'You' : (model?.name || 'AI')}
           </span>
           <span style={{ fontSize: 10.5, color: 'var(--text-muted)' }}>
@@ -68,7 +76,7 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
         )}
       </div>
 
-      {isUser && (
+      {!isCompact && isUser && (
         <div style={{ width: 32, height: 32 }}>
           <UserAvatar profile={userProfile} size={32} />
         </div>
