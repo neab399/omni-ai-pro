@@ -267,7 +267,7 @@ export function FAQSection() {
 /* ═══ 9. MARQUEE SECTION ═══ */
 export function MarqueeSection() {
   return (
-    <div className="border-y border-white/5 bg-black/40 py-8 flex flex-col gap-4 backdrop-blur-md relative z-20">
+    <div className="border-y border-white/5 bg-black/40 py-3 md:py-8 flex flex-col gap-1 md:gap-4 backdrop-blur-md relative z-20">
       <Marquee items={MARQUEE_ITEMS} /><Marquee items={['Up to 20M Tokens', 'Starting at ₹249', '68 AI Models', 'India Made', 'Text, Image, Audio, Video']} reverse />
     </div>
   );
