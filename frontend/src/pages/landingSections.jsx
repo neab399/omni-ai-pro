@@ -56,25 +56,25 @@ export function LiveAIDemo() {
           <div className="mx-auto flex items-center gap-2 text-[11px] font-bold text-white/30 tracking-widest uppercase"><div className="w-2 h-2 bg-green-400 rounded-full shadow-[0_0_8px_#4ade80]" />omni-terminal</div>
         </div>
         {/* Chat Body */}
-        <div className="demo-body p-8 space-y-6 min-h-[400px] font-mono text-[13px]">
+        <div className="demo-body p-5 md:p-8 space-y-4 md:space-y-6 min-h-[300px] md:min-h-[400px] font-mono text-[10px] md:text-[13px]">
           {/* User Message */}
-          <div className="flex gap-4 items-start">
-            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold text-white/60 flex-shrink-0">U</div>
-            <div className="glass-pill bg-white/5 p-4 rounded-2xl rounded-tl-sm max-w-[90%]">
+          <div className="flex gap-3 md:gap-4 items-start">
+            <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white/10 flex items-center justify-center text-[10px] md:text-xs font-bold text-white/60 flex-shrink-0">U</div>
+            <div className="glass-pill bg-white/5 p-3 md:p-4 rounded-xl md:rounded-2xl rounded-tl-sm max-w-[90%]">
               <Typewriter text={userPrompt} speed={25} startDelay={500} onDone={() => setTimeout(() => setPhase(1), 600)} />
             </div>
           </div>
           {/* AI Response */}
           {phase >= 1 && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-4 items-start">
-              <div className="w-8 h-8 rounded-full bg-omin-gold flex items-center justify-center text-xs font-display font-black text-black flex-shrink-0">O</div>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3 md:gap-4 items-start">
+              <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-omin-gold flex items-center justify-center text-[10px] md:text-xs font-display font-black text-black flex-shrink-0">O</div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-omin-gold text-[11px] font-bold uppercase tracking-wider">Claude 4.6 Opus</span>
-                  <span className="text-[9px] px-2 py-0.5 rounded bg-white/10 text-white/60">Code</span>
+                  <span className="text-omin-gold text-[9.5px] md:text-[11px] font-bold uppercase tracking-wider">Claude 4.6 Opus</span>
+                  <span className="text-[8px] md:text-[9px] px-2 py-0.5 rounded bg-white/10 text-white/60">Code</span>
                 </div>
-                <div className="border border-white/10 rounded-xl bg-[#050505] p-5 overflow-x-auto">
-                  <pre className="text-[12.5px] leading-relaxed text-emerald-300/90 whitespace-pre"><Typewriter text={aiResponse} speed={12} startDelay={0} /></pre>
+                <div className="border border-white/10 rounded-lg md:rounded-xl bg-[#050505] p-3 md:p-5 overflow-x-auto">
+                  <pre className="text-[9.5px] md:text-[12.5px] leading-relaxed text-emerald-300/90 whitespace-pre"><Typewriter text={aiResponse} speed={12} startDelay={0} /></pre>
                 </div>
               </div>
             </motion.div>
@@ -100,10 +100,10 @@ export function HowItWorks() {
         <div className="hiw-line absolute top-16 left-[16.6%] right-[16.6%] h-px bg-gradient-to-r from-transparent via-omin-gold/30 to-transparent hidden md:block" />
         {steps.map((s, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.7 }} className="text-center relative min-w-[280px] md:min-w-0 snap-center flex-shrink-0">
-            <div className="w-14 h-14 md:w-16 md:h-16 mx-auto mb-4 md:mb-6 rounded-[14px] md:rounded-2xl glass-panel border-white/10 flex items-center justify-center text-xl md:text-2xl relative z-10 bg-omin-black">{s.icon}</div>
-            <div className="text-omin-gold text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-2 md:mb-3">{s.num}</div>
-            <h3 className="text-[1.15rem] md:text-xl font-display font-bold mb-2 md:mb-3">{s.title}</h3>
-            <p className="text-white/50 text-[13px] md:text-sm leading-relaxed max-w-[280px] md:max-w-xs mx-auto">{s.desc}</p>
+            <div className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-6 rounded-[12px] md:rounded-2xl glass-panel border-white/10 flex items-center justify-center text-lg md:text-2xl relative z-10 bg-omin-black">{s.icon}</div>
+            <div className="text-omin-gold text-[9.5px] md:text-xs font-bold tracking-[0.2em] uppercase mb-1.5 md:mb-3">{s.num}</div>
+            <h3 className="text-[0.95rem] md:text-xl font-display font-bold mb-1.5 md:mb-3">{s.title}</h3>
+            <p className="text-white/50 text-[11px] md:text-sm leading-relaxed max-w-[240px] md:max-w-xs mx-auto">{s.desc}</p>
           </motion.div>
         ))}
       </div>
@@ -117,26 +117,26 @@ export function ModelLibrary() {
   const visible = showAll ? MODELS : MODELS.slice(0, 8);
   return (
     <section id="models" className="section-content py-32 px-6 max-w-[1400px] mx-auto relative z-20">
-      <div className="model-lib-header flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-6">
+      <div className="model-lib-header flex flex-col lg:flex-row lg:items-end justify-between mb-12 md:mb-16 gap-5 md:gap-6">
         <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-          <div className="text-omin-gold text-xs font-bold tracking-[0.2em] uppercase mb-4">The God-Tier Library</div>
-          <h2 className="font-display font-bold text-[clamp(2.5rem,5vw,4.5rem)] tracking-tight leading-none mb-4">
+          <div className="text-omin-gold text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-2 md:mb-4">The God-Tier Library</div>
+          <h2 className="font-display font-bold text-[2rem] sm:text-[3rem] md:text-[clamp(2.5rem,5vw,4.5rem)] tracking-tight leading-none mb-3 md:mb-4">
             <CountUp target={68} className="text-omin-gold" /> AI Models.
           </h2>
-          <p className="text-white/50 text-lg max-w-xl">Switch models mid-thought. Whether you need Claude's nuance, GPT's logic, or Midjourney's art.</p>
+          <p className="text-white/50 text-[12px] md:text-lg max-w-[280px] md:max-w-xl">Switch models mid-thought. Whether you need Claude's nuance, GPT's logic, or Midjourney's art.</p>
         </motion.div>
-        <button onClick={() => setShowAll(!showAll)} className="glass-pill px-8 py-3 rounded-full text-sm font-bold text-white/80 hover:bg-white/10 hover:text-white transition-all self-start lg:self-auto">
+        <button onClick={() => setShowAll(!showAll)} className="glass-pill px-6 py-2.5 md:px-8 md:py-3 rounded-full text-[11px] md:text-sm font-bold text-white/80 hover:bg-white/10 hover:text-white transition-all self-start lg:self-auto">
           {showAll ? 'Show Less ↑' : `View All 68 Models ↓`}
         </button>
       </div>
       <div className="model-grid grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         {visible.map((m, i) => (
           <motion.div key={m.name} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: (i % 8) * 0.05 }} className="glass-panel p-4 md:p-6 rounded-[1rem] md:rounded-[2rem] relative overflow-hidden group hover:border-white/20 transition-all cursor-default">
-            <div className="mb-3 md:mb-4 scale-75 md:scale-100 origin-left"><BrandLogo slug={m.slug} color={m.color} name={m.name} /></div>
-            <h3 className="font-bold text-[14px] md:text-lg text-white mb-0.5 md:mb-1 group-hover:text-omin-gold transition-colors truncate">{m.name}</h3>
-            <p className="text-[10px] md:text-xs text-white/40 mb-2 md:mb-3 truncate">{m.maker}</p>
-            <p className="text-[11px] font-semibold" style={{ color: m.color }}>{m.use}</p>
-            <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full blur-[40px] opacity-20 group-hover:opacity-40 transition-opacity" style={{ background: m.color }} />
+            <div className="mb-2 md:mb-4 scale-75 md:scale-100 origin-left"><BrandLogo slug={m.slug} color={m.color} name={m.name} size={28} /></div>
+            <h3 className="font-bold text-[11.5px] md:text-lg text-white mb-0.5 md:mb-1 group-hover:text-omin-gold transition-colors truncate mt-1">{m.name}</h3>
+            <p className="text-[8.5px] md:text-xs text-white/40 mb-1.5 md:mb-3 truncate">{m.maker}</p>
+            <p className="text-[9.5px] md:text-[11px] font-semibold" style={{ color: m.color }}>{m.use}</p>
+            <div className="absolute -bottom-6 -right-6 w-20 h-20 md:w-24 md:h-24 rounded-full blur-[40px] opacity-20 group-hover:opacity-40 transition-opacity" style={{ background: m.color }} />
           </motion.div>
         ))}
       </div>
@@ -164,10 +164,10 @@ export function CompareTable() {
             <tbody className="divide-y divide-white/5">
               {COMPARE_DATA.map((r, i) => (
                 <tr key={i} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="p-5 md:p-6 pl-7 text-[13px] md:text-sm font-semibold text-white/80">{r.label}</td>
-                  <td className="p-5 md:p-6 text-center text-base md:text-lg font-bold text-white bg-omin-gold/[0.02] border-x border-omin-gold/10">{r.omni}</td>
-                  <td className="p-5 md:p-6 text-center text-xs md:text-sm font-medium text-white/40">{r.gpt}</td>
-                  <td className="p-5 md:p-6 text-center text-xs md:text-sm font-medium text-white/40">{r.claude}</td>
+                  <td className="p-4 md:p-6 pl-5 md:pl-7 text-[11px] md:text-sm font-semibold text-white/80">{r.label}</td>
+                  <td className="p-4 md:p-6 text-center text-[13px] md:text-lg font-bold text-white bg-omin-gold/[0.02] border-x border-omin-gold/10">{r.omni}</td>
+                  <td className="p-4 md:p-6 text-center text-[10px] md:text-sm font-medium text-white/40">{r.gpt}</td>
+                  <td className="p-4 md:p-6 text-center text-[10px] md:text-sm font-medium text-white/40">{r.claude}</td>
                 </tr>))}
             </tbody>
           </table>
@@ -187,14 +187,14 @@ export function TestimonialsSection() {
       <div className="testimonial-container relative h-[280px] sm:h-[240px]">
         <AnimatePresence mode="wait">
           {TESTIMONIALS.map((t, i) => i === active && (
-            <motion.div key={i} initial={{ opacity: 0, y: 20, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -20, scale: 0.97 }} transition={{ duration: 0.5 }} className="testimonial-card absolute inset-0 glass-panel rounded-[2rem] p-10 flex flex-col justify-between">
+            <motion.div key={i} initial={{ opacity: 0, y: 20, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -20, scale: 0.97 }} transition={{ duration: 0.5 }} className="testimonial-card absolute inset-0 glass-panel rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-10 flex flex-col justify-between">
               <div>
-                <div className="flex gap-1 mb-4">{Array.from({ length: t.stars }).map((_, j) => <span key={j} className="star-filled text-lg">★</span>)}</div>
-                <p className="text-white text-[16px] leading-relaxed italic font-medium">"{t.text}"</p>
+                <div className="flex gap-1 mb-3 md:mb-4">{Array.from({ length: t.stars }).map((_, j) => <span key={j} className="star-filled text-[15px] md:text-lg">★</span>)}</div>
+                <p className="text-white text-[13px] md:text-[16px] leading-[1.6] md:leading-relaxed italic font-medium">"{t.text}"</p>
               </div>
-              <div className="flex items-center gap-4 mt-6">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-sm text-black" style={{ background: t.color }}>{t.initials}</div>
-                <div><div className="font-bold text-sm">{t.name}</div><div className="text-xs text-white/40">{t.role}</div></div>
+              <div className="flex items-center gap-3 md:gap-4 mt-4 md:mt-6">
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-display font-bold text-[10px] md:text-sm text-black" style={{ background: t.color }}>{t.initials}</div>
+                <div><div className="font-bold text-[11px] md:text-sm">{t.name}</div><div className="text-[10px] md:text-xs text-white/40">{t.role}</div></div>
               </div>
             </motion.div>
           ))}
@@ -215,19 +215,19 @@ export function PricingSection({ onAction }) {
       <div className="pricing-grid flex md:grid md:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-8 -mx-6 px-6 md:mx-0 md:px-0">
         {PRICING.map((p, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12, duration: 0.7 }}
-            className={`pricing-card rounded-[2rem] p-6 lg:p-8 flex flex-col relative overflow-hidden min-w-[300px] md:min-w-0 snap-center flex-shrink-0 ${p.popular ? 'pricing-popular-card pricing-popular glass-strong border-omin-gold/30 md:scale-[1.03] z-10' : 'glass-panel'}`}>
+            className={`pricing-card rounded-[1.5rem] md:rounded-[2rem] p-5 md:p-8 flex flex-col relative overflow-hidden min-w-[280px] md:min-w-0 snap-center flex-shrink-0 ${p.popular ? 'pricing-popular-card pricing-popular glass-strong border-omin-gold/30 md:scale-[1.03] z-10' : 'glass-panel'}`}>
             {p.popular && <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-omin-gold/60 via-yellow-200 to-omin-gold/60" />}
-            {p.popular && <div className="text-[10px] font-black tracking-[0.3em] text-omin-gold uppercase mb-4">★ Most Popular</div>}
-            <h3 className="font-display font-bold text-xl md:text-2xl mb-2">{p.tier}</h3>
-            <div className="flex items-baseline gap-1 mb-3">
-              <span className="text-[2rem] md:text-4xl font-display font-black text-white">₹{p.price}</span>
-              <span className="text-white/40 text-xs md:text-sm">{p.period}</span>
+            {p.popular && <div className="text-[8.5px] md:text-[10px] font-black tracking-[0.3em] text-omin-gold uppercase mb-3 md:mb-4">★ Most Popular</div>}
+            <h3 className="font-display font-bold text-[1.15rem] md:text-2xl mb-1 md:mb-2">{p.tier}</h3>
+            <div className="flex items-baseline gap-1 mb-2 md:mb-3">
+              <span className="text-[1.8rem] md:text-4xl font-display font-black text-white">₹{p.price}</span>
+              <span className="text-white/40 text-[10px] md:text-sm">{p.period}</span>
             </div>
-            <p className="text-white/50 text-xs md:text-sm mb-6 md:mb-8">{p.desc}</p>
-            <ul className="flex-1 space-y-3 mb-6 md:mb-8">
-              {p.features.map((f, j) => <li key={j} className="flex items-center gap-3 text-xs md:text-sm text-white/70"><span className="text-omin-gold text-[10px] md:text-xs">✓</span>{f}</li>)}
+            <p className="text-white/50 text-[10.5px] md:text-sm mb-5 md:mb-8 max-w-[200px] md:max-w-none">{p.desc}</p>
+            <ul className="flex-1 space-y-2.5 md:space-y-3 mb-5 md:mb-8">
+              {p.features.map((f, j) => <li key={j} className="flex items-center gap-2.5 md:gap-3 text-[10.5px] md:text-sm text-white/70"><span className="text-omin-gold text-[9px] md:text-[10px]">✓</span>{f}</li>)}
             </ul>
-            <button onClick={onAction} className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all ${p.popular ? 'bg-omin-gold text-black hover:bg-omin-gold/90 shadow-[0_0_30px_rgba(255,217,61,0.2)]' : 'glass-pill text-white hover:bg-white/10'}`}>
+            <button onClick={onAction} className={`w-full py-3 md:py-3.5 rounded-xl font-bold text-[11px] md:text-sm transition-all ${p.popular ? 'bg-omin-gold text-black hover:bg-omin-gold/90 shadow-[0_0_30px_rgba(255,217,61,0.2)]' : 'glass-pill text-white hover:bg-white/10'}`}>
               {p.popular ? 'Get Pro Now →' : `Choose ${p.tier}`}
             </button>
           </motion.div>
@@ -245,15 +245,15 @@ export function FAQSection() {
       <SectionHeader badge="FAQ" title="Got questions?" subtitle="Everything you need to know about OMNI AI PRO." />
       <div className="space-y-4">
         {FAQ_DATA.map((f, i) => (
-          <motion.div key={i} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }} className="glass-panel rounded-2xl overflow-hidden">
-            <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-6 text-left hover:bg-white/[0.02] transition-colors" data-state={open === i ? 'open' : 'closed'}>
-              <span className="font-semibold text-[15px] pr-6">{f.q}</span>
-              <span className={`accordion-chevron text-white/40 text-xl flex-shrink-0 transition-transform duration-300 ${open === i ? 'rotate-180' : ''}`}>⌄</span>
+          <motion.div key={i} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }} className="glass-panel rounded-xl md:rounded-2xl overflow-hidden">
+            <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between p-4 md:p-6 text-left hover:bg-white/[0.02] transition-colors" data-state={open === i ? 'open' : 'closed'}>
+              <span className="font-semibold text-[12px] md:text-[15px] pr-4 md:pr-6">{f.q}</span>
+              <span className={`accordion-chevron text-white/40 text-[16px] md:text-xl flex-shrink-0 transition-transform duration-300 ${open === i ? 'rotate-180' : ''}`}>⌄</span>
             </button>
             <AnimatePresence>
               {open === i && (
                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }} className="overflow-hidden">
-                  <div className="px-6 pb-6 text-white/60 text-sm leading-relaxed border-t border-white/5 pt-4">{f.a}</div>
+                  <div className="px-4 md:px-6 pb-4 md:pb-6 text-white/60 text-[11.5px] md:text-sm leading-relaxed border-t border-white/5 pt-3 md:pt-4">{f.a}</div>
                 </motion.div>
               )}
             </AnimatePresence>

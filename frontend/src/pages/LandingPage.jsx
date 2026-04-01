@@ -143,27 +143,27 @@ export default function LandingPage() {
 
       {/* ═══ 1. HERO ═══ */}
       <motion.section style={{ opacity: heroOpacity, scale: heroScale, y: heroY }} className="hero-section relative flex flex-col items-center justify-center min-h-[95vh] text-center px-4 pt-32 pb-10">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="relative z-10 mb-10">
-          <span className="glass-pill px-6 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-[0.25em] text-white uppercase shadow-[0_0_30px_rgba(255,255,255,0.05)]">
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="relative z-10 mb-6 md:mb-10">
+          <span className="glass-pill px-4 md:px-6 py-2 md:py-2.5 rounded-full text-[8.5px] md:text-[10px] sm:text-xs font-bold tracking-[0.25em] text-white uppercase shadow-[0_0_30px_rgba(255,255,255,0.05)]">
             <span className="text-omin-gold mr-2">✦</span>The Ultimate AI Aggregator
           </span>
         </motion.div>
-        <h1 className="hero-heading relative z-10 font-display font-bold text-[clamp(3rem,8vw,9rem)] leading-[0.9] tracking-tighter mb-10 max-w-6xl mx-auto flex flex-col items-center">
+        <h1 className="hero-heading relative z-10 font-display font-bold text-[2rem] sm:text-[3rem] md:text-[clamp(3.5rem,8vw,9rem)] leading-[0.9] tracking-tighter mb-6 md:mb-10 max-w-6xl mx-auto flex flex-col items-center">
           <div className="overflow-hidden flex gap-[clamp(0.4rem,2vw,1.5rem)] flex-wrap justify-center">
-            {heroWords1.map((w, i) => <motion.span key={i} initial={{ y: "120%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.9, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }} className="inline-block text-white pb-2">{w}</motion.span>)}
+            {heroWords1.map((w, i) => <motion.span key={i} initial={{ y: "120%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.9, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }} className="inline-block text-white pb-1 md:pb-2">{w}</motion.span>)}
           </div>
           <div className="overflow-hidden flex gap-[clamp(0.4rem,2vw,1.5rem)] flex-wrap justify-center">
-            {heroWords2.map((w, i) => <motion.span key={i} initial={{ y: "120%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.9, delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] }} className="inline-block text-transparent bg-clip-text bg-[linear-gradient(110deg,#FFD93D,45%,#fff,55%,#FFD93D)] bg-[length:250%_100%] animate-shimmer pb-4">{w}</motion.span>)}
+            {heroWords2.map((w, i) => <motion.span key={i} initial={{ y: "120%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.9, delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] }} className="inline-block text-transparent bg-clip-text bg-[linear-gradient(110deg,#FFD93D,45%,#fff,55%,#FFD93D)] bg-[length:250%_100%] animate-shimmer pb-2 md:pb-4">{w}</motion.span>)}
           </div>
         </h1>
-        <motion.p initial={{ opacity: 0, filter: 'blur(10px)' }} animate={{ opacity: 1, filter: 'blur(0px)' }} transition={{ duration: 1, delay: 0.6 }} className="hero-subtitle relative z-10 text-white/50 text-[clamp(0.95rem,2vw,1.25rem)] max-w-3xl leading-relaxed mb-12 font-medium">
+        <motion.p initial={{ opacity: 0, filter: 'blur(10px)' }} animate={{ opacity: 1, filter: 'blur(0px)' }} transition={{ duration: 1, delay: 0.6 }} className="hero-subtitle relative z-10 text-white/50 text-[11px] md:text-[clamp(0.95rem,2vw,1.25rem)] max-w-[280px] md:max-w-3xl leading-[1.6] md:leading-relaxed mb-8 md:mb-12 font-medium">
           GPT-5.4, Claude 4.6 Opus, Gemini 3.1 Pro, Midjourney, and Sora Video.<br className="hidden sm:block" /> Everything you need for Code, Copy, Audio, and Video — starting at just ₹249.
         </motion.p>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }} className="hero-cta-row relative z-10 flex flex-col sm:flex-row gap-4 mb-12">
-          <MagBtn onClick={triggerAuth} className="bg-white text-black px-10 py-4 rounded-full font-bold hover:bg-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] flex items-center justify-center gap-2 group">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }} className="hero-cta-row relative z-10 flex flex-col sm:flex-row gap-3 md:gap-4 mb-10 md:mb-12">
+          <MagBtn onClick={triggerAuth} className="bg-white text-black px-6 py-3.5 md:px-10 md:py-4 rounded-full font-bold text-[12px] md:text-lg hover:bg-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] flex items-center justify-center gap-2 group">
             {user ? 'Go to Dashboard' : 'Start Free — No Card Needed'}<span className="group-hover:translate-x-1 transition-transform">→</span>
           </MagBtn>
-          <a href="#compare" className="glass-pill text-white/60 px-8 py-4 rounded-full font-semibold hover:bg-white/10 hover:text-white transition-all flex items-center justify-center">See Comparison ↓</a>
+          <a href="#compare" className="glass-pill text-white/60 px-6 py-3.5 md:px-8 md:py-4 text-[11px] md:text-base rounded-full font-semibold hover:bg-white/10 hover:text-white transition-all flex items-center justify-center">See Comparison ↓</a>
         </motion.div>
         {/* Live model ticker */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} className="relative z-10 glass-pill px-5 py-2.5 rounded-full flex items-center gap-3">
@@ -221,46 +221,46 @@ export default function LandingPage() {
       <LiveAIDemo />
 
       {/* ═══ 6. BENTO FEATURES ═══ */}
-      <section id="features" className="bento-section section-content py-24 md:py-32 px-5 md:px-6 max-w-[1400px] mx-auto relative z-20 flex flex-col lg:flex-row gap-10 lg:gap-20">
+      <section id="features" className="bento-section section-content py-20 md:py-32 px-5 md:px-6 max-w-[1400px] mx-auto relative z-20 flex flex-col lg:flex-row gap-8 lg:gap-20">
         <div className="bento-sidebar lg:w-1/3 lg:sticky lg:top-40 h-fit text-center lg:text-left">
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-            <h2 className="font-display font-bold text-[2.75rem] md:text-[clamp(3.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight mb-4 md:mb-6">Unfair<br className="hidden lg:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-omin-gold to-yellow-100 pl-2 lg:pl-0">Advantage.</span></h2>
-            <p className="text-white/50 text-base md:text-lg leading-relaxed max-w-sm mx-auto lg:mx-0">Why pay for 5 different subscriptions when you can have the absolute best AI models in one unified terminal?</p>
+            <h2 className="font-display font-bold text-[2rem] md:text-[clamp(3.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight mb-4 md:mb-6">Unfair<br className="hidden lg:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-omin-gold to-yellow-100 pl-2 lg:pl-0">Advantage.</span></h2>
+            <p className="text-white/50 text-[12px] md:text-lg leading-relaxed max-w-[280px] md:max-w-sm mx-auto lg:mx-0">Why pay for 5 different subscriptions when you can have the absolute best AI models in one unified terminal?</p>
           </motion.div>
         </div>
         <div className="bento-cards lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 relative">
           <div className="absolute inset-0 bg-omin-gold/5 blur-[100px] rounded-full pointer-events-none -z-10" />
-          <BentoCard className="bento-card-wide md:col-span-2 min-h-[260px] md:min-h-[300px] flex flex-col md:flex-row gap-6 md:gap-8 items-center text-center md:text-left">
+          <BentoCard className="bento-card-wide md:col-span-2 min-h-[200px] md:min-h-[300px] flex flex-col md:flex-row gap-5 md:gap-8 items-center text-center md:text-left p-6 md:p-8">
             <div className="w-full md:w-3/5">
-              <div className="text-omin-gold text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-2 md:mb-3">Model Ecosystem</div>
-              <h3 className="text-[2rem] md:text-4xl font-display font-bold mb-3 md:mb-4 leading-tight"><CountUp target={68} /> God-Tier AIs.</h3>
-              <p className="text-white/60 text-[13px] md:text-sm leading-relaxed max-w-[280px] sm:max-w-none mx-auto">Instantly switch between GPT-5, Claude, Gemini, and open-source titans without leaving your thought process.</p>
+              <div className="text-omin-gold text-[9px] md:text-xs font-bold tracking-[0.2em] uppercase mb-2 md:mb-3">Model Ecosystem</div>
+              <h3 className="text-[1.5rem] md:text-4xl font-display font-bold mb-2 md:mb-4 leading-tight"><CountUp target={68} /> God-Tier AIs.</h3>
+              <p className="text-white/60 text-[11px] md:text-sm leading-relaxed max-w-[260px] sm:max-w-none mx-auto">Instantly switch between GPT-5, Claude, Gemini, and open-source titans without leaving your thought process.</p>
             </div>
-            <div className="flex flex-wrap md:flex-nowrap flex-1 justify-center gap-3 md:gap-4 opacity-70 md:opacity-60 mt-2 md:mt-0">
-              {['openai', 'anthropic', 'googlegemini', 'meta'].map(s => <div key={s} className="w-10 h-10 md:w-14 md:h-14 rounded-[10px] md:rounded-2xl glass-panel flex items-center justify-center animate-float" style={{ animationDelay: `${Math.random() * 2}s` }}><BrandLogo slug={s} color="#fff" size={20} /></div>)}
+            <div className="flex flex-wrap md:flex-nowrap flex-1 justify-center gap-2 md:gap-4 opacity-70 md:opacity-60 mt-1 md:mt-0">
+              {['openai', 'anthropic', 'googlegemini', 'meta'].map(s => <div key={s} className="w-9 h-9 md:w-14 md:h-14 rounded-[10px] md:rounded-2xl glass-panel flex items-center justify-center animate-float" style={{ animationDelay: `${Math.random() * 2}s` }}><BrandLogo slug={s} color="#fff" size={16} /></div>)}
             </div>
           </BentoCard>
-          <BentoCard delay={0.15} className="min-h-[240px] md:min-h-[280px] flex flex-col justify-between">
-            <div className="text-[3.5rem] md:text-6xl font-display font-black leading-none mb-4 md:mb-0"><CountUp target={20} suffix="M" /></div>
-            <div><h3 className="text-[1.15rem] md:text-xl font-bold mb-1 md:mb-2">Massive Context</h3><p className="text-white/50 text-[13px] md:text-sm">Analyze entire codebases, PDFs, and books in a single prompt.</p></div>
+          <BentoCard delay={0.15} className="min-h-[160px] md:min-h-[280px] flex flex-col justify-between p-6 md:p-8">
+            <div className="text-[2.2rem] md:text-6xl font-display font-black leading-none mb-3 md:mb-0"><CountUp target={20} suffix="M" /></div>
+            <div><h3 className="text-[1rem] md:text-xl font-bold mb-1 md:mb-2">Massive Context</h3><p className="text-white/50 text-[11px] md:text-sm">Analyze entire codebases, PDFs, and books in a single prompt.</p></div>
           </BentoCard>
-          <BentoCard delay={0.3} className="min-h-[240px] md:min-h-[280px] flex flex-col justify-between overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/15 blur-[50px]" />
-            <div className="flex gap-3 mb-4 md:mb-6 relative z-10">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full glass-pill flex items-center justify-center"><BrandLogo slug="midjourney" color="#fff" size={20} /></div>
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full glass-pill flex items-center justify-center shadow-[0_0_15px_rgba(255,217,61,0.2)]"><BrandLogo slug="openai" color="#a855f7" size={20} /></div>
+          <BentoCard delay={0.3} className="min-h-[160px] md:min-h-[280px] flex flex-col justify-between overflow-hidden p-6 md:p-8">
+            <div className="absolute top-0 right-0 w-32 md:w-40 h-32 md:h-40 bg-blue-500/15 blur-[40px] md:blur-[50px]" />
+            <div className="flex gap-2.5 md:gap-3 mb-3 md:mb-6 relative z-10">
+              <div className="w-8 h-8 md:w-12 md:h-12 rounded-full glass-pill flex items-center justify-center"><BrandLogo slug="midjourney" color="#fff" size={16} /></div>
+              <div className="w-8 h-8 md:w-12 md:h-12 rounded-full glass-pill flex items-center justify-center shadow-[0_0_15px_rgba(255,217,61,0.2)]"><BrandLogo slug="openai" color="#a855f7" size={16} /></div>
             </div>
-            <div className="relative z-10"><h3 className="text-[1.15rem] md:text-xl font-bold mb-1 md:mb-2">Image & Video AI</h3><p className="text-white/50 text-[13px] md:text-sm">Generate cinematic Sora videos and Midjourney portraits natively.</p></div>
+            <div className="relative z-10"><h3 className="text-[1rem] md:text-xl font-bold mb-1 md:mb-2">Image & Video AI</h3><p className="text-white/50 text-[11px] md:text-sm">Generate cinematic Sora videos and Midjourney portraits natively.</p></div>
           </BentoCard>
-          <BentoCard delay={0.2} className="min-h-[240px] md:min-h-[280px] flex flex-col justify-between overflow-hidden">
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-400/15 blur-[40px]" />
-            <div className="text-3xl md:text-4xl mb-4">🎤</div>
-            <div className="relative z-10"><h3 className="text-[1.15rem] md:text-xl font-bold mb-1 md:mb-2">Voice & Audio AI</h3><p className="text-white/50 text-[13px] md:text-sm">Whisper transcription, Suno music generation, and real-time voice chat all built in.</p></div>
+          <BentoCard delay={0.2} className="min-h-[160px] md:min-h-[280px] flex flex-col justify-between overflow-hidden p-6 md:p-8">
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-cyan-400/15 blur-[40px]" />
+            <div className="text-[1.5rem] md:text-4xl mb-3 md:mb-4">🎤</div>
+            <div className="relative z-10"><h3 className="text-[1rem] md:text-xl font-bold mb-1 md:mb-2">Voice & Audio AI</h3><p className="text-white/50 text-[11px] md:text-sm">Whisper transcription, Suno music generation, and real-time voice chat all built in.</p></div>
           </BentoCard>
-          <BentoCard delay={0.35} className="min-h-[240px] md:min-h-[280px] flex flex-col justify-between overflow-hidden">
-            <div className="absolute top-0 left-0 w-32 h-32 bg-emerald-400/10 blur-[40px]" />
-            <div className="text-3xl md:text-4xl mb-4">🔒</div>
-            <div className="relative z-10"><h3 className="text-[1.15rem] md:text-xl font-bold mb-1 md:mb-2">Enterprise Privacy</h3><p className="text-white/50 text-[13px] md:text-sm">End-to-end encryption, zero-retention APIs, and SOC 2 compliant infrastructure.</p></div>
+          <BentoCard delay={0.35} className="min-h-[160px] md:min-h-[280px] flex flex-col justify-between overflow-hidden p-6 md:p-8">
+            <div className="absolute top-0 left-0 w-24 h-24 bg-emerald-400/10 blur-[40px]" />
+            <div className="text-[1.5rem] md:text-4xl mb-3 md:mb-4">🔒</div>
+            <div className="relative z-10"><h3 className="text-[1rem] md:text-xl font-bold mb-1 md:mb-2">Enterprise Privacy</h3><p className="text-white/50 text-[11px] md:text-sm">End-to-end encryption, zero-retention APIs, and SOC 2 compliant infrastructure.</p></div>
           </BentoCard>
         </div>
       </section>
@@ -284,14 +284,14 @@ export default function LandingPage() {
       <FAQSection />
 
       {/* ═══ 13. FINAL CTA ═══ */}
-      <section className="py-32 px-6 relative flex justify-center z-20">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="cta-card relative max-w-4xl w-full text-center glass-strong rounded-[3rem] p-16 md:p-24 border border-omin-gold/20 overflow-hidden group">
+      <section className="py-24 md:py-32 px-6 relative flex justify-center z-20">
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="cta-card relative max-w-4xl w-full text-center glass-strong rounded-[2rem] md:rounded-[3rem] p-10 md:p-24 border border-omin-gold/20 overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-t from-omin-gold/10 to-transparent opacity-40 group-hover:opacity-70 transition-opacity duration-1000" />
           {/* Floating particles */}
           {[...Array(6)].map((_, i) => <div key={i} className="absolute w-1 h-1 bg-omin-gold/40 rounded-full animate-float" style={{ left: `${15 + i * 14}%`, top: `${20 + (i % 3) * 25}%`, animationDelay: `${i * 0.8}s`, animationDuration: `${4 + i}s` }} />)}
-          <h2 className="font-display font-bold text-4xl md:text-6xl tracking-tight mb-6 relative z-10">Access the God-Tier.</h2>
-          <p className="text-white/60 text-lg mb-12 max-w-xl mx-auto relative z-10">Claim your unfair advantage today. All 68 models inside one immersive interface.</p>
-          <div className="relative z-10"><MagBtn onClick={triggerAuth} className="cta-btn bg-omin-gold text-black px-12 py-5 rounded-full font-bold text-lg hover:bg-omin-gold/90 shadow-[0_10px_40px_rgba(255,217,61,0.3)] hover:shadow-[0_10px_60px_rgba(255,217,61,0.5)] transition-all">{user ? 'Go to Dashboard' : 'Sign Up Free →'}</MagBtn></div>
+          <h2 className="font-display font-bold text-3xl md:text-6xl tracking-tight mb-4 md:mb-6 relative z-10">Access the God-Tier.</h2>
+          <p className="text-white/60 text-[12px] md:text-lg mb-8 md:mb-12 max-w-[260px] md:max-w-xl mx-auto relative z-10">Claim your unfair advantage today. All 68 models inside one immersive interface.</p>
+          <div className="relative z-10"><MagBtn onClick={triggerAuth} className="cta-btn bg-omin-gold text-black px-8 py-3.5 md:px-12 md:py-5 rounded-full font-bold text-[13px] md:text-lg hover:bg-omin-gold/90 shadow-[0_10px_40px_rgba(255,217,61,0.3)] hover:shadow-[0_10px_60px_rgba(255,217,61,0.5)] transition-all">{user ? 'Go to Dashboard' : 'Sign Up Free →'}</MagBtn></div>
         </motion.div>
       </section>
 
