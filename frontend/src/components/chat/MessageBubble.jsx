@@ -13,25 +13,36 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      layout
+      initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      exit={{ opacity: 0, filter: 'blur(10px)' }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
       onTouchStart={() => setShowActions(true)}
-      style={{ display: 'flex', gap: 10, flexDirection: isUser ? 'row-reverse' : 'row', position: 'relative', padding: '4px 0', width: '100%', minWidth: 0, maxWidth: '100%' }}
+      style={{ 
+        display: 'grid', 
+        gridTemplateColumns: isUser ? 'minmax(0, 1fr) 32px' : '32px minmax(0, 1fr)', 
+        gap: 10, 
+        position: 'relative', 
+        padding: '4px 0', 
+        width: '100%' 
+      }}
     >
-      {isUser
-        ? <UserAvatar profile={userProfile} size={32} />
-        : <ModelAvatar model={model} size={32} />}
+      {!isUser && (
+        <div style={{ width: 32, height: 32 }}>
+          <ModelAvatar model={model} size={32} />
+        </div>
+      )}
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, width: '100%', maxWidth: '100%', position: 'relative' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, width: '100%', position: 'relative' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexDirection: isUser ? 'row-reverse' : 'row' }}>
           <span style={{ fontSize: 12, fontWeight: 700, color: isUser ? 'var(--text-sec)' : (model?.color || 'var(--text-main)'), letterSpacing: '0.01em' }}>
             {isUser ? 'You' : (model?.name || 'AI')}
           </span>
-          <span style={{ fontSize: 10, color: 'var(--text-faint)', fontFamily: "'JetBrains Mono',monospace" }}>
-            {formatTime(msg.timestamp)}
+          <span style={{ fontSize: 10.5, color: 'var(--text-muted)' }}>
+            {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </span>
         </div>
 
@@ -42,15 +53,12 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
           borderRadius: isUser ? '20px 4px 20px 20px' : 0,
           wordBreak: 'break-word',
           overflowWrap: 'break-word',
-          overflow: 'hidden',
           width: '100%',
-          maxWidth: '100%',
-          minWidth: 0,
           boxSizing: 'border-box'
         }}>
           {msg.isStreaming
             ? <TypingIndicator />
-            : <div style={{ width: '100%', maxWidth: '100%', minWidth: 0, overflowX: 'hidden', overflowY: 'visible', boxSizing: 'border-box' }} dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.content) }} />}
+            : <div style={{ width: '100%', minWidth: 0, overflowX: 'auto', overflowY: 'visible', boxSizing: 'border-box' }} dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.content) }} />}
         </div>
 
         {!isUser && !msg.isStreaming && msg.content && (
@@ -59,6 +67,12 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
           </span>
         )}
       </div>
+
+      {isUser && (
+        <div style={{ width: 32, height: 32 }}>
+          <UserAvatar profile={userProfile} size={32} />
+        </div>
+      )}
 
       <AnimatePresence>
         {showActions && !msg.isStreaming && (
