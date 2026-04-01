@@ -390,7 +390,7 @@ export const GLOBAL_STYLES = `
   .omni-scroll::-webkit-scrollbar-thumb{background:var(--border-med);border-radius:10px;transition:background .3s;}
   .omni-scroll::-webkit-scrollbar-thumb:hover{background:var(--accent);box-shadow:0 0 8px var(--accent-low);}
 
-  .md-p{margin:0 0 14px;line-height:1.8;color:var(--text-sec);font-size:14.5px;letter-spacing:0.01em;}
+  .md-p{margin:0 0 14px;line-height:1.8;color:var(--text-sec);font-size:14.5px;letter-spacing:0.01em;word-break:break-word;overflow-wrap:break-word;max-width:100%;}
   .md-p:last-child{margin-bottom:0;}
   .md-h1{font-size:26px;font-weight:800;color:var(--text-main);margin:30px 0 16px;font-family:'Outfit',sans-serif;letter-spacing:-0.03em;background:linear-gradient(135deg,var(--text-main),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
   .md-h2{font-size:21px;font-weight:700;color:var(--text-main);margin:26px 0 13px;font-family:'Outfit',sans-serif;letter-spacing:-0.02em;}

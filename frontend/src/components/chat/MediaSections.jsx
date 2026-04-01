@@ -111,7 +111,7 @@ export function ImageSection({ addToast }) {
       </div>
 
       {/* ── Results area ── */}
-      <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '24px 20px 80px', background: 'var(--img-bg)' }}>
+      <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '20px 16px', background: 'var(--img-bg)' }}>
         {results.length === 0 ? (
           <ImageEmptyState onQuickPrompt={p => setPrompt(p)} />
         ) : (
@@ -149,7 +149,7 @@ export function ImageSection({ addToast }) {
       </div>
 
       {/* ── Prompt input ── */}
-      <div style={{ padding: '14px 20px 22px', background: 'var(--bg-base)', flexShrink: 0 }}>
+      <div style={{ padding: '10px 14px 12px', background: 'var(--bg-base)', flexShrink: 0 }}>
         <div style={{ maxWidth: 760, margin: '0 auto' }}>
           <div style={{ background: 'var(--bg-panel)', border: '1px solid var(--border-med)', borderRadius: 14, overflow: 'hidden' }}>
             <textarea value={prompt} onChange={e => setPrompt(e.target.value)}
@@ -332,7 +332,7 @@ export function VoiceSection({ addToast }) {
         </div>
       </div>
 
-      <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '28px 20px 80px' }}>
+      <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '20px 16px' }}>
         <div style={{ maxWidth: 680, margin: '0 auto' }}>
           {tab === 'stt' ? (
             /* ── STT ── */
@@ -550,7 +550,7 @@ export function VideoSection({ addToast }) {
       </div>
 
       {/* Results */}
-      <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '24px 20px 80px', background: 'var(--img-bg)' }}>
+      <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '20px 16px', background: 'var(--img-bg)' }}>
         {results.length === 0 ? (
           <VideoEmptyState onQuickPrompt={setPrompt} />
         ) : (
@@ -585,7 +585,7 @@ export function VideoSection({ addToast }) {
       </div>
 
       {/* Prompt input */}
-      <div style={{ padding: '14px 20px 22px', background: 'var(--bg-base)', flexShrink: 0 }}>
+      <div style={{ padding: '10px 14px 12px', background: 'var(--bg-base)', flexShrink: 0 }}>
         <div style={{ maxWidth: 760, margin: '0 auto' }}>
           <div style={{ background: 'var(--bg-panel)', border: '1px solid var(--border-med)', borderRadius: 14, display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
             <textarea value={prompt} onChange={e => setPrompt(e.target.value)}

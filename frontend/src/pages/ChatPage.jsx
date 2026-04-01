@@ -337,7 +337,7 @@ export default function ChatPage() {
      RENDER
   ══════════════════════════════════════════════════════════ */
   return (
-    <div className="chat-page-root" style={{ display: 'flex', height: '100vh', background: 'var(--bg-base)', color: 'var(--text-main)', overflow: 'hidden', fontFamily: "'Outfit',sans-serif" }}>
+    <div className="chat-page-root" style={{ display: 'flex', height: '100dvh', background: 'var(--bg-base)', color: 'var(--text-main)', overflow: 'hidden', fontFamily: "'Outfit',sans-serif" }}>
       <style>{GLOBAL_STYLES}</style>
 
       {/* Mobile sidebar backdrop */}
@@ -538,8 +538,8 @@ export default function ChatPage() {
                       if (!history.some(m => m.role === 'user'))
                         return <EmptyState activeModel={activeModels[0]} onTemplateSelect={t => { setInput(t); setTimeout(() => inputRef.current?.focus(), 100); }} />;
                       return (
-                        <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: isMobile ? '16px 12px 10px' : '30px 20px 14px' }}>
-                          <div style={{ maxWidth: 740, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: isMobile ? 14 : 20 }}>
+                        <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: isMobile ? '16px 12px 10px' : '30px 20px 14px' }}>
+                          <div style={{ maxWidth: isMobile ? '100%' : 740, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: isMobile ? 14 : 20, overflow: 'hidden' }}>
                             {history.map(msg => (
                               <MessageBubble key={msg.id} msg={msg} model={activeModels[0]} userProfile={userProfile}
                                 onCopy={txt => { navigator.clipboard.writeText(txt); addToast('Copied!', 'success'); }}
