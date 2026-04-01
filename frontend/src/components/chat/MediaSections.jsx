@@ -4,6 +4,8 @@ import { ALL_IMAGE_MODELS, ALL_AUDIO_MODELS, ALL_VIDEO_MODELS, IMAGE_PROVIDERS, 
 import { BrandLogo, ModelAvatar } from './ChatUIKit';
 import ModelSelectorModal from './ModelSelectorModal';
 
+const API_BASE = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:5000` : 'http://localhost:5000');
+
 export function ImageSection({ addToast }) {
   const [prompt, setPrompt]           = useState('');
   const [negPrompt, setNegPrompt]     = useState('');
@@ -31,7 +33,7 @@ export function ImageSection({ addToast }) {
     models.forEach(async (model, idx) => {
       try {
         const fullPrompt = `${prompt}${style !== 'photorealistic' ? `, ${style} style` : ''}`;
-        const response = await fetch('https://omni-ai-pro.onrender.com/api/image', {
+        const response = await fetch(`${API_BASE}/api/image`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ prompt: fullPrompt, negativePrompt: negPrompt, modelId: model.id, providerId: model.providerId, aspectRatio: ar, quality })
         });
@@ -286,7 +288,7 @@ export function VoiceSection({ addToast }) {
     setAudioFile(f); setIsTranscribing(true);
     try {
       const formData = new FormData(); formData.append('file', f); formData.append('model', 'whisper-1');
-      const res = await fetch('https://omni-ai-pro.onrender.com/api/transcribe', { method: 'POST', body: formData });
+      const res = await fetch(`${API_BASE}/api/transcribe`, { method: 'POST', body: formData });
       const data = await res.json();
       setTranscript(data.text || 'Transcription complete.');
       addToast('Transcription done!', 'success');
@@ -298,7 +300,7 @@ export function VoiceSection({ addToast }) {
     if (!ttsText.trim()) return;
     setIsPlaying(true);
     try {
-      const res = await fetch('https://omni-ai-pro.onrender.com/api/tts', {
+      const res = await fetch(`${API_BASE}/api/tts`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: ttsText, voice, speed, modelId: activeTTSModel?.id })
       });
@@ -497,7 +499,7 @@ export function VideoSection({ addToast }) {
 
     models.forEach(async (model, idx) => {
       try {
-        const res = await fetch('https://omni-ai-pro.onrender.com/api/video', {
+        const res = await fetch(`${API_BASE}/api/video`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ prompt, modelId: model.id, providerId: model.providerId, duration, motion })
         });

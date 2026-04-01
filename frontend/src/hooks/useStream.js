@@ -20,7 +20,7 @@
 
 import { useState, useRef, useCallback } from 'react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:5000` : 'http://localhost:5000');
 
 export function useStream() {
   const [streaming, setStreaming] = useState(false);

@@ -14,6 +14,8 @@ import {
   genId, GLOBAL_STYLES, IC,
 } from '../lib/models';
 
+const API_BASE = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:5000` : 'http://localhost:5000');
+
 /* ── Extracted components ─────────────────────────────── */
 import { Toast }               from '../components/chat/ChatUIKit';
 import SectionTabs             from '../components/chat/SectionTabs';
@@ -235,7 +237,7 @@ export default function ChatPage() {
         const { data: { session } } = await supabase.auth.getSession();
         const token = session?.access_token || '';
 
-        const response = await fetch('https://omni-ai-pro.onrender.com/api/chat', {
+        const response = await fetch(`${API_BASE}/api/chat`, {
           method: 'POST', 
           headers: { 
             'Content-Type': 'application/json',
@@ -314,7 +316,7 @@ export default function ChatPage() {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token || '';
 
-      const response = await fetch('https://omni-ai-pro.onrender.com/api/chat', { 
+      const response = await fetch(`${API_BASE}/api/chat`, { 
         method: 'POST', 
         headers: { 
             'Content-Type': 'application/json',
