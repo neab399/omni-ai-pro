@@ -25,7 +25,7 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
         ? <UserAvatar profile={userProfile} size={32} />
         : <ModelAvatar model={model} size={32} />}
 
-      <div style={{ flex: 1, maxWidth: '100%', display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, overflow: 'hidden' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0, width: '100%', maxWidth: '100%', position: 'relative' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexDirection: isUser ? 'row-reverse' : 'row' }}>
           <span style={{ fontSize: 12, fontWeight: 700, color: isUser ? 'var(--text-sec)' : (model?.color || 'var(--text-main)'), letterSpacing: '0.01em' }}>
             {isUser ? 'You' : (model?.name || 'AI')}
@@ -45,10 +45,12 @@ export default function MessageBubble({ msg, model, userProfile, onCopy, onDelet
           overflow: 'hidden',
           width: '100%',
           maxWidth: '100%',
+          minWidth: 0,
+          boxSizing: 'border-box'
         }}>
           {msg.isStreaming
             ? <TypingIndicator />
-            : <div style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', wordBreak: 'break-word' }} dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.content) }} />}
+            : <div style={{ width: '100%', maxWidth: '100%', minWidth: 0, overflowX: 'hidden', overflowY: 'visible', boxSizing: 'border-box' }} dangerouslySetInnerHTML={{ __html: parseMarkdown(msg.content) }} />}
         </div>
 
         {!isUser && !msg.isStreaming && msg.content && (
