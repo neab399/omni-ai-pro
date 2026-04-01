@@ -236,8 +236,8 @@ export default function LandingPage() {
               <h3 className="text-[2rem] md:text-4xl font-display font-bold mb-3 md:mb-4 leading-tight"><CountUp target={68} /> God-Tier AIs.</h3>
               <p className="text-white/60 text-[13px] md:text-sm leading-relaxed max-w-[280px] sm:max-w-none mx-auto">Instantly switch between GPT-5, Claude, Gemini, and open-source titans without leaving your thought process.</p>
             </div>
-            <div className="hidden md:flex flex-1 justify-center gap-4 opacity-60">
-              {['openai', 'anthropic', 'googlegemini', 'meta'].map(s => <div key={s} className="w-14 h-14 rounded-2xl glass-panel flex items-center justify-center animate-float" style={{ animationDelay: `${Math.random() * 2}s` }}><BrandLogo slug={s} color="#fff" size={28} /></div>)}
+            <div className="flex flex-wrap md:flex-nowrap flex-1 justify-center gap-3 md:gap-4 opacity-70 md:opacity-60 mt-2 md:mt-0">
+              {['openai', 'anthropic', 'googlegemini', 'meta'].map(s => <div key={s} className="w-10 h-10 md:w-14 md:h-14 rounded-[10px] md:rounded-2xl glass-panel flex items-center justify-center animate-float" style={{ animationDelay: `${Math.random() * 2}s` }}><BrandLogo slug={s} color="#fff" size={20} /></div>)}
             </div>
           </BentoCard>
           <BentoCard delay={0.15} className="min-h-[240px] md:min-h-[280px] flex flex-col justify-between">
