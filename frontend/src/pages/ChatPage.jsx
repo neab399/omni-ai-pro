@@ -545,6 +545,7 @@ export default function ChatPage() {
                                 onCopy={txt => { navigator.clipboard.writeText(txt); addToast('Copied!', 'success'); }}
                                 onDelete={handleDeleteMsg}
                                 onRegenerate={msg.role === 'assistant' && !msg.isStreaming ? () => handleRegenerate(activeModels[0]) : null}
+                                isCompact={isMobile}
                               />
                             ))}
                             <div ref={el => chatEndRefs.current['single'] = el} />
