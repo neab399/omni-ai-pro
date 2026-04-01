@@ -221,42 +221,46 @@ export default function LandingPage() {
       <LiveAIDemo />
 
       {/* ═══ 6. BENTO FEATURES ═══ */}
-      <section id="features" className="bento-section section-content py-32 px-6 max-w-[1400px] mx-auto relative z-20 flex flex-col lg:flex-row gap-12 lg:gap-20">
-        <div className="bento-sidebar lg:w-1/3 lg:sticky lg:top-40 h-fit">
+      <section id="features" className="bento-section section-content py-24 md:py-32 px-5 md:px-6 max-w-[1400px] mx-auto relative z-20 flex flex-col lg:flex-row gap-10 lg:gap-20">
+        <div className="bento-sidebar lg:w-1/3 lg:sticky lg:top-40 h-fit text-center lg:text-left">
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-            <h2 className="font-display font-bold text-[clamp(2.5rem,5vw,4.5rem)] leading-none tracking-tight mb-6">Unfair<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-omin-gold to-yellow-100">Advantage.</span></h2>
-            <p className="text-white/50 text-lg leading-relaxed max-w-sm">Why pay for 5 different subscriptions when you can have the absolute best AI models in one unified terminal?</p>
+            <h2 className="font-display font-bold text-[2.75rem] md:text-[clamp(3.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight mb-4 md:mb-6">Unfair<br className="hidden lg:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-omin-gold to-yellow-100 pl-2 lg:pl-0">Advantage.</span></h2>
+            <p className="text-white/50 text-base md:text-lg leading-relaxed max-w-sm mx-auto lg:mx-0">Why pay for 5 different subscriptions when you can have the absolute best AI models in one unified terminal?</p>
           </motion.div>
         </div>
-        <div className="bento-cards lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-5 relative">
+        <div className="bento-cards lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 relative">
           <div className="absolute inset-0 bg-omin-gold/5 blur-[100px] rounded-full pointer-events-none -z-10" />
-          <BentoCard className="bento-card-wide md:col-span-2 min-h-[300px] flex flex-col md:flex-row gap-8 items-center">
-            <div className="w-full md:w-3/5"><div className="text-omin-gold text-xs font-bold tracking-[0.2em] uppercase mb-3">Model Ecosystem</div><h3 className="text-3xl font-display font-bold mb-4"><CountUp target={68} /> God-Tier AIs.</h3><p className="text-white/60 text-sm leading-relaxed">Instantly switch between GPT-5, Claude, Gemini, and open-source titans without leaving your thought process.</p></div>
+          <BentoCard className="bento-card-wide md:col-span-2 min-h-[260px] md:min-h-[300px] flex flex-col md:flex-row gap-6 md:gap-8 items-center text-center md:text-left">
+            <div className="w-full md:w-3/5">
+              <div className="text-omin-gold text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-2 md:mb-3">Model Ecosystem</div>
+              <h3 className="text-[2rem] md:text-4xl font-display font-bold mb-3 md:mb-4 leading-tight"><CountUp target={68} /> God-Tier AIs.</h3>
+              <p className="text-white/60 text-[13px] md:text-sm leading-relaxed max-w-[280px] sm:max-w-none mx-auto">Instantly switch between GPT-5, Claude, Gemini, and open-source titans without leaving your thought process.</p>
+            </div>
             <div className="hidden md:flex flex-1 justify-center gap-4 opacity-60">
               {['openai', 'anthropic', 'googlegemini', 'meta'].map(s => <div key={s} className="w-14 h-14 rounded-2xl glass-panel flex items-center justify-center animate-float" style={{ animationDelay: `${Math.random() * 2}s` }}><BrandLogo slug={s} color="#fff" size={28} /></div>)}
             </div>
           </BentoCard>
-          <BentoCard delay={0.15} className="min-h-[280px] flex flex-col justify-between">
-            <div className="text-6xl font-display font-black"><CountUp target={20} suffix="M" /></div>
-            <div><h3 className="text-xl font-bold mb-2">Massive Context</h3><p className="text-white/50 text-sm">Analyze entire codebases, PDFs, and books in a single prompt.</p></div>
+          <BentoCard delay={0.15} className="min-h-[240px] md:min-h-[280px] flex flex-col justify-between">
+            <div className="text-[3.5rem] md:text-6xl font-display font-black leading-none mb-4 md:mb-0"><CountUp target={20} suffix="M" /></div>
+            <div><h3 className="text-[1.15rem] md:text-xl font-bold mb-1 md:mb-2">Massive Context</h3><p className="text-white/50 text-[13px] md:text-sm">Analyze entire codebases, PDFs, and books in a single prompt.</p></div>
           </BentoCard>
-          <BentoCard delay={0.3} className="min-h-[280px] flex flex-col justify-between overflow-hidden">
+          <BentoCard delay={0.3} className="min-h-[240px] md:min-h-[280px] flex flex-col justify-between overflow-hidden">
             <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/15 blur-[50px]" />
-            <div className="flex gap-3 mb-6 relative z-10">
-              <div className="w-12 h-12 rounded-full glass-pill flex items-center justify-center"><BrandLogo slug="midjourney" color="#fff" size={24} /></div>
-              <div className="w-12 h-12 rounded-full glass-pill flex items-center justify-center shadow-[0_0_15px_rgba(255,217,61,0.2)]"><BrandLogo slug="openai" color="#a855f7" size={24} /></div>
+            <div className="flex gap-3 mb-4 md:mb-6 relative z-10">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full glass-pill flex items-center justify-center"><BrandLogo slug="midjourney" color="#fff" size={20} /></div>
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full glass-pill flex items-center justify-center shadow-[0_0_15px_rgba(255,217,61,0.2)]"><BrandLogo slug="openai" color="#a855f7" size={20} /></div>
             </div>
-            <div className="relative z-10"><h3 className="text-xl font-bold mb-2">Image & Video AI</h3><p className="text-white/50 text-sm">Generate cinematic Sora videos and Midjourney portraits natively.</p></div>
+            <div className="relative z-10"><h3 className="text-[1.15rem] md:text-xl font-bold mb-1 md:mb-2">Image & Video AI</h3><p className="text-white/50 text-[13px] md:text-sm">Generate cinematic Sora videos and Midjourney portraits natively.</p></div>
           </BentoCard>
-          <BentoCard delay={0.2} className="min-h-[280px] flex flex-col justify-between overflow-hidden">
+          <BentoCard delay={0.2} className="min-h-[240px] md:min-h-[280px] flex flex-col justify-between overflow-hidden">
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-400/15 blur-[40px]" />
-            <div className="text-4xl mb-4">🎤</div>
-            <div className="relative z-10"><h3 className="text-xl font-bold mb-2">Voice & Audio AI</h3><p className="text-white/50 text-sm">Whisper transcription, Suno music generation, and real-time voice chat all built in.</p></div>
+            <div className="text-3xl md:text-4xl mb-4">🎤</div>
+            <div className="relative z-10"><h3 className="text-[1.15rem] md:text-xl font-bold mb-1 md:mb-2">Voice & Audio AI</h3><p className="text-white/50 text-[13px] md:text-sm">Whisper transcription, Suno music generation, and real-time voice chat all built in.</p></div>
           </BentoCard>
-          <BentoCard delay={0.35} className="min-h-[280px] flex flex-col justify-between overflow-hidden">
+          <BentoCard delay={0.35} className="min-h-[240px] md:min-h-[280px] flex flex-col justify-between overflow-hidden">
             <div className="absolute top-0 left-0 w-32 h-32 bg-emerald-400/10 blur-[40px]" />
-            <div className="text-4xl mb-4">🔒</div>
-            <div className="relative z-10"><h3 className="text-xl font-bold mb-2">Enterprise Privacy</h3><p className="text-white/50 text-sm">End-to-end encryption, zero-retention APIs, and SOC 2 compliant infrastructure.</p></div>
+            <div className="text-3xl md:text-4xl mb-4">🔒</div>
+            <div className="relative z-10"><h3 className="text-[1.15rem] md:text-xl font-bold mb-1 md:mb-2">Enterprise Privacy</h3><p className="text-white/50 text-[13px] md:text-sm">End-to-end encryption, zero-retention APIs, and SOC 2 compliant infrastructure.</p></div>
           </BentoCard>
         </div>
       </section>

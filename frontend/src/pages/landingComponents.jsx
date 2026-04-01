@@ -69,7 +69,7 @@ export function BentoCard({ children, className, delay = 0 }) {
   let mouseX = useMotionValue(0), mouseY = useMotionValue(0);
   function handleMouseMove({ currentTarget, clientX, clientY }) { let { left, top } = currentTarget.getBoundingClientRect(); mouseX.set(clientX - left); mouseY.set(clientY - top); }
   return (
-    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }} className={`glass-panel glow-border rounded-[2rem] p-8 relative overflow-hidden group ${className}`} onMouseMove={handleMouseMove}>
+    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }} className={`glass-panel glow-border rounded-3xl md:rounded-[2rem] p-6 md:p-8 relative overflow-hidden group ${className}`} onMouseMove={handleMouseMove}>
       <motion.div className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-300 group-hover:opacity-100" style={{ background: useMotionTemplate`radial-gradient(650px circle at ${mouseX}px ${mouseY}px, rgba(255,217,61,0.12), transparent 80%)` }} />
       <div className="relative z-10 h-full">{children}</div>
     </motion.div>
@@ -113,10 +113,10 @@ export function Typewriter({ text, speed = 30, onDone, startDelay = 0 }) {
 /* ─── Section Header ─── */
 export function SectionHeader({ badge, title, subtitle }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="text-center mb-20">
-      {badge && <div className="text-omin-gold text-xs font-bold tracking-[0.25em] uppercase mb-5">{badge}</div>}
-      <h2 className="font-display font-bold text-[clamp(2rem,5vw,4.5rem)] tracking-tight mb-6 leading-tight">{title}</h2>
-      {subtitle && <p className="text-white/50 text-lg max-w-2xl mx-auto leading-relaxed">{subtitle}</p>}
+    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="text-center mb-14 md:mb-20">
+      {badge && <div className="text-omin-gold text-[10px] md:text-xs font-bold tracking-[0.25em] uppercase mb-4 md:mb-5">{badge}</div>}
+      <h2 className="font-display font-bold text-[2rem] md:text-[clamp(2.5rem,5vw,4.5rem)] tracking-tight mb-4 md:mb-6 leading-[1.1] md:leading-tight">{title}</h2>
+      {subtitle && <p className="text-white/50 text-sm md:text-lg max-w-2xl mx-auto leading-relaxed px-4 md:px-0">{subtitle}</p>}
     </motion.div>
   );
 }

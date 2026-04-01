@@ -131,9 +131,9 @@ export function ModelLibrary() {
       </div>
       <div className="model-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {visible.map((m, i) => (
-          <motion.div key={m.name} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: (i % 8) * 0.05 }} className="glass-panel p-6 rounded-2xl relative overflow-hidden group hover:border-white/20 transition-all cursor-default">
+          <motion.div key={m.name} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: (i % 8) * 0.05 }} className="glass-panel p-5 sm:p-6 rounded-2xl md:rounded-[2rem] relative overflow-hidden group hover:border-white/20 transition-all cursor-default">
             <div className="mb-4"><BrandLogo slug={m.slug} color={m.color} name={m.name} /></div>
-            <h3 className="font-bold text-lg text-white mb-1 group-hover:text-omin-gold transition-colors">{m.name}</h3>
+            <h3 className="font-bold text-[1.1rem] md:text-lg text-white mb-1 group-hover:text-omin-gold transition-colors">{m.name}</h3>
             <p className="text-xs text-white/40 mb-3">{m.maker}</p>
             <p className="text-[11px] font-semibold" style={{ color: m.color }}>{m.use}</p>
             <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full blur-[40px] opacity-20 group-hover:opacity-40 transition-opacity" style={{ background: m.color }} />
@@ -176,19 +176,19 @@ export function CompareTable() {
         {/* Mobile Cards (Stacked) */}
         <div className="md:hidden flex flex-col divide-y divide-white/10">
           {COMPARE_DATA.map((r, i) => (
-            <div key={i} className="p-6 flex flex-col gap-4">
-              <div className="text-[13px] font-bold text-white/60 tracking-wider uppercase">{r.label}</div>
+            <div key={i} className="p-5 flex flex-col gap-4">
+              <div className="text-[12px] font-bold text-white/60 tracking-wider uppercase">{r.label}</div>
               <div className="bg-omin-gold/[0.05] border border-omin-gold/20 rounded-xl p-4 flex justify-between items-center shadow-[0_0_15px_rgba(255,217,61,0.05)]">
-                <span className="text-[11px] font-black tracking-widest text-omin-gold uppercase">OMNI PRO</span>
-                <span className="text-lg font-bold text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.4)]">{r.omni}</span>
+                <span className="text-[10px] font-black tracking-widest text-omin-gold uppercase">OMNI PRO</span>
+                <span className="text-[1.05rem] font-bold text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.4)]">{r.omni}</span>
               </div>
-              <div className="flex justify-between items-center px-3 pt-2">
-                <span className="text-[11px] text-white/40 uppercase">ChatGPT+</span>
-                <span className="text-[13px] text-white/40 font-medium">{r.gpt}</span>
+              <div className="flex justify-between items-center px-2 pt-2">
+                <span className="text-[10.5px] text-white/40 uppercase font-semibold">ChatGPT+</span>
+                <span className="text-[12px] text-white/40 font-medium">{r.gpt}</span>
               </div>
-              <div className="flex justify-between items-center px-3 pb-2">
-                <span className="text-[11px] text-white/40 uppercase">Claude Pro</span>
-                <span className="text-[13px] text-white/40 font-medium">{r.claude}</span>
+              <div className="flex justify-between items-center px-2 pb-1">
+                <span className="text-[10.5px] text-white/40 uppercase font-semibold">Claude Pro</span>
+                <span className="text-[12px] text-white/40 font-medium">{r.claude}</span>
               </div>
             </div>
           ))}
@@ -236,17 +236,17 @@ export function PricingSection({ onAction }) {
       <div className="pricing-grid grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
         {PRICING.map((p, i) => (
           <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.12, duration: 0.7 }}
-            className={`pricing-card rounded-[2rem] p-8 flex flex-col relative overflow-hidden ${p.popular ? 'pricing-popular-card pricing-popular glass-strong border-omin-gold/30 scale-[1.03] z-10' : 'glass-panel'}`}>
+            className={`pricing-card rounded-[2rem] p-6 lg:p-8 flex flex-col relative overflow-hidden ${p.popular ? 'pricing-popular-card pricing-popular glass-strong border-omin-gold/30 md:scale-[1.03] z-10' : 'glass-panel'}`}>
             {p.popular && <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-omin-gold/60 via-yellow-200 to-omin-gold/60" />}
             {p.popular && <div className="text-[10px] font-black tracking-[0.3em] text-omin-gold uppercase mb-4">★ Most Popular</div>}
-            <h3 className="font-display font-bold text-2xl mb-2">{p.tier}</h3>
+            <h3 className="font-display font-bold text-xl md:text-2xl mb-2">{p.tier}</h3>
             <div className="flex items-baseline gap-1 mb-3">
-              <span className="text-4xl font-display font-black text-white">₹{p.price}</span>
-              <span className="text-white/40 text-sm">{p.period}</span>
+              <span className="text-[2rem] md:text-4xl font-display font-black text-white">₹{p.price}</span>
+              <span className="text-white/40 text-xs md:text-sm">{p.period}</span>
             </div>
-            <p className="text-white/50 text-sm mb-8">{p.desc}</p>
-            <ul className="flex-1 space-y-3 mb-8">
-              {p.features.map((f, j) => <li key={j} className="flex items-center gap-3 text-sm text-white/70"><span className="text-omin-gold text-xs">✓</span>{f}</li>)}
+            <p className="text-white/50 text-xs md:text-sm mb-6 md:mb-8">{p.desc}</p>
+            <ul className="flex-1 space-y-3 mb-6 md:mb-8">
+              {p.features.map((f, j) => <li key={j} className="flex items-center gap-3 text-xs md:text-sm text-white/70"><span className="text-omin-gold text-[10px] md:text-xs">✓</span>{f}</li>)}
             </ul>
             <button onClick={onAction} className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all ${p.popular ? 'bg-omin-gold text-black hover:bg-omin-gold/90 shadow-[0_0_30px_rgba(255,217,61,0.2)]' : 'glass-pill text-white hover:bg-white/10'}`}>
               {p.popular ? 'Get Pro Now →' : `Choose ${p.tier}`}
