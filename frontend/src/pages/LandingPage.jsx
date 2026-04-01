@@ -178,7 +178,7 @@ export default function LandingPage() {
       <LogoCloud />
 
       {/* ═══ 3. DASHBOARD MOCKUP (Apple 3D Scroll) ═══ */}
-      <section className="dashboard-section relative w-full min-h-[130vh] -mt-[5vh] flex items-start justify-center">
+      <section className="dashboard-section relative w-full min-h-[90vh] md:min-h-[130vh] -mt-[5vh] flex items-start justify-center">
         <div className="dashboard-viewport sticky top-[10vh] w-full max-w-[1400px] px-4 sm:px-6" style={{ perspective: '1200px' }}>
           <motion.div style={{ scale: dashboardScale, rotateX: dashboardRotateX, opacity: dashboardOpacity, y: dashboardY, transformStyle: 'preserve-3d' }} className="dashboard-mockup w-full aspect-[16/10] sm:aspect-[16/9] glass-strong rounded-3xl sm:rounded-[2rem] border border-white/15 shadow-[0_40px_120px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.3)] overflow-hidden flex flex-col will-change-transform">
             <div className="h-12 border-b border-white/10 bg-white/[0.02] flex items-center px-6 gap-2">
@@ -284,7 +284,7 @@ export default function LandingPage() {
       <FAQSection />
 
       {/* ═══ 13. FINAL CTA ═══ */}
-      <section className="py-24 md:py-32 px-6 relative flex justify-center z-20">
+      <section className="py-16 md:py-32 px-6 relative flex justify-center z-20">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="cta-card relative max-w-4xl w-full text-center glass-strong rounded-[2rem] md:rounded-[3rem] p-10 md:p-24 border border-omin-gold/20 overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-t from-omin-gold/10 to-transparent opacity-40 group-hover:opacity-70 transition-opacity duration-1000" />
           {/* Floating particles */}

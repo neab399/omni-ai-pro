@@ -6,7 +6,7 @@ import { MODELS, MARQUEE_ITEMS, COMPARE_DATA, PRICING, FAQ_DATA, TESTIMONIALS, L
 /* ═══ 1. LOGO CLOUD ═══ */
 export function LogoCloud() {
   return (
-    <section className="py-16 px-6 relative z-20">
+    <section className="py-8 md:py-16 px-6 relative z-20">
       <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="max-w-5xl mx-auto text-center">
         <p className="text-[11px] font-bold tracking-[0.3em] text-white/30 uppercase mb-10">Powered by the world's leading AI providers</p>
         <div className="logo-cloud-grid flex flex-wrap items-center justify-center gap-10 md:gap-16">
@@ -47,7 +47,7 @@ export function LiveAIDemo() {
     return s[start:start + max_len]`;
 
   return (
-    <section className="section-content py-32 px-6 max-w-[1000px] mx-auto relative z-20">
+    <section className="section-content py-12 md:py-32 px-6 max-w-[1000px] mx-auto relative z-20">
       <SectionHeader badge="✦ Live Demo" title="See it in action." subtitle="Watch OMNI AI generate real code in real-time. No signup needed to be impressed." />
       <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="demo-terminal glass-strong rounded-[2rem] overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.6)]">
         {/* Terminal Header */}
@@ -93,7 +93,7 @@ export function HowItWorks() {
     { num: '03', title: 'Get God-Tier Results', desc: 'Receive instant, beautifully formatted responses with code, images, audio, or video — all in one place.', icon: '⚡' },
   ];
   return (
-    <section className="section-content py-32 px-6 max-w-[1100px] mx-auto relative z-20">
+    <section className="section-content py-12 md:py-32 px-6 max-w-[1100px] mx-auto relative z-20">
       <SectionHeader badge="How It Works" title="Three steps. Infinite power." />
       <div className="hiw-grid flex md:grid md:grid-cols-3 gap-6 md:gap-8 relative overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-8 -mx-6 px-6 md:mx-0 md:px-0">
         {/* Connecting line */}
@@ -116,7 +116,7 @@ export function ModelLibrary() {
   const [showAll, setShowAll] = useState(false);
   const visible = showAll ? MODELS : MODELS.slice(0, 8);
   return (
-    <section id="models" className="section-content py-32 px-6 max-w-[1400px] mx-auto relative z-20">
+    <section id="models" className="section-content py-12 md:py-32 px-6 max-w-[1400px] mx-auto relative z-20">
       <div className="model-lib-header flex flex-col lg:flex-row lg:items-end justify-between mb-12 md:mb-16 gap-5 md:gap-6">
         <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
           <div className="text-omin-gold text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase mb-2 md:mb-4">The God-Tier Library</div>
@@ -147,7 +147,7 @@ export function ModelLibrary() {
 /* ═══ 5. COMPARE TABLE ═══ */
 export function CompareTable() {
   return (
-    <section id="compare" className="section-content py-32 px-6 max-w-[1200px] mx-auto relative z-20">
+    <section id="compare" className="section-content py-12 md:py-32 px-6 max-w-[1200px] mx-auto relative z-20">
       <SectionHeader title="Stop overpaying." subtitle="One unified subscription that replaces them all." />
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="compare-wrapper glass-panel rounded-[2rem] overflow-hidden border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.5)] bg-black/60 relative">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-omin-gold/50 to-transparent" />
@@ -182,7 +182,7 @@ export function TestimonialsSection() {
   const [active, setActive] = useState(0);
   useEffect(() => { const t = setInterval(() => setActive(p => (p + 1) % TESTIMONIALS.length), 5000); return () => clearInterval(t); }, []);
   return (
-    <section className="section-content py-32 px-6 max-w-[1000px] mx-auto relative z-20">
+    <section className="section-content py-12 md:py-32 px-6 max-w-[1000px] mx-auto relative z-20">
       <SectionHeader badge="Testimonials" title="Loved by builders." subtitle="See what professionals are saying about OMNI AI PRO." />
       <div className="testimonial-container relative h-[280px] sm:h-[240px]">
         <AnimatePresence mode="wait">
@@ -210,7 +210,7 @@ export function TestimonialsSection() {
 /* ═══ 7. PRICING ═══ */
 export function PricingSection({ onAction }) {
   return (
-    <section id="pricing" className="section-content py-32 px-6 max-w-[1200px] mx-auto relative z-20">
+    <section id="pricing" className="section-content py-12 md:py-32 px-6 max-w-[1200px] mx-auto relative z-20">
       <SectionHeader badge="Pricing" title="Unfairly affordable." subtitle="Access every AI model on earth for less than a single ChatGPT subscription." />
       <div className="pricing-grid flex md:grid md:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-8 -mx-6 px-6 md:mx-0 md:px-0">
         {PRICING.map((p, i) => (
@@ -241,7 +241,7 @@ export function PricingSection({ onAction }) {
 export function FAQSection() {
   const [open, setOpen] = useState(null);
   return (
-    <section className="faq-container section-content py-32 px-6 max-w-[800px] mx-auto relative z-20">
+    <section className="faq-container section-content py-12 md:py-32 px-6 max-w-[800px] mx-auto relative z-20">
       <SectionHeader badge="FAQ" title="Got questions?" subtitle="Everything you need to know about OMNI AI PRO." />
       <div className="space-y-4">
         {FAQ_DATA.map((f, i) => (
