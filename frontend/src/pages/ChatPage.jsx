@@ -471,51 +471,65 @@ export default function ChatPage() {
           {activeSection === 'chat' && (
             <motion.div key="chat" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
               {/* Chat messages */}
-              <div className="omni-scroll" style={{ flex: 1, display: 'flex', overflowX: isMultiMode ? 'auto' : 'hidden', overflowY: isMultiMode ? 'hidden' : 'auto', background: 'var(--bg-base)', minHeight: 0 }}>
+              <div className="omni-scroll" style={{ flex: 1, display: 'flex', overflowX: isMultiMode ? 'auto' : 'hidden', overflowY: isMultiMode ? 'hidden' : 'auto', background: 'var(--bg-base)', minHeight: 0, position: 'relative' }}>
                 {isMultiMode ? (
-                  <div style={{ display: 'flex', height: '100%', minWidth: 'max-content' }}>
-                    {activeModels.map((model, idx) => {
-                      const key = `${model.providerId}-${model.id}`;
-                      const history = getCurrentHistory(key);
-                      return (
-                        <motion.div key={`${model.id}-${idx}`} initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * .06 }}
-                          style={{ width: 390, borderRight: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
-                          <div style={{ padding: '10px 14px', background: 'var(--bg-panel)', borderBottom: '1px solid var(--border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <ModelAvatar model={model} size={24} />
-                              <div>
-                                <div style={{ fontWeight: 600, fontSize: 12.5, color: model.color }}>{model.name}</div>
-                                <div style={{ fontSize: 10, color: 'var(--text-faint)' }}>{model.type}</div>
+                  <>
+                    {/* Swipeable model columns */}
+                    <div style={{ display: 'flex', height: '100%', minWidth: isMobile ? undefined : 'max-content', scrollSnapType: isMobile ? 'x mandatory' : 'none', WebkitOverflowScrolling: 'touch' }}>
+                      {activeModels.map((model, idx) => {
+                        const key = `${model.providerId}-${model.id}`;
+                        const history = getCurrentHistory(key);
+                        return (
+                          <motion.div key={`${model.id}-${idx}`} initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * .06 }}
+                            style={{ width: isMobile ? '100vw' : 390, minWidth: isMobile ? '100vw' : 390, borderRight: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', flexShrink: 0, scrollSnapAlign: isMobile ? 'start' : 'none' }}>
+                            <div style={{ padding: '8px 12px', background: 'var(--bg-panel)', borderBottom: '1px solid var(--border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <ModelAvatar model={model} size={22} />
+                                <div>
+                                  <div style={{ fontWeight: 600, fontSize: 12, color: model.color }}>{model.name}</div>
+                                  <div style={{ fontSize: 10, color: 'var(--text-faint)' }}>{model.type}</div>
+                                </div>
+                              </div>
+                              <div style={{ display: 'flex', gap: 5 }}>
+                                <button onClick={() => continueWithModel(model)} style={{ padding: '3px 9px', fontSize: 11, fontWeight: 600, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', borderRadius: 5, cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: 3, fontFamily: "'Outfit',sans-serif" }}>Continue <IC.ArrowR /></button>
+                                <button onClick={() => removeModelFromChat(model.id, model.providerId)} style={{ width: 24, height: 24, background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IC.X /></button>
                               </div>
                             </div>
-                            <div style={{ display: 'flex', gap: 5 }}>
-                              <button onClick={() => continueWithModel(model)} style={{ padding: '3px 9px', fontSize: 11, fontWeight: 600, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', borderRadius: 5, cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: 3, fontFamily: "'Outfit',sans-serif" }}>Continue <IC.ArrowR /></button>
-                              <button onClick={() => removeModelFromChat(model.id, model.providerId)} style={{ width: 24, height: 24, background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IC.X /></button>
+                            <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: isMobile ? '14px 10px' : '18px 14px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+                              {history.map(msg => (
+                                <MessageBubble key={msg.id} msg={msg} model={model} userProfile={userProfile}
+                                  onCopy={txt => { navigator.clipboard.writeText(txt); addToast('Copied!', 'success'); }}
+                                  onDelete={handleDeleteMsg}
+                                  onRegenerate={msg.role === 'assistant' && !msg.isStreaming ? () => handleRegenerate(model) : null}
+                                  isCompact
+                                />
+                              ))}
+                              <div ref={el => chatEndRefs.current[key] = el} />
                             </div>
-                          </div>
-                          <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', padding: '18px 14px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-                            {history.map(msg => (
-                              <MessageBubble key={msg.id} msg={msg} model={model} userProfile={userProfile}
-                                onCopy={txt => { navigator.clipboard.writeText(txt); addToast('Copied!', 'success'); }}
-                                onDelete={handleDeleteMsg}
-                                onRegenerate={msg.role === 'assistant' && !msg.isStreaming ? () => handleRegenerate(model) : null}
-                                isCompact
-                              />
-                            ))}
-                            <div ref={el => chatEndRefs.current[key] = el} />
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                    <div style={{ width: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, padding: 20 }}>
-                      <button onClick={() => setShowModelSel(true)}
-                        style={{ padding: '12px 16px', borderRadius: 12, background: 'var(--bg-hover)', border: '2px dashed var(--border-med)', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7, fontSize: 12, fontFamily: "'Outfit',sans-serif", transition: 'all .18s' }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-focus)'; e.currentTarget.style.color = 'var(--text-main)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-med)'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
-                        <span style={{ fontSize: 20 }}>＋</span>Add Model
-                      </button>
+                          </motion.div>
+                        );
+                      })}
+                      {!isMobile && (
+                        <div style={{ width: 160, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, padding: 20 }}>
+                          <button onClick={() => setShowModelSel(true)}
+                            style={{ padding: '12px 16px', borderRadius: 12, background: 'var(--bg-hover)', border: '2px dashed var(--border-med)', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7, fontSize: 12, fontFamily: "'Outfit',sans-serif", transition: 'all .18s' }}
+                            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-focus)'; e.currentTarget.style.color = 'var(--text-main)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-med)'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
+                            <span style={{ fontSize: 20 }}>＋</span>Add Model
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                    {/* Mobile swipe indicator dots */}
+                    {isMobile && activeModels.length > 1 && (
+                      <div style={{ position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6, zIndex: 10, background: 'rgba(0,0,0,0.5)', padding: '4px 10px', borderRadius: 99, backdropFilter: 'blur(8px)' }}>
+                        {activeModels.map((m, i) => (
+                          <div key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: m.color, opacity: 0.7, transition: 'all .2s' }} title={m.name} />
+                        ))}
+                        <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', marginLeft: 2 }}>swipe →</span>
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
                     {(() => {
