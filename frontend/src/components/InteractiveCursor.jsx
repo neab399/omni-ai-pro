@@ -42,17 +42,6 @@ export default function InteractiveCursor() {
 
   return (
     <>
-      {/* ─── Instant Core Dot (No Lag) ─── */}
-      <motion.div
-        style={{
-          left: cursorX,
-          top: cursorY,
-          x: '-50%',
-          y: '-50%',
-        }}
-        className={`fixed pointer-events-none z-[100000] w-1.5 h-1.5 rounded-full bg-omin-gold shadow-[0_0_10px_rgba(255,217,61,0.8)] transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
-      />
-
       {/* ─── Fluid Fluid Ring (Snappy Lag) ─── */}
       <motion.div
         style={{
