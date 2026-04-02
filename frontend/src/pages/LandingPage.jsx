@@ -330,15 +330,15 @@ export default function LandingPage() {
       </Suspense>
 
       {/* ═══ 3. DASHBOARD MOCKUP (Apple 3D Scroll) ═══ */}
-      <section className="dashboard-section relative w-full min-h-[90vh] md:min-h-[130vh] -mt-[5vh] flex items-start justify-center">
-        <div className="dashboard-viewport sticky top-[10vh] w-full max-w-[1400px] px-4 sm:px-6" style={{ perspective: '1200px' }}>
-          <motion.div style={{ scale: dashboardScale, rotateX: dashboardRotateX, opacity: dashboardOpacity, y: dashboardY, transformStyle: 'preserve-3d' }} className="dashboard-mockup w-full aspect-[16/10] sm:aspect-[16/9] glass-strong rounded-3xl sm:rounded-[2rem] border border-white/15 shadow-[0_40px_120px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.3)] overflow-hidden flex flex-col will-change-transform relative">
+      <section className="dashboard-section relative w-full py-16 md:py-32 flex items-start justify-center bg-black/40">
+        <div className="dashboard-viewport w-full max-w-[1400px] px-4 sm:px-6">
+          <div className="dashboard-mockup w-full aspect-[16/10] sm:aspect-[16/9] glass-strong rounded-3xl sm:rounded-[2rem] border border-white/15 shadow-[0_40px_120px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.3)] overflow-hidden flex flex-col relative">
             
-            {/* Next-Level Background Corner Glowing Orbs */}
-            <motion.div animate={{ opacity: [0.15, 0.7, 0.15], scale: [0.8, 1.4, 0.8] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-omin-gold/30 blur-[100px] pointer-events-none" />
-            <motion.div animate={{ opacity: [0.1, 0.6, 0.1], scale: [0.9, 1.3, 0.9] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1 }} className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] bg-cyan-400/25 blur-[120px] pointer-events-none" />
-            <motion.div animate={{ opacity: [0.05, 0.5, 0.05], scale: [0.8, 1.3, 0.8] }} transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 2 }} className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-500/20 blur-[100px] pointer-events-none" />
-            <motion.div animate={{ opacity: [0.1, 0.6, 0.1], scale: [1, 1.5, 1] }} transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }} className="absolute top-[-10%] right-[-5%] w-[45%] h-[45%] bg-omin-gold/25 blur-[110px] pointer-events-none" />
+            {/* Background Corner Glowing Orbs */}
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-omin-gold/10 blur-[100px] pointer-events-none" />
+            <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] bg-cyan-400/10 blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[100px] pointer-events-none" />
+            <div className="absolute top-[-10%] right-[-5%] w-[45%] h-[45%] bg-omin-gold/10 blur-[110px] pointer-events-none" />
 
             <div className="h-12 border-b border-white/10 bg-white/[0.02] flex items-center px-6 gap-2 relative z-10">
               <div className="w-3 h-3 rounded-full bg-red-500/70" /><div className="w-3 h-3 rounded-full bg-yellow-500/70" /><div className="w-3 h-3 rounded-full bg-green-500/70" />
@@ -381,7 +381,7 @@ export default function LandingPage() {
             
             {/* Pulsing Border Glow */}
             <motion.div animate={{ opacity: [0.1, 0.4, 0.1] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} className="absolute inset-0 rounded-3xl sm:rounded-[2rem] border-[1px] md:border-2 border-omin-gold z-30 pointer-events-none mix-blend-overlay" />
-          </motion.div>
+          </div>
         </div>
       </section>
 
