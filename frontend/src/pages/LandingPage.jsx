@@ -5,7 +5,7 @@ import { supabase, MODELS } from './landingData';
 import { CanvasBackground, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp, StaggeredText, ScrambleText, SiriWave, Floating3DOrb } from './landingComponents';
 import InteractiveLogo from '../components/InteractiveLogo';
 import { LogoCloud, LiveAIDemo, HowItWorks, ModelLibrary, CompareTable, TestimonialsSection, PricingSection, FAQSection, MarqueeSection } from './landingSections';
-import Spline from '@splinetool/react-spline';
+import { SafeSpline } from './landingComponents';
 import confetti from 'canvas-confetti';
 
 export default function LandingPage() {
@@ -165,9 +165,10 @@ export default function LandingPage() {
           className="absolute inset-0 z-0 pointer-events-none sm:pointer-events-auto"
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(5,5,5,0)_0%,rgba(5,5,5,1)_80%)] z-10" />
-          <Spline 
-            scene="https://prod.spline.design/6Wq1Q7YEjHiaVcyE/scene.splinecode" 
+          <SafeSpline 
+            scene="https://prod.spline.design/ATpf-K-V8F1ZIdP6/scene.splinecode" 
             onLoad={() => setSplineLoaded(true)}
+            fallback={<div className="absolute inset-0 bg-gradient-to-b from-omin-gold/10 via-omin-black to-omin-black z-0" />}
           />
         </motion.div>
 

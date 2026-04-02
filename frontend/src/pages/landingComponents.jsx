@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { motion, useMotionValue, useSpring, useMotionTemplate, useTransform, AnimatePresence } from 'framer-motion';
+import Spline from '@splinetool/react-spline';
 
 /* ─── Animated Canvas Particle Network ─── */
 export function CanvasBackground() {
@@ -462,10 +463,34 @@ export function LoopTypewriter({ sequences, speed = 30, deleteSpeed = 20, pause 
   );
 }
 
-/* ─── Floating 3D Orb ─── */
-import Spline from '@splinetool/react-spline';
+/* ─── Error Boundary For 3D Assets ─── */
+class SplineErrorBoundary extends React.Component {
+  constructor(props) { super(props); this.state = { hasError: false }; }
+  static getDerivedStateFromError(error) { return { hasError: true }; }
+  componentDidCatch(error, errorInfo) { console.error("Spline Load Error:", error, errorInfo); }
+  render() {
+    if (this.state.hasError) return this.props.fallback || <div className="absolute inset-0 bg-gradient-to-br from-omin-gold/5 to-blue-500/5 backdrop-blur-3xl animate-pulse" />;
+    return this.props.children;
+  }
+}
 
-export function Floating3DOrb({ className, scene = "https://prod.spline.design/6Wq1Q7YEjHiaVcyE/scene.splinecode" }) {
+/* ─── Safe Spline Wrapper ─── */
+export function SafeSpline({ scene, onLoad, className, fallback }) {
+  return (
+    <SplineErrorBoundary fallback={fallback}>
+      <Suspense fallback={fallback || <div className="absolute inset-0 bg-omin-black/20 animate-pulse" />}>
+        <Spline 
+          scene={scene} 
+          onLoad={onLoad}
+          className={className}
+        />
+      </Suspense>
+    </SplineErrorBoundary>
+  );
+}
+
+/* ─── Floating 3D Orb ─── */
+export function Floating3DOrb({ className, scene = "https://prod.spline.design/ATpf-K-V8F1ZIdP6/scene.splinecode" }) {
   const [loaded, setLoaded] = useState(false);
   return (
     <motion.div 
@@ -474,7 +499,7 @@ export function Floating3DOrb({ className, scene = "https://prod.spline.design/6
       transition={{ duration: 1 }}
       className={`pointer-events-none ${className}`}
     >
-      <Spline 
+      <SafeSpline 
         scene={scene} 
         onLoad={() => setLoaded(true)}
       />
