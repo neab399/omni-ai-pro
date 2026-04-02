@@ -19,83 +19,111 @@ export default function WarpTransition({ active, onComplete }) {
     window.addEventListener('resize', setSize);
     
     const particles = [];
-    const numParticles = 350;
+    const numParticles = 400; // Increased density
+    
+    // Portal ring parameters
+    const portalRadius = Math.min(canvas.width, canvas.height) * 0.35;
     
     for (let i = 0; i < numParticles; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        // Cluster particles near the portal radius for the "Loop" feel
+        const offset = (Math.random() - 0.5) * 40; 
         particles.push({
-            angle: Math.random() * Math.PI * 2,
-            radius: Math.random() * (canvas.width * 0.8),
+            angle: angle,
+            baseRadius: portalRadius + offset,
             z: Math.random() * 1000,
-            size: Math.random() * 2.5 + 0.5,
-            color: Math.random() > 0.3 ? '#FF8C00' : '#FFD93D', // Orange and Gold sparks
-            speed: Math.random() * 0.02 + 0.005,
-            jitter: Math.random() * 2
+            size: Math.random() * 3 + 1,
+            color: Math.random() > 0.4 ? '#FF8C00' : '#FFD93D',
+            speed: Math.random() * 0.05 + 0.01,
+            life: Math.random()
         });
     }
     
     let rotation = 0;
     let globalSpeed = 1;
     const startTime = Date.now();
-    const duration = 1800; // Match navigation timeout
+    const duration = 1800; 
     
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
       
-      // Accelerated rotation and forward speed
-      rotation += 0.02 + (progress * 0.25);
-      globalSpeed = 3 + (progress * 80);
+      rotation += 0.05 + (progress * 0.3);
+      globalSpeed = 5 + (progress * 90);
       
-      // Clear with trail
+      // Magic Trail
       ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = `rgba(5, 5, 5, ${0.15 + (progress * 0.35)})`; // Darken trail as we speed up
+      ctx.fillStyle = `rgba(5, 5, 5, ${0.1 + (progress * 0.4)})`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Additive blending for "Magic Glow"
       ctx.globalCompositeOperation = 'lighter';
       
       ctx.save();
       ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate(rotation * 0.1); // Slow global vortex rotation
       
+      // ─── DRAW THE GLOWING CIRCULAR LOOP (PORTAL MOUTH) ───
+      const ringOpacity = Math.max(0, (1 - progress * 1.5)) * 0.3;
+      if (ringOpacity > 0) {
+        ctx.beginPath();
+        const ringGlow = ctx.createRadialGradient(0, 0, portalRadius - 20, 0, 0, portalRadius + 20);
+        ringGlow.addColorStop(0, 'transparent');
+        ringGlow.addColorStop(0.5, `rgba(255, 140, 0, ${ringOpacity})`);
+        ringGlow.addColorStop(1, 'transparent');
+        ctx.strokeStyle = ringGlow;
+        ctx.lineWidth = 40;
+        ctx.arc(0, 0, portalRadius, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
       particles.forEach(p => {
           p.z -= globalSpeed;
-          p.angle += p.speed + (progress * 0.05); // Faster spiral
+          p.angle += p.speed;
           
           if (p.z <= 1) {
               p.z = 1000;
               p.angle = Math.random() * Math.PI * 2;
-              p.radius = Math.random() * (canvas.width * 0.5);
           }
           
-          // Perspective projection
-          const fov = 400;
+          // Perspective
+          const fov = 450;
           const scale = fov / p.z;
-          const x = Math.cos(p.angle) * p.radius * scale;
-          const y = Math.sin(p.angle) * p.radius * scale;
-          const size = p.size * scale * 1.5;
           
-          // Add chaos/sparkle
-          const flicker = Math.random() > 0.1 ? 1 : 0.4;
-          const jitterX = (Math.random() - 0.5) * p.jitter * 10;
-          const jitterY = (Math.random() - 0.5) * p.jitter * 10;
+          // Spiral motion relative to the "Loop"
+          const currentRadius = p.baseRadius * scale;
+          const x = Math.cos(p.angle + rotation) * currentRadius;
+          const y = Math.sin(p.angle + rotation) * currentRadius;
           
-          if (p.z < 800) {
+          const size = p.size * scale;
+          
+          // Render spark if in view
+          if (p.z < 950) {
+              const alpha = (1 - p.z / 1000) * (Math.random() > 0.1 ? 1 : 0.5);
+              
               ctx.beginPath();
-              const gradient = ctx.createRadialGradient(x + jitterX, y + jitterY, 0, x + jitterX, y + jitterY, size);
-              gradient.addColorStop(0, p.color);
-              gradient.addColorStop(0.5, p.color + '88');
-              gradient.addColorStop(1, 'transparent');
+              const grad = ctx.createRadialGradient(x, y, 0, x, y, size);
+              grad.addColorStop(0, '#FFFFFF');
+              grad.addColorStop(0.3, p.color);
+              grad.addColorStop(1, 'transparent');
               
-              ctx.fillStyle = gradient;
-              ctx.globalAlpha = (1 - p.z / 1000) * flicker;
-              ctx.arc(x + jitterX, y + jitterY, size, 0, Math.PI * 2);
+              ctx.fillStyle = grad;
+              ctx.globalAlpha = alpha;
+              
+              // Motion blur stretch
+              if (progress > 0.3) {
+                  const stretch = globalSpeed * 0.2;
+                  ctx.ellipse(x, y, size, size + stretch, Math.atan2(y, x) + Math.PI/2, 0, Math.PI * 2);
+              } else {
+                  ctx.arc(x, y, size, 0, Math.PI * 2);
+              }
               ctx.fill();
-              
-              // Draw a core sparkle
-              if (progress > 0.4 && Math.random() > 0.95) {
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillRect(x + jitterX, y + jitterY, size/2, size/2);
+
+              // Extra "Electrical" Jitter for high progress
+              if (progress > 0.6 && Math.random() > 0.98) {
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + (Math.random() - 0.5) * 50, y + (Math.random() - 0.5) * 50);
+                ctx.stroke();
               }
           }
       });
@@ -125,14 +153,22 @@ export default function WarpTransition({ active, onComplete }) {
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[10000] pointer-events-none"
         >
-          <canvas ref={canvasRef} className="w-full h-full bg-black" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-40" />
-          {/* Central Flash on Exit */}
+          <canvas ref={canvasRef} className="w-full h-full bg-black/90" />
+          
+          {/* Dimensional White-Point */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: [0, 1, 0], scale: [0, 1.5, 3] }}
-            transition={{ duration: 1.8, ease: "easeIn" }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-omin-gold blur-[100px] rounded-full"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: [0, 1, 4], opacity: [0, 0, 1, 0] }}
+            transition={{ duration: 1.8, times: [0, 0.7, 0.9, 1], ease: "expIn" }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-white rounded-full blur-2xl"
+          />
+          
+          {/* Final Portal Expansion Flash */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0, 1, 0] }}
+            transition={{ duration: 1.8, times: [0, 0.85, 0.95, 1] }}
+            className="absolute inset-0 bg-white mix-blend-overlay"
           />
         </motion.div>
       )}
