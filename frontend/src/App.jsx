@@ -5,6 +5,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import SplashScreen from './components/SplashScreen';
 import CookieNotice from './components/CookieNotice';
 import GlobalFeedback from './components/GlobalFeedback';
+import InteractiveCursor from './components/InteractiveCursor';
 import { ArtifactProvider } from './context/ArtifactContext';
 
 const LandingPage = lazy(() => import('./pages/LandingPage'));
@@ -21,6 +22,8 @@ function App() {
 
   return (
     <ArtifactProvider>
+      <InteractiveCursor />
+      <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03] mix-blend-overlay noise-grain" />
       {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
       <Router>
         <Suspense fallback={<div className="min-h-screen bg-omin-black flex items-center justify-center"><div className="w-10 h-10 border-2 border-omin-gold/20 border-t-omin-gold rounded-full animate-spin" /></div>}>

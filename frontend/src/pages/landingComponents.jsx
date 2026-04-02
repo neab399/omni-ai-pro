@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, Suspense } from 'react';
-import { motion, useMotionValue, useSpring, useMotionTemplate, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useMotionTemplate, useTransform, AnimatePresence, useScroll } from 'framer-motion';
 import Spline from '@splinetool/react-spline';
 
 /* ─── Animated Canvas Particle Network ─── */
@@ -273,7 +273,7 @@ export function Marquee({ items, reverse }) {
   );
 }
 
-/* ─── 3D Bento Card with Tilt Physics ─── */
+/* ─── 3D Bento Card with Liquid Glassmorphism ─── */
 export function BentoCard({ children, className, delay = 0 }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -284,7 +284,10 @@ export function BentoCard({ children, className, delay = 0 }) {
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7deg", "-7deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7deg", "7deg"]);
 
-  let spotX = useMotionValue(-1000), spotY = useMotionValue(-1000);
+  const spotX = useMotionValue(-1000);
+  const spotY = useMotionValue(-1000);
+  const liquidX = useSpring(spotX, { stiffness: 100, damping: 20 });
+  const liquidY = useSpring(spotY, { stiffness: 100, damping: 20 });
 
   function handleMouseMove(e) { 
     const rect = e.currentTarget.getBoundingClientRect(); 
@@ -293,10 +296,8 @@ export function BentoCard({ children, className, delay = 0 }) {
     
     const width = rect.width;
     const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
+    const xPct = (e.clientX - rect.left) / width - 0.5;
+    const yPct = (e.clientY - rect.top) / height - 0.5;
     x.set(xPct);
     y.set(yPct);
   }
@@ -322,8 +323,24 @@ export function BentoCard({ children, className, delay = 0 }) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         className={`glass-panel glow-border rounded-2xl md:rounded-[2rem] p-5 md:p-8 relative overflow-hidden group h-full w-full shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-shadow duration-500`}
+        data-magnetic
       >
-        <motion.div className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-300 group-hover:opacity-100" style={{ background: useMotionTemplate`radial-gradient(800px circle at ${spotX}px ${spotY}px, rgba(255,217,61,0.2), transparent 70%)`, transform: "translateZ(1px)" }} />
+        {/* Liquid Border Light */}
+        <motion.div 
+          className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-500 group-hover:opacity-100" 
+          style={{ 
+            background: useMotionTemplate`radial-gradient(400px circle at ${liquidX}px ${liquidY}px, rgba(255,217,61,0.25), transparent 80%)`, 
+            transform: "translateZ(1px)" 
+          }} 
+        />
+        {/* Secondary Organic Glow */}
+        <motion.div 
+          className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-700 group-hover:opacity-40" 
+          style={{ 
+            background: useMotionTemplate`radial-gradient(600px circle at ${spotX}px ${spotY}px, rgba(59,130,246,0.15), transparent 70%)`, 
+            transform: "translateZ(2px)" 
+          }} 
+        />
         <div className="relative z-10 h-full" style={{ transform: "translateZ(35px)" }}>{children}</div>
       </motion.div>
     </motion.div>
@@ -507,15 +524,58 @@ export function Floating3DOrb({ className, scene = "https://prod.spline.design/A
   );
 }
 
-/* ─── Section Header ─── */
+/* ─── Section Header with Cinematic Unfold ─── */
 export function SectionHeader({ badge, title, subtitle, scramble = false }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="text-center mb-10 md:md:mb-20">
-      {badge && <div className="text-omin-gold text-[9px] md:text-xs font-bold tracking-[0.25em] uppercase mb-3 md:mb-5">{badge}</div>}
-      <h2 className="font-display font-bold text-[1.75rem] md:text-[clamp(2.5rem,5vw,4.5rem)] tracking-tight mb-3 md:mb-6 leading-[1.1] md:leading-tight">
+    <motion.div 
+      initial={{ opacity: 0, y: 40 }} 
+      whileInView={{ opacity: 1, y: 0 }} 
+      viewport={{ once: true }} 
+      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }} 
+      className="text-center mb-10 md:mb-20 px-4"
+    >
+      {badge && (
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="text-omin-gold text-[9px] md:text-xs font-bold tracking-[0.35em] uppercase mb-3 md:mb-5"
+        >
+          {badge}
+        </motion.div>
+      )}
+      <motion.h2 
+        initial={{ letterSpacing: "0.2em", scale: 0.95, opacity: 0 }}
+        whileInView={{ letterSpacing: "-0.02em", scale: 1, opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        className="font-display font-bold text-[1.75rem] md:text-[clamp(2.5rem,5vw,4.5rem)] tracking-tight mb-3 md:mb-6 leading-[1.1] md:leading-tight"
+      >
         {scramble ? <ScrambleText text={title} /> : title}
-      </h2>
-      {subtitle && <p className="text-white/50 text-[11px] md:text-lg max-w-[280px] md:max-w-2xl mx-auto leading-relaxed px-2 md:px-0">{subtitle}</p>}
+      </motion.h2>
+      {subtitle && (
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="text-white/50 text-[11px] md:text-lg max-w-[280px] md:max-w-2xl mx-auto leading-relaxed"
+        >
+          {subtitle}
+        </motion.p>
+      )}
+    </motion.div>
+  );
+}
+
+/* ─── Parallax Layer ─── */
+export function ParallaxLayer({ children, speed = 0.5, className }) {
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 1000], [0, 500 * speed]);
+  return (
+    <motion.div style={{ y }} className={className}>
+      {children}
     </motion.div>
   );
 }

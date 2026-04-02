@@ -2,10 +2,9 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase, MODELS } from './landingData';
-import { CanvasBackground, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp, StaggeredText, ScrambleText, SiriWave, Floating3DOrb } from './landingComponents';
+import { CanvasBackground, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp, StaggeredText, ScrambleText, SiriWave, Floating3DOrb, SectionHeader, ParallaxLayer, SafeSpline } from './landingComponents';
 import InteractiveLogo from '../components/InteractiveLogo';
 import { LogoCloud, LiveAIDemo, HowItWorks, ModelLibrary, CompareTable, TestimonialsSection, PricingSection, FAQSection, MarqueeSection } from './landingSections';
-import { SafeSpline } from './landingComponents';
 import confetti from 'canvas-confetti';
 
 export default function LandingPage() {
@@ -138,9 +137,13 @@ export default function LandingPage() {
         )}
       </AnimatePresence>
 
+      {/* ─── ATMOSPHERIC LIGHT LEAKS ─── */}
+      <div className="fixed top-0 -left-[20%] w-[60%] h-[60%] bg-omin-gold/5 blur-[120px] pointer-events-none z-0" />
+      <div className="fixed bottom-0 -right-[20%] w-[60%] h-[60%] bg-blue-500/5 blur-[120px] pointer-events-none z-0" />
+
       {/* ═══ NAV ═══ */}
-      <motion.nav style={{ background: navBg, borderBottomColor: navBorder }} className="landing-nav fixed top-[3px] z-[100] w-full h-[72px] flex items-center justify-between px-6 lg:px-12 backdrop-blur-xl border-b border-transparent">
-        <div className="flex items-center gap-3">
+      <motion.nav style={{ background: navBg, borderBottomColor: navBorder }} className="landing-nav fixed top-[3px] z-[100] w-full min-w-[320px] h-[72px] flex items-center justify-between px-6 lg:px-12 backdrop-blur-xl border-b border-transparent">
+        <div className="flex items-center gap-3" data-magnetic>
           <InteractiveLogo size={32} iconSize={20} />
           <span className="font-display font-bold tracking-tight text-[15px]">OMNI AI <span className="text-omin-gold">PRO</span></span>
         </div>
@@ -158,19 +161,14 @@ export default function LandingPage() {
       {/* ═══ 1. HERO ═══ */}
       <motion.section style={{ opacity: heroOpacity, scale: heroScale, y: heroY }} className="hero-section relative flex flex-col items-center justify-center min-h-[95vh] text-center px-4 pt-32 pb-10">
         {/* ═══ 3D INTERACTIVE CORE (Sits behind text) ═══ */}
-        <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: splineLoaded ? 1 : 0 }} 
-          transition={{ duration: 1 }}
-          className="absolute inset-0 z-0 pointer-events-none sm:pointer-events-auto"
-        >
+        <ParallaxLayer speed={-0.2} className="absolute inset-0 z-0 pointer-events-none sm:pointer-events-auto">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(5,5,5,0)_0%,rgba(5,5,5,1)_80%)] z-10" />
           <SafeSpline 
             scene="https://prod.spline.design/ATpf-K-V8F1ZIdP6/scene.splinecode" 
             onLoad={() => setSplineLoaded(true)}
             fallback={<div className="absolute inset-0 bg-gradient-to-b from-omin-gold/10 via-omin-black to-omin-black z-0" />}
           />
-        </motion.div>
+        </ParallaxLayer>
 
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="relative z-10 mb-6 md:mb-10">
           <span className="glass-pill px-4 md:px-6 py-2 md:py-2.5 rounded-full text-[8.5px] md:text-[10px] sm:text-xs font-bold tracking-[0.25em] text-white uppercase shadow-[0_0_30px_rgba(255,255,255,0.05)]">
@@ -212,10 +210,10 @@ export default function LandingPage() {
           />
         </div>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }} className="hero-cta-row relative z-10 flex flex-col sm:flex-row gap-3 md:gap-4 mb-10 md:mb-12">
-          <MagBtn onClick={triggerAuth} className="bg-white text-black px-6 py-3.5 md:px-10 md:py-4 rounded-full font-bold text-[12px] md:text-lg hover:bg-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] flex items-center justify-center gap-2 group">
+          <MagBtn onClick={triggerAuth} className="bg-white text-black px-6 py-3.5 md:px-10 md:py-4 rounded-full font-bold text-[12px] md:text-lg hover:bg-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] flex items-center justify-center gap-2 group" data-magnetic>
             {user ? 'Go to Dashboard' : 'Start Free — No Card Needed'}<span className="group-hover:translate-x-1 transition-transform">→</span>
           </MagBtn>
-          <a href="#compare" className="glass-pill text-white/60 px-6 py-3.5 md:px-8 md:py-4 text-[11px] md:text-base rounded-full font-semibold hover:bg-white/10 hover:text-white transition-all flex items-center justify-center">See Comparison ↓</a>
+          <a href="#compare" className="glass-pill text-white/60 px-6 py-3.5 md:px-8 md:py-4 text-[11px] md:text-base rounded-full font-semibold hover:bg-white/10 hover:text-white transition-all flex items-center justify-center" data-magnetic>See Comparison ↓</a>
         </motion.div>
         {/* Live model ticker */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} className="relative z-10 glass-pill px-5 py-2.5 rounded-full flex items-center gap-3">
