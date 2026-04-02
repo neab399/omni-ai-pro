@@ -78,6 +78,11 @@ export default function LandingPage() {
   const dashboardY = useTransform(scrollYProgress, [0.06, 0.22], [180, 0]);
   const progressScaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
   
+  // Parallax Orbs Transforms (Fixed: Moved out of JSX to resolve Hook violation)
+  const orb1Y = useTransform(scrollYProgress, [0, 1], [0, 600]);
+  const orb2Y = useTransform(scrollYProgress, [0, 1], [0, -500]);
+  const orb3Y = useTransform(scrollYProgress, [0, 1], [0, 300]);
+  
   // ─── Adaptive Environment Dynamics ───
   const glowColor = useTransform(
     scrollYProgress,
@@ -161,6 +166,11 @@ export default function LandingPage() {
   };
 
   const handleDashboardEntry = () => {
+    if (!user) {
+      triggerAuth();
+      return;
+    }
+    
     playSelectSound(0.8);
     setWarpActive(true);
     // After warp completes, navigate
@@ -168,6 +178,17 @@ export default function LandingPage() {
       navigate('/chat');
     }, 1800);
   };
+  
+  // 🚀 Auto-navigate after login if auth modal was open (requested dashboard flow)
+  useEffect(() => {
+    if (user && showAuthModal) {
+      setShowAuthModal(false);
+      // Brief delay to allow modal to close before warp
+      setTimeout(() => {
+        handleDashboardEntry();
+      }, 300);
+    }
+  }, [user]); // Specifically watching user state
 
   // 3D Hero Scene State
   const [splineLoaded, setSplineLoaded] = useState(false);
@@ -184,9 +205,9 @@ export default function LandingPage() {
       <motion.div style={{ scaleX: progressScaleX }} className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-omin-gold via-yellow-200 to-omin-gold z-[200] origin-left" />
 
       {/* Background Parallax Orbs */}
-      <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, 600]) }} className="parallax-orb fixed top-[-15%] left-[-15%] w-[55vw] h-[55vw] rounded-full bg-omin-gold/[0.04] blur-[140px] pointer-events-none" />
-      <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, -500]) }} className="parallax-orb fixed bottom-[-25%] right-[-15%] w-[60vw] h-[60vw] rounded-full bg-blue-500/[0.04] blur-[160px] pointer-events-none" />
-      <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, 300]) }} className="parallax-orb fixed top-[40%] right-[-5%] w-[30vw] h-[30vw] rounded-full bg-purple-500/[0.03] blur-[120px] pointer-events-none" />
+      <motion.div style={{ y: orb1Y }} className="parallax-orb fixed top-[-15%] left-[-15%] w-[55vw] h-[55vw] rounded-full bg-omin-gold/[0.04] blur-[140px] pointer-events-none" />
+      <motion.div style={{ y: orb2Y }} className="parallax-orb fixed bottom-[-25%] right-[-15%] w-[60vw] h-[60vw] rounded-full bg-blue-500/[0.04] blur-[160px] pointer-events-none" />
+      <motion.div style={{ y: orb3Y }} className="parallax-orb fixed top-[40%] right-[-5%] w-[30vw] h-[30vw] rounded-full bg-purple-500/[0.03] blur-[120px] pointer-events-none" />
 
       {/* ─── VISIONARY WARP TUNNEL ─── */}
       <WarpTransition active={warpActive} onComplete={() => setWarpActive(false)} />
@@ -313,7 +334,7 @@ export default function LandingPage() {
           />
         </div>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }} className="hero-cta-row relative z-10 flex flex-col sm:flex-row gap-3 md:gap-4 mb-10 md:mb-12">
-          <MagBtn onClick={triggerAuth} className="bg-white text-black px-6 py-3.5 md:px-10 md:py-4 rounded-full font-bold text-[12px] md:text-lg hover:bg-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] flex items-center justify-center gap-2 group" data-magnetic>
+          <MagBtn onClick={handleDashboardEntry} className="bg-white text-black px-6 py-3.5 md:px-10 md:py-4 rounded-full font-bold text-[12px] md:text-lg hover:bg-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] flex items-center justify-center gap-2 group" data-magnetic>
             {user ? 'Go to Dashboard' : 'Start Free — No Card Needed'}<span className="group-hover:translate-x-1 transition-transform">→</span>
           </MagBtn>
           <a href="#compare" className="glass-pill text-white/60 px-6 py-3.5 md:px-8 md:py-4 text-[11px] md:text-base rounded-full font-semibold hover:bg-white/10 hover:text-white transition-all flex items-center justify-center" data-magnetic>See Comparison ↓</a>
@@ -485,7 +506,7 @@ export default function LandingPage() {
           {[...Array(6)].map((_, i) => <div key={i} className="absolute w-1 h-1 bg-omin-gold/40 rounded-full animate-float" style={{ left: `${15 + i * 14}%`, top: `${20 + (i % 3) * 25}%`, animationDelay: `${i * 0.8}s`, animationDuration: `${4 + i}s` }} />)}
           <h2 className="font-display font-bold text-3xl md:text-6xl tracking-tight mb-4 md:mb-6 relative z-10">Access the God-Tier.</h2>
           <p className="text-white/60 text-[12px] md:text-lg mb-8 md:mb-12 max-w-[260px] md:max-w-xl mx-auto relative z-10">Claim your unfair advantage today. All 68 models inside one immersive interface.</p>
-          <div className="relative z-10"><MagBtn onClick={triggerAuth} className="cta-btn bg-omin-gold text-black px-8 py-3.5 md:px-12 md:py-5 rounded-full font-bold text-[13px] md:text-lg hover:bg-omin-gold/90 shadow-[0_10px_40px_rgba(255,217,61,0.3)] hover:shadow-[0_10px_60px_rgba(255,217,61,0.5)] transition-all">{user ? 'Go to Dashboard' : 'Sign Up Free →'}</MagBtn></div>
+          <div className="relative z-10"><MagBtn onClick={handleDashboardEntry} className="cta-btn bg-omin-gold text-black px-8 py-3.5 md:px-12 md:py-5 rounded-full font-bold text-[13px] md:text-lg hover:bg-omin-gold/90 shadow-[0_10px_40px_rgba(255,217,61,0.3)] hover:shadow-[0_10px_60px_rgba(255,217,61,0.5)] transition-all">{user ? 'Go to Dashboard' : 'Sign Up Free →'}</MagBtn></div>
         </motion.div>
       </section>
 
