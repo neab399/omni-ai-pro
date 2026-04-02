@@ -3,11 +3,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import SplashScreen from './components/SplashScreen';
-import CookieNotice from './components/CookieNotice';
-import GlobalFeedback from './components/GlobalFeedback';
-import InteractiveCursor from './components/InteractiveCursor';
 import { ArtifactProvider } from './context/ArtifactContext';
 import { initAudioContext } from './lib/audio';
+
+const GlobalFeedback = lazy(() => import('./components/GlobalFeedback'));
+const CookieNotice = lazy(() => import('./components/CookieNotice'));
+const InteractiveCursor = lazy(() => import('./components/InteractiveCursor'));
 
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const ChatPage = lazy(() => import('./pages/ChatPage'));
@@ -20,6 +21,13 @@ const DPAPolicy = lazy(() => import('./pages/DPAPolicy'));
 function App() {
   const [showSplash, setShowSplash] = useState(true);
   const handleSplashComplete = useCallback(() => setShowSplash(false), []);
+
+  // 🚀 Performance: Defer non-critical UI components
+  const [renderExtras, setRenderExtras] = useState(false);
+  useState(() => {
+    const timer = setTimeout(() => setRenderExtras(true), 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // 🚀 Performance: Prefetch critical chunks while splash screen is active
   useState(() => {
@@ -46,8 +54,13 @@ function App() {
             </Routes>
           </Suspense>
         </Router>
-        <GlobalFeedback />
-        <CookieNotice />
+        {renderExtras && (
+          <Suspense fallback={null}>
+            <GlobalFeedback />
+            <CookieNotice />
+            <InteractiveCursor />
+          </Suspense>
+        )}
       </div>
       <Analytics />
       <SpeedInsights />

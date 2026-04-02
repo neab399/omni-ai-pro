@@ -61,9 +61,7 @@ body.landing-page-active {
 /* ══════════════════════════════════════════════════════════
    SMOOTH SCROLLING — the #1 fix
 ══════════════════════════════════════════════════════════ */
-html {
-  /* Removed smooth scroll to prevent conflict with Framer Motion scroll animations */
-}
+/* Note: html smooth scroll removed to prevent conflict with Framer Motion animations */
 
 /* Landing page scroll container */
 .landing-scroll-container {
@@ -585,7 +583,8 @@ html {
 
 /* Content containment for non-visible sections */
 .section-content {
-  contain: content;
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 1200px;
 }
 
 /* ══════════════════════════════════════════════════════════

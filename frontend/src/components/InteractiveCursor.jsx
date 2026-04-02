@@ -11,33 +11,44 @@ export default function InteractiveCursor() {
   const [magneticTarget, setMagneticTarget] = useState(null);
 
   useEffect(() => {
+    let rafId = null;
+
     const moveCursor = (e) => {
-      if (!isVisible) setIsVisible(true);
-      
-      const target = e.target.closest('button, a, .clickable, [role="button"]');
-      if (target) {
-        setIsPointer(true);
-        if (target.getAttribute('data-magnetic') !== null) {
-          const rect = target.getBoundingClientRect();
-          const centerX = rect.left + rect.width / 2;
-          const centerY = rect.top + rect.height / 2;
-          const weight = 0.5; 
-          cursorX.set(e.clientX + (centerX - e.clientX) * weight);
-          cursorY.set(e.clientY + (centerY - e.clientY) * weight);
-          setMagneticTarget(target);
-          return;
+      if (rafId) return; // Wait for the next animation frame
+
+      rafId = requestAnimationFrame(() => {
+        if (!isVisible) setIsVisible(true);
+        
+        const target = e.target.closest('button, a, .clickable, [role="button"]');
+        if (target) {
+          setIsPointer(true);
+          if (target.getAttribute('data-magnetic') !== null) {
+            const rect = target.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const weight = 0.5; 
+            cursorX.set(e.clientX + (centerX - e.clientX) * weight);
+            cursorY.set(e.clientY + (centerY - e.clientY) * weight);
+            setMagneticTarget(target);
+            rafId = null;
+            return;
+          }
+        } else {
+          setIsPointer(false);
+          setMagneticTarget(null);
         }
-      } else {
-        setIsPointer(false);
-        setMagneticTarget(null);
-      }
-      
-      cursorX.set(e.clientX);
-      cursorY.set(e.clientY);
+        
+        cursorX.set(e.clientX);
+        cursorY.set(e.clientY);
+        rafId = null;
+      });
     };
 
-    window.addEventListener('mousemove', moveCursor);
-    return () => window.removeEventListener('mousemove', moveCursor);
+    window.addEventListener('mousemove', moveCursor, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', moveCursor);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [isVisible, cursorX, cursorY]);
 
   return (

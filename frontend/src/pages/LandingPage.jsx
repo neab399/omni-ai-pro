@@ -4,9 +4,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import { supabase, MODELS } from './landingData';
 import { CanvasBackground, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp, StaggeredText, ScrambleText, SiriWave, Floating3DOrb, SectionHeader, ParallaxLayer, SafeSpline } from './landingComponents';
 import InteractiveLogo from '../components/InteractiveLogo';
-import { LogoCloud, LiveAIDemo, HowItWorks } from './landingSections';
-
-// 🚀 Performance: Lazy Load Heavy Below-the-Fold Sections
+// 🚀 Performance: Lazy Load ALL Below-the-Fold Sections
+const LogoCloud = lazy(() => import('./landingSections').then(module => ({ default: module.LogoCloud })));
+const LiveAIDemo = lazy(() => import('./landingSections').then(module => ({ default: module.LiveAIDemo })));
+const HowItWorks = lazy(() => import('./landingSections').then(module => ({ default: module.HowItWorks })));
 const ModelLibrary = lazy(() => import('./landingSections').then(module => ({ default: module.ModelLibrary })));
 const CompareTable = lazy(() => import('./landingSections').then(module => ({ default: module.CompareTable })));
 const TestimonialsSection = lazy(() => import('./landingSections').then(module => ({ default: module.TestimonialsSection })));
@@ -349,7 +350,9 @@ export default function LandingPage() {
       </motion.section>
 
       {/* ═══ 2. LOGO CLOUD ═══ */}
-      <LogoCloud />
+      <Suspense fallback={<SectionLoader />}>
+        <LogoCloud />
+      </Suspense>
 
       {/* ═══ 3. DASHBOARD MOCKUP (Apple 3D Scroll) ═══ */}
       <section className="dashboard-section relative w-full min-h-[90vh] md:min-h-[130vh] -mt-[5vh] flex items-start justify-center">
@@ -413,7 +416,9 @@ export default function LandingPage() {
       </Suspense>
 
       {/* ═══ 5. LIVE AI DEMO ═══ */}
-      <LiveAIDemo />
+      <Suspense fallback={<SectionLoader />}>
+        <LiveAIDemo />
+      </Suspense>
 
       {/* ═══ 6. BENTO FEATURES ═══ */}
       <section id="features" className="bento-section section-content py-20 md:py-32 px-5 md:px-6 max-w-[1400px] mx-auto relative z-20 flex flex-col lg:flex-row gap-8 lg:gap-20">
@@ -471,7 +476,9 @@ export default function LandingPage() {
       </section>
 
       {/* ═══ 7. HOW IT WORKS ═══ */}
-      <HowItWorks />
+      <Suspense fallback={<SectionLoader />}>
+        <HowItWorks />
+      </Suspense>
 
       {/* ═══ 8. MODEL LIBRARY ═══ */}
       <Suspense fallback={<SectionLoader />}>
