@@ -5,6 +5,7 @@ import { InputTBtn } from './ChatUIKit';
 
 /* ══════════════════════════════════════════════════════════
    ADVANCED INPUT
+   Status: Restored & Upgraded (God-Tier)
 ══════════════════════════════════════════════════════════ */
 export default function AdvancedInput({ input, setInput, onSend, activeModels, isMultiChatMode, inputRef: extRef, hasMessages }) {
   const intRef = useRef(null);
@@ -110,17 +111,17 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
   const isMobileView = typeof window !== 'undefined' && window.innerWidth < 768;
 
   return (
-    <div style={{ padding: isMobileView ? '8px 0 12px' : '12px 0 24px', background: 'var(--bg-base)', position: 'relative', flexShrink: 0 }} onDragOver={e => e.preventDefault()} onDrop={handleDrop}>
+    <div style={{ padding: isMobileView ? '8px 0 12px' : '12px 0 24px', background: 'transparent', position: 'relative', flexShrink: 0, zIndex: 10 }} onDragOver={e => e.preventDefault()} onDrop={handleDrop}>
       {/* Template chips — only when no conversation started yet */}
       <AnimatePresence>
         {focused && !input && !hasMessages && (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
-            style={{ maxWidth: isMultiChatMode ? '96%' : 760, margin: '0 auto 10px', display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 2, scrollbarWidth: 'none' }}>
+            style={{ maxWidth: isMultiChatMode ? '96%' : 760, margin: '0 auto 12px', display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
             {PROMPT_TEMPLATES.map((t, i) => (
               <motion.button key={i} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * .04 }}
                 onClick={() => { setInput(t.text); setTimeout(() => inputEl.current?.focus(), 50); }}
-                style={{ flexShrink: 0, padding: '5px 12px', background: 'var(--bg-hover)', border: '1px solid var(--border-light)', borderRadius: 99, fontSize: 12, color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap', fontFamily: "'Outfit',sans-serif", transition: 'all .14s' }}
-                whileHover={{ borderColor: 'var(--border-focus)', color: 'var(--text-main)' }}>
+                style={{ flexShrink: 0, padding: '6px 14px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-light)', borderRadius: 99, fontSize: 12, color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap', fontFamily: "'Outfit',sans-serif", transition: 'all .14s', backdropFilter: 'blur(10px)' }}
+                whileHover={{ borderColor: 'var(--accent)', color: 'var(--text-main)', background: 'rgba(255,255,255,0.06)' }}>
                 {t.icon} {t.label}
               </motion.button>
             ))}
@@ -129,22 +130,36 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
       </AnimatePresence>
 
       <div style={{ maxWidth: isMultiChatMode ? '96%' : 760, margin: '0 auto', position: 'relative', padding: isMobileView ? '0 4px' : 0 }}>
+        
+        {/* Sentient Aura Glow (Behind Input) */}
+        <AnimatePresence>
+          {focused && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.4 }}
+              style={{ position: 'absolute', inset: -2, borderRadius: isMobileView ? 24 : 20, background: `linear-gradient(45deg, ${activeModels[0]?.color || 'var(--accent)'}33, transparent, ${activeModels[0]?.color || 'var(--accent)'}33)`, filter: 'blur(15px)', zIndex: -1, pointerEvents: 'none' }}
+            />
+          )}
+        </AnimatePresence>
+
         {/* Slash dropdown */}
         <AnimatePresence>
           {showSlash && filteredCmds.length > 0 && (
             <motion.div ref={slashRef} initial={{ opacity: 0, y: 8, scale: .97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 8 }}
-              style={{ position: 'absolute', bottom: 'calc(100% + 8px)', left: 0, right: 0, background: 'var(--bg-panel)', border: '1px solid var(--border-med)', borderRadius: 14, overflow: 'hidden', zIndex: 60, boxShadow: 'var(--shadow-lg)' }}>
-              <div style={{ padding: '9px 14px 6px', fontSize: 9.5, color: 'var(--text-muted)', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', borderBottom: '1px solid var(--border-light)' }}>Commands</div>
+              style={{ position: 'absolute', bottom: 'calc(100% + 12px)', left: 0, right: 0, background: 'rgba(20,20,25,0.9)', backdropFilter: 'blur(20px)', border: '1px solid var(--border-med)', borderRadius: 16, overflow: 'hidden', zIndex: 60, boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
+              <div style={{ padding: '10px 16px 8px', fontSize: 10, color: 'var(--text-muted)', fontWeight: 800, letterSpacing: '.12em', textTransform: 'uppercase', borderBottom: '1px solid var(--border-light)' }}>Command Synchronizer</div>
               {filteredCmds.map((c, i) => (
                 <div key={i} onClick={() => applySlash(c)}
-                  style={{ padding: '10px 14px', background: i === slashIdx ? 'var(--bg-hover)' : 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12 }}
+                  style={{ padding: '12px 16px', background: i === slashIdx ? 'rgba(255,255,255,0.05)' : 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14, transition: 'all .14s' }}
                   onMouseEnter={() => setSlashIdx(i)}>
-                  <span style={{ fontSize: 16, width: 24, textAlign: 'center', flexShrink: 0 }}>{c.icon}</span>
+                  <span style={{ fontSize: 18, width: 28, textAlign: 'center', flexShrink: 0 }}>{c.icon}</span>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-main)', fontFamily: "'JetBrains Mono',monospace" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-main)', fontFamily: "'JetBrains Mono',monospace" }}>
                       {c.cmd} <span style={{ fontSize: 11, fontFamily: "'Outfit',sans-serif", fontWeight: 400, color: 'var(--text-muted)' }}>{c.label}</span>
                     </div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>{c.desc}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2, opacity: 0.8 }}>{c.desc}</div>
                   </div>
                 </div>
               ))}
@@ -153,17 +168,25 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
         </AnimatePresence>
 
         {/* Attachments */}
-        {attachments.length > 0 && (
-          <div style={{ marginBottom: 8, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {attachments.map(a => (
-              <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '4px 10px', background: 'var(--bg-hover)', border: '1px solid var(--border-light)', borderRadius: 7, fontSize: 11.5, color: 'var(--text-sec)' }}>
-                <span>{a.type.startsWith('image') ? '🖼' : '📄'}</span>
-                <span style={{ maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.name}</span>
-                <button onClick={() => setAttachments(p => p.filter(x => x.id !== a.id))} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 0, lineHeight: 1 }}>✕</button>
-              </div>
-            ))}
-          </div>
-        )}
+        <AnimatePresence>
+          {attachments.length > 0 && (
+            <div style={{ marginBottom: 12, display: 'flex', gap: 8, flexWrap: 'wrap', padding: '0 4px' }}>
+              {attachments.map(a => (
+                <motion.div 
+                  initial={{ scale: 0.8, opacity: 0 }} 
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  key={a.id} 
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 12px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-light)', borderRadius: 10, fontSize: 11.5, color: 'var(--text-sec)', backdropFilter: 'blur(10px)' }}
+                >
+                  <span style={{ fontSize: 14 }}>{a.type.startsWith('image') ? '🖼' : '📄'}</span>
+                  <span style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 600 }}>{a.name}</span>
+                  <button onClick={() => setAttachments(p => p.filter(x => x.id !== a.id))} style={{ background: 'none', border: 'none', color: 'var(--text-faint)', cursor: 'pointer', padding: '0 2px', display: 'flex', alignItems: 'center' }}>✕</button>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </AnimatePresence>
 
         {isMobileView ? (
           /* ── MOBILE COMPACT INPUT ── */
@@ -171,42 +194,38 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
             <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.txt,.md,.csv,.json,.js,.ts,.py" style={{ display: 'none' }} onChange={e => addFiles(Array.from(e.target.files))} />
             
             <button onClick={() => fileRef.current?.click()} 
-              style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--bg-hover)', border: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-main)', flexShrink: 0, padding: 0, marginBottom: 4, cursor: 'pointer' }}>
-              <span style={{ fontSize: 24, marginTop: -2, fontWeight: 300 }}>+</span>
+              style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-main)', flexShrink: 0, padding: 0, marginBottom: 2, cursor: 'pointer', boxShadow: 'var(--shadow-sm)' }}>
+              <span style={{ fontSize: 26, fontWeight: 300 }}>+</span>
             </button>
 
             <motion.div
-              animate={{ borderColor: focused ? 'var(--border-focus)' : 'var(--border-med)', boxShadow: focused ? 'var(--glow-gold-strong), 0 0 0 1px rgba(255,217,61,0.08)' : 'var(--shadow-sm)' }}
-              style={{ flex: 1, background: 'var(--bg-input)', border: '1px solid var(--border-med)', borderRadius: 22, overflow: 'hidden', backdropFilter: 'var(--panel-blur)' }}>
+              animate={{ borderColor: focused ? (activeModels[0]?.color || 'var(--border-focus)') : 'var(--border-med)', boxShadow: focused ? `0 0 20px ${(activeModels[0]?.color || 'var(--accent)')}22` : 'var(--shadow-sm)' }}
+              style={{ flex: 1, background: 'rgba(15,15,20,0.8)', border: '1px solid var(--border-med)', borderRadius: 24, overflow: 'hidden', backdropFilter: 'blur(20px)', willChange: 'transform, border-color' }}>
               
               {activeModels.length > 1 && (
-                <div style={{ padding: '6px 12px 0', display: 'flex', gap: 4, flexWrap: 'wrap', alignItems: 'center' }}>
-                  <span style={{ fontSize: 9, color: 'var(--text-faint)', fontWeight: 700, textTransform: 'uppercase' }}>Sending to:</span>
-                  {activeModels.map((m, i) => <span key={i} style={{ fontSize: 10, color: m.color, fontWeight: 600 }}>{m.name}</span>)}
+                <div style={{ padding: '8px 14px 0', display: 'flex', gap: 5, flexWrap: 'wrap', alignItems: 'center' }}>
+                  <span style={{ fontSize: 9, color: 'var(--text-faint)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Multiplexing:</span>
+                  {activeModels.map((m, i) => <span key={i} style={{ fontSize: 10, color: m.color, fontWeight: 700 }}>{m.name}</span>)}
                 </div>
               )}
 
               <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 6, paddingRight: 6 }}>
                 <textarea
-                  ref={inputEl}
-                  value={input}
-                  onChange={e => setInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  onFocus={() => setFocused(true)}
-                  onBlur={() => setTimeout(() => setFocused(false), 200)}
-                  placeholder={isMultiChatMode ? `Ask ${activeModels.length} models…` : `Message ${activeModels[0]?.name || 'AI'}…`}
+                  ref={inputEl} value={input} onChange={e => setInput(e.target.value)} onKeyDown={handleKeyDown}
+                  onFocus={() => setFocused(true)} onBlur={() => setTimeout(() => setFocused(false), 200)}
+                  placeholder={isMultiChatMode ? `Querying ${activeModels.length} Cores…` : `Message ${activeModels[0]?.name || 'OMNI'}…`}
                   rows={1}
-                  style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', fontSize: 15, fontFamily: "'Outfit',sans-serif", color: overLimit ? 'var(--red)' : 'var(--text-main)', lineHeight: 1.5, padding: '10px 14px', resize: 'none', maxHeight: 120, minHeight: 44, caretColor: 'var(--accent)', overflowX: 'hidden' }}
+                  style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', fontSize: 15, fontFamily: "'Outfit',sans-serif", color: overLimit ? 'var(--red)' : 'var(--text-main)', lineHeight: 1.5, padding: '12px 16px', resize: 'none', maxHeight: 120, minHeight: 46, caretColor: 'var(--accent)', overflowX: 'hidden' }}
                 />
 
-                <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0, marginBottom: 2 }}>
+                <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0, marginBottom: 4 }}>
                   {input.trim() ? (
-                    <motion.button onClick={handleSend} disabled={sending} whileTap={{ scale: .85 }}
-                      style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--text-main)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--bg-base)', boxShadow: 'var(--glow-gold)' }}>
+                    <motion.button onClick={handleSend} disabled={sending} whileTap={{ scale: .85 }} initial={{ scale: 0 }} animate={{ scale: 1 }}
+                      style={{ width: 34, height: 34, borderRadius: '50%', background: 'var(--text-main)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--bg-base)', boxShadow: '0 4px 12px rgba(255,255,255,0.1)' }}>
                       {sending ? <span className="spin" style={{ display: 'flex' }}><IC.Send /></span> : <span style={{ transform: 'rotate(-45deg)', marginTop: -2, marginRight: -2 }}><IC.ArrowR /></span>}
                     </motion.button>
                   ) : (
-                    <button onClick={handleBoost} disabled={isBoosting} style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--bg-hover)', border: 'none', cursor: isBoosting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isBoosting ? 'var(--text-faint)' : 'var(--text-muted)' }}>
+                    <button onClick={handleBoost} disabled={isBoosting} style={{ width: 34, height: 34, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: 'none', cursor: isBoosting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isBoosting ? 'var(--accent)' : 'var(--text-muted)' }}>
                       <span className={isBoosting ? 'spin' : ''} style={{ display: 'flex' }}><IC.Sparkle /></span>
                     </button>
                   )}
@@ -217,47 +236,55 @@ export default function AdvancedInput({ input, setInput, onSend, activeModels, i
         ) : (
           /* ── DESKTOP FULL INPUT ── */
           <motion.div
-            animate={{ borderColor: focused ? 'var(--border-focus)' : 'var(--border-med)', boxShadow: focused ? 'var(--glow-gold-strong), 0 0 0 1px rgba(255,217,61,0.08)' : 'var(--shadow-sm)' }}
-            style={{ background: 'var(--bg-input)', border: '1px solid var(--border-med)', borderRadius: 18, overflow: 'visible', backdropFilter: 'var(--panel-blur)', transition: 'border-color 0.3s' }}>
+            animate={{ 
+              borderColor: focused ? (activeModels[0]?.color || 'var(--border-focus)') : 'var(--border-med)', 
+              boxShadow: focused ? `0 10px 40px rgba(0,0,0,0.3), 0 0 0 1px ${(activeModels[0]?.color || 'var(--accent)')}22` : 'var(--shadow-sm)',
+              y: focused ? -2 : 0
+            }}
+            style={{ background: 'rgba(15,15,20,0.7)', border: '1px solid var(--border-med)', borderRadius: 20, overflow: 'visible', backdropFilter: 'blur(25px)', transition: 'border-color 0.4s, transform 0.4s, box-shadow 0.4s', willChange: 'transform' }}>
             
             {activeModels.length > 1 && (
-              <div style={{ padding: '9px 14px 0', display: 'flex', gap: 5, flexWrap: 'wrap', alignItems: 'center' }}>
-                <span style={{ fontSize: 9.5, color: 'var(--text-faint)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', marginRight: 3 }}>Sending to:</span>
-                {activeModels.map((m, i) => <span key={i} style={{ padding: '2px 9px', borderRadius: 99, fontSize: 11, fontWeight: 600, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', color: m.color }}>{m.name}</span>)}
+              <div style={{ padding: '12px 18px 0', display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+                <span style={{ fontSize: 9.5, color: 'var(--text-faint)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', marginRight: 4 }}>Neural Pipeline:</span>
+                {activeModels.map((m, i) => <motion.span initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }} key={i} style={{ padding: '3px 10px', borderRadius: 99, fontSize: 11, fontWeight: 700, background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-light)', color: m.color }}>{m.name}</motion.span>)}
               </div>
             )}
 
             <textarea
-              ref={inputEl}
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setTimeout(() => setFocused(false), 200)}
-              placeholder={isMultiChatMode ? `Ask ${activeModels.length} models…` : `Message ${activeModels[0]?.name || 'AI'}…`}
+              ref={inputEl} value={input} onChange={e => setInput(e.target.value)} onKeyDown={handleKeyDown}
+              onFocus={() => setFocused(true)} onBlur={() => setTimeout(() => setFocused(false), 200)}
+              placeholder={isMultiChatMode ? `Multiplexing ${activeModels.length} Intelligence Streams…` : `Communicate with ${activeModels[0]?.name || 'OMNI CORE'}…`}
               rows={1}
-              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: 14.5, fontFamily: "'Outfit',sans-serif", color: overLimit ? 'var(--red)' : 'var(--text-main)', lineHeight: 1.55, padding: '14px 18px', resize: 'none', maxHeight: 220, minHeight: 54, caretColor: 'var(--accent)', overflowX: 'hidden' }}
+              style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: 15, fontFamily: "'Outfit',sans-serif", color: overLimit ? 'var(--red)' : 'var(--text-main)', lineHeight: 1.6, padding: '18px 20px', resize: 'none', maxHeight: 240, minHeight: 60, caretColor: 'var(--accent)', overflowX: 'hidden', opacity: focused ? 1 : 0.8, transition: 'opacity 0.3s' }}
             />
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px 10px', borderTop: '1px solid var(--border-light)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px 14px', borderTop: '1px solid rgba(255,255,255,0.03)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 <input ref={fileRef} type="file" multiple accept="image/*,.pdf,.txt,.md,.csv,.json,.js,.ts,.py" style={{ display: 'none' }} onChange={e => addFiles(Array.from(e.target.files))} />
-                <InputTBtn title="Attach" onClick={() => fileRef.current?.click()}><IC.Paperclip /></InputTBtn>
-                <InputTBtn title="Boost prompt with AI" onClick={handleBoost} disabled={!input.trim() || isBoosting} active={boostDone}>
+                <InputTBtn title="Upload Data" onClick={() => fileRef.current?.click()}><IC.Paperclip /></InputTBtn>
+                <InputTBtn title="Refine via AI" onClick={handleBoost} disabled={!input.trim() || isBoosting} active={boostDone}>
                   {isBoosting ? <span className="spin"><IC.Sparkle /></span> : boostDone ? <span style={{ color: 'var(--green)' }}>✓</span> : <IC.Sparkle />}
                 </InputTBtn>
-                {(isBoosting || boostDone) && (
-                  <span style={{ fontSize: 11, color: isBoosting ? 'var(--text-muted)' : 'var(--green)', animation: isBoosting ? 'omni-pulse 1.2s ease infinite' : 'none', fontWeight: 600 }}>
-                    {isBoosting ? 'Boosting…' : 'Boosted!'}
-                  </span>
-                )}
+                <AnimatePresence>
+                  {(isBoosting || boostDone) && (
+                    <motion.span initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
+                      style={{ fontSize: 11, color: isBoosting ? 'var(--accent)' : 'var(--green)', fontWeight: 700, marginLeft: 6, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      {isBoosting ? 'PROMPT OPTIMIZATION…' : 'REFINED!'}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                {input.length > 0 && <span style={{ fontSize: 11, fontFamily: "'JetBrains Mono',monospace", color: overLimit ? 'var(--red)' : 'var(--text-faint)' }}>{tokens.toLocaleString()}</span>}
-                <motion.button onClick={handleSend} disabled={!input.trim()} whileTap={{ scale: .9 }}
-                  style={{ padding: '8px 20px', borderRadius: 11, background: input.trim() ? 'var(--accent)' : 'var(--bg-hover)', color: input.trim() ? 'var(--bg-base)' : 'var(--text-muted)', border: `1px solid ${input.trim() ? 'transparent' : 'var(--border-light)'}`, cursor: input.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 700, fontFamily: "'Outfit',sans-serif", transition: 'all .22s', boxShadow: input.trim() ? 'var(--glow-gold)' : 'none' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                {input.length > 0 && (
+                  <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ fontSize: 11, fontFamily: "'JetBrains Mono',monospace", color: overLimit ? 'var(--red)' : 'var(--text-faint)', fontWeight: 600 }}>
+                    {tokens.toLocaleString()} <span style={{ opacity: 0.5 }}>TKNS</span>
+                  </motion.span>
+                )}
+                <motion.button onClick={handleSend} disabled={!input.trim()} whileTap={{ scale: .95 }}
+                  style={{ padding: '10px 24px', borderRadius: 14, background: input.trim() ? 'var(--text-main)' : 'rgba(255,255,255,0.03)', color: input.trim() ? 'var(--bg-base)' : 'var(--text-muted)', border: 'none', cursor: input.trim() ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 800, fontFamily: "'Outfit',sans-serif", transition: 'all .3s cubic-bezier(0.16, 1, 0.3, 1)', boxShadow: input.trim() ? '0 10px 25px rgba(255,255,255,0.1)' : 'none' }}>
                   {sending ? <span className="spin"><IC.Send /></span> : <IC.Send />}
-                  {isMultiChatMode && input.trim() && <span style={{ fontSize: 10, opacity: .7 }}>×{activeModels.length}</span>}
+                  <span>{sending ? 'PROCESSING' : 'SEND'}</span>
+                  {isMultiChatMode && input.trim() && <span style={{ fontSize: 11, background: 'rgba(0,0,0,0.1)', padding: '2px 6px', borderRadius: 6, marginLeft: 2 }}>{activeModels.length}</span>}
                 </motion.button>
               </div>
             </div>

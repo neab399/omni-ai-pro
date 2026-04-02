@@ -374,6 +374,29 @@ export default function ChatPage() {
     <div className={`chat-page-root chat-layout ${isArtifactOpen && !isMobile ? 'side-panel-open' : ''}`} style={{ display: 'flex', height: '100dvh', background: 'var(--bg-base)', color: 'var(--text-main)', overflow: 'hidden', fontFamily: "'Outfit',sans-serif", position: 'relative' }}>
       <style>{GLOBAL_STYLES}</style>
 
+      {/* ─── ATMOSPHERIC LAYER (Visionary) ─── */}
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.03] mix-blend-overlay noise-grain" />
+      
+      {/* ─── ADAPTIVE AURA GLOWS (Buttery Smooth) ─── */}
+      <motion.div 
+        animate={{ 
+          x: [0, 40, 0], 
+          y: [0, -40, 0], 
+          scale: [1, 1.1, 1] 
+        }} 
+        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+        className="fixed -top-[20%] -left-[10%] w-[60%] h-[60%] bg-omin-gold/5 blur-[140px] pointer-events-none z-0 will-change-transform" 
+      />
+      <motion.div 
+        animate={{ 
+          x: [0, -50, 0], 
+          y: [0, 60, 0], 
+          scale: [1, 1.2, 1] 
+        }} 
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        className="fixed -bottom-[20%] -right-[10%] w-[60%] h-[60%] bg-blue-500/5 blur-[140px] pointer-events-none z-0 will-change-transform" 
+      />
+
       {/* Mobile sidebar backdrop */}
       {isMobile && sidebarOpen && (
         <div onClick={() => setSidebarOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 140, backdropFilter: 'blur(4px)' }} />
