@@ -45,11 +45,10 @@ body {
   touch-action: manipulation;
 }
 
-/* Landing page locks body scroll — its own container scrolls instead */
-.landing-page-active body,
-body.landing-page-active {
-  overflow: hidden;
-  height: 100dvh;
+/* All pages scroll naturally */
+.page-scrollable,
+.landing-root {
+  min-height: 100vh;
 }
 
 /* All other pages scroll naturally */

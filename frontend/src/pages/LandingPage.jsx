@@ -100,9 +100,6 @@ export default function LandingPage() {
   const [warpActive, setWarpActive] = useState(false);
 
   useEffect(() => {
-    // Lock body scroll — landing page uses its own container scroll
-    document.body.classList.add('landing-page-active');
-    
     // Preload ultra-premium sounds
     preloadSounds();
 
@@ -112,7 +109,6 @@ export default function LandingPage() {
     }, 1500);
     
     return () => {
-      document.body.classList.remove('landing-page-active');
       clearTimeout(startupTimeout);
     };
   }, []);
