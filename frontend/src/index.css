@@ -62,12 +62,12 @@ body.landing-page-active {
    SMOOTH SCROLLING — the #1 fix
 ══════════════════════════════════════════════════════════ */
 html {
-  scroll-behavior: smooth;
+  /* Removed smooth scroll to prevent conflict with Framer Motion scroll animations */
 }
 
 /* Landing page scroll container */
 .landing-scroll-container {
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; <-- REMOVED: Sync conflict with JS animations */
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
   scrollbar-width: thin;

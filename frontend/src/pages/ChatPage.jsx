@@ -14,7 +14,7 @@ import {
   genId, GLOBAL_STYLES, IC,
 } from '../lib/models';
 
-const API_BASE = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:5000` : 'http://localhost:5000');
+const API_BASE = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? `http://localhost:5000` : '');
 
 /* ── Extracted components ─────────────────────────────── */
 import { Toast, BrandLogo, ModelAvatar } from '../components/chat/ChatUIKit';
@@ -285,13 +285,17 @@ export default function ChatPage() {
         });
         if (soundEnabled) playReceiveSound();
       } catch (err) {
+        let msg = err.message;
+        if (msg === 'Failed to fetch') {
+          msg = `Backend unreachable (${API_BASE || 'proxied'}). If using Render Free Tier, the first request may take 60s to wake up the server.`;
+        }
         setChatHistories(prev => {
           const msgs = [...(prev[activeConvId]?.[key] || [])];
           const i = msgs.findIndex(m => m.id === streamId);
-          if (i > -1) msgs[i] = { ...msgs[i], content: `❌ **Error:** ${err.message}`, isStreaming: false };
+          if (i > -1) msgs[i] = { ...msgs[i], content: `❌ **Connectivity Error:** ${msg}`, isStreaming: false };
           return { ...prev, [activeConvId]: { ...prev[activeConvId], [key]: msgs } };
         });
-        addToast(`${model.name}: ${err.message}`, 'error');
+        addToast(`${model.name}: ${msg}`, 'error');
         if (soundEnabled) playErrorSound();
       }
     });

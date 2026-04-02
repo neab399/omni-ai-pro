@@ -17,13 +17,13 @@ export default function LandingPage() {
   // Scroll-linked transforms
   const navBg = useTransform(scrollYProgress, [0, 0.015], ['rgba(5,5,5,0)', 'rgba(5,5,5,0.9)']);
   const navBorder = useTransform(scrollYProgress, [0, 0.015], ['rgba(255,255,255,0)', 'rgba(255,255,255,0.08)']);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.08], [1, 0.92]);
-  const heroY = useTransform(scrollYProgress, [0, 0.1], [0, 80]);
-  const dashboardScale = useTransform(scrollYProgress, [0.03, 0.14], [0.82, 1]);
-  const dashboardRotateX = useTransform(scrollYProgress, [0.03, 0.14], [25, 0]);
-  const dashboardOpacity = useTransform(scrollYProgress, [0.03, 0.12], [0.2, 1]);
-  const dashboardY = useTransform(scrollYProgress, [0.03, 0.14], [120, 0]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.12], [1, 0.85]);
+  const heroY = useTransform(scrollYProgress, [0, 0.15], [0, -150]);
+  const dashboardScale = useTransform(scrollYProgress, [0.04, 0.18], [0.85, 1]);
+  const dashboardRotateX = useTransform(scrollYProgress, [0.04, 0.18], [25, 0]);
+  const dashboardOpacity = useTransform(scrollYProgress, [0.04, 0.15], [0, 1]);
+  const dashboardY = useTransform(scrollYProgress, [0.04, 0.18], [150, 0]);
   const progressScaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
   
   // ─── Adaptive Environment Dynamics ───
