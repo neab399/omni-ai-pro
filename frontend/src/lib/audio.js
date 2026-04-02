@@ -133,3 +133,21 @@ export const playHoverSound = () => {
   osc.start();
   osc.stop(ctx.currentTime + 0.05);
 };
+
+/* ── SFX: Robotic AI Welcome (Zero-Cost Futuristic Whisper) ── */
+export const playRoboticWhisper = (text = "Omni AI... Initialized") => {
+  const ctx = getAudioContext();
+  if (!ctx || typeof window === 'undefined') return;
+  
+  const synth = window.speechSynthesis;
+  const utterance = new SpeechSynthesisUtterance(text);
+  const voices = synth.getVoices();
+  
+  // Try to find a robotic or deep voice
+  utterance.voice = voices.find(v => v.name.includes('Google') || v.name.includes('Neural')) || voices[0];
+  utterance.pitch = 0.5;
+  utterance.rate = 0.85;
+  utterance.volume = 0.4;
+  
+  synth.speak(utterance);
+};

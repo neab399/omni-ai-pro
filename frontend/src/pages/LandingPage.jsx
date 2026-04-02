@@ -6,7 +6,8 @@ import { CanvasBackground, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp, St
 import InteractiveLogo from '../components/InteractiveLogo';
 import { LogoCloud, LiveAIDemo, HowItWorks, ModelLibrary, CompareTable, TestimonialsSection, PricingSection, FAQSection, MarqueeSection } from './landingSections';
 import confetti from 'canvas-confetti';
-import { preloadSounds, initAudioContext } from '../lib/audio';
+import { preloadSounds, initAudioContext, playRoboticWhisper, playSelectSound, playHoverSound } from '../lib/audio';
+import WarpTransition from '../components/WarpTransition';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -24,6 +25,14 @@ export default function LandingPage() {
   const dashboardOpacity = useTransform(scrollYProgress, [0.03, 0.12], [0.2, 1]);
   const dashboardY = useTransform(scrollYProgress, [0.03, 0.14], [120, 0]);
   const progressScaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  
+  // ─── Adaptive Environment Dynamics ───
+  // Map scroll to different accent colors: Deep Gold -> Blue -> Emerald -> Purple
+  const glowColor = useTransform(
+    scrollYProgress,
+    [0, 0.25, 0.5, 0.75, 1],
+    ['rgba(255,217,61,0.15)', 'rgba(59,130,246,0.15)', 'rgba(16,185,129,0.15)', 'rgba(168,85,247,0.15)', 'rgba(255,217,61,0.15)']
+  );
 
   const [liveModel, setLiveModel] = useState(0);
   const [user, setUser] = useState(null);
@@ -31,6 +40,7 @@ export default function LandingPage() {
   const [email, setEmail] = useState('');
   const [emailSent, setEmailSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [warpActive, setWarpActive] = useState(false);
 
   useEffect(() => {
     // Lock body scroll — landing page uses its own container scroll
@@ -38,8 +48,16 @@ export default function LandingPage() {
     
     // Preload ultra-premium sounds
     preloadSounds();
+
+    // Trigger AI Whisper after a short cinematic delay
+    const whisperTimeout = setTimeout(() => {
+      playRoboticWhisper("Omni AI... System Online.");
+    }, 2500);
     
-    return () => document.body.classList.remove('landing-page-active');
+    return () => {
+      document.body.classList.remove('landing-page-active');
+      clearTimeout(whisperTimeout);
+    };
   }, []);
 
   useEffect(() => {
@@ -87,7 +105,17 @@ export default function LandingPage() {
         zIndex: 999999
       });
     }
-    user ? navigate('/chat') : setShowAuthModal(true);
+    playSelectSound(0.5);
+    setShowAuthModal(true);
+  };
+
+  const handleDashboardEntry = () => {
+    playSelectSound(0.8);
+    setWarpActive(true);
+    // After warp completes, navigate
+    setTimeout(() => {
+      navigate('/chat');
+    }, 1800);
   };
 
   // 3D Hero Scene State
@@ -108,6 +136,9 @@ export default function LandingPage() {
       <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, 600]) }} className="parallax-orb fixed top-[-15%] left-[-15%] w-[55vw] h-[55vw] rounded-full bg-omin-gold/[0.04] blur-[140px] pointer-events-none" />
       <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, -500]) }} className="parallax-orb fixed bottom-[-25%] right-[-15%] w-[60vw] h-[60vw] rounded-full bg-blue-500/[0.04] blur-[160px] pointer-events-none" />
       <motion.div style={{ y: useTransform(scrollYProgress, [0, 1], [0, 300]) }} className="parallax-orb fixed top-[40%] right-[-5%] w-[30vw] h-[30vw] rounded-full bg-purple-500/[0.03] blur-[120px] pointer-events-none" />
+
+      {/* ─── VISIONARY WARP TUNNEL ─── */}
+      <WarpTransition active={warpActive} onComplete={() => setWarpActive(false)} />
 
       {/* ═══ AUTH MODAL ═══ */}
       <AnimatePresence>
@@ -142,9 +173,15 @@ export default function LandingPage() {
         )}
       </AnimatePresence>
 
-      {/* ─── ATMOSPHERIC LIGHT LEAKS ─── */}
-      <div className="fixed top-0 -left-[20%] w-[60%] h-[60%] bg-omin-gold/5 blur-[120px] pointer-events-none z-0" />
-      <div className="fixed bottom-0 -right-[20%] w-[60%] h-[60%] bg-blue-500/5 blur-[120px] pointer-events-none z-0" />
+      {/* ─── ATMOSPHERIC ADAPTIVE LIGHT LEAKS ─── */}
+      <motion.div 
+        style={{ backgroundColor: glowColor }}
+        className="fixed top-0 -left-[20%] w-[70%] h-[70%] blur-[120px] pointer-events-none z-0 transition-colors duration-1000" 
+      />
+      <motion.div 
+        style={{ backgroundColor: glowColor }}
+        className="fixed bottom-0 -right-[20%] w-[70%] h-[70%] blur-[120px] pointer-events-none z-0 transition-colors duration-1000" 
+      />
 
       {/* ═══ NAV ═══ */}
       <motion.nav style={{ background: navBg, borderBottomColor: navBorder }} className="landing-nav fixed top-[3px] z-[100] w-full min-w-[320px] h-[72px] flex items-center justify-between px-6 lg:px-12 backdrop-blur-xl border-b border-transparent">
@@ -157,8 +194,8 @@ export default function LandingPage() {
         </div>
         <div className="flex items-center gap-4">
           {user ? <button onClick={handleLogout} className="text-red-400 text-[13px] font-semibold hover:text-red-300">Log Out</button> : <button onClick={triggerAuth} className="text-white/50 text-[13px] font-semibold hover:text-white transition-colors hidden sm:block">Log In</button>}
-          <MagBtn onClick={triggerAuth} className="nav-cta-btn bg-omin-gold text-black px-6 py-2.5 rounded-full text-[13px] font-bold shadow-[0_4px_20px_rgba(255,217,61,0.25)] hover:shadow-[0_4px_30px_rgba(255,217,61,0.4)] transition-all">
-            {user ? 'Dashboard →' : 'Start Free →'}
+          <MagBtn onClick={handleDashboardEntry} className="nav-cta-btn bg-omin-gold text-black px-6 py-2.5 rounded-full text-[13px] font-bold shadow-[0_4px_20px_rgba(255,217,61,0.25)] hover:shadow-[0_4px_30px_rgba(255,217,61,0.4)] transition-all">
+            Dashboard →
           </MagBtn>
         </div>
       </motion.nav>
