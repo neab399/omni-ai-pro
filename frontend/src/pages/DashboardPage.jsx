@@ -252,7 +252,7 @@ export default function DashboardPage() {
             <button onClick={() => navigate('/chat')} style={{ width: 34, height: 34, background: 'var(--db-hover)', border: '1px solid var(--db-border)', borderRadius: 9, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--db-muted)', transition: 'all .2s' }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--db-accent)'; e.currentTarget.style.color = 'var(--db-accent)'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--db-border)'; e.currentTarget.style.color = 'var(--db-muted)'; }}>
-              <Icons.Back />
+              <IC.ArrowR style={{ transform: 'rotate(180deg)' }} />
             </button>
             <div>
               <h1 style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Outfit',sans-serif", letterSpacing: '-0.02em', margin: 0 }}>
@@ -278,7 +278,7 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <button onClick={() => setTheme(p => p === 'dark' ? 'light' : 'dark')}
               style={{ width: 34, height: 34, background: 'var(--db-hover)', border: '1px solid var(--db-border)', borderRadius: 9, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--db-muted)' }}>
-              {theme === 'dark' ? <Icons.Sun /> : <Icons.Moon />}
+              {theme === 'dark' ? <IC.Sun /> : <IC.Moon />}
             </button>
             <div onClick={() => navigate('/settings')} style={{ width: 32, height: 32, borderRadius: 9, background: 'var(--db-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', fontWeight: 700, fontSize: 13, color: '#030305', cursor: 'pointer' }}>
               {userAvatar ? <img src={userAvatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : userName[0]}

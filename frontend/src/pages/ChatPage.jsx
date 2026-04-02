@@ -31,6 +31,7 @@ import StudyTools from '../components/chat/StudyTools';
 import { playSendSound, playReceiveSound, playErrorSound, initAudioContext } from '../lib/audio';
 import useConversations from '../hooks/useConversations';
 import useModelManagement from '../hooks/useModelManagement';
+import useChatActions from '../hooks/useChatActions';
 
 /* ══════════════════════════════════════════════════════════
    CHAT PAGE — state + handlers only (~250 lines)
@@ -47,17 +48,22 @@ export default function ChatPage() {
   }, []);
 
   /* ── Core state ───────────────────────────────────────── */
-  const [theme,         setTheme]         = useState(() => localStorage.getItem('omni-theme') || 'dark');
   const [currentUser,   setCurrentUser]   = useState(null);
   const [userProfile,   setUserProfile]   = useState({ name: 'Omni User', email: '', avatar: null });
+  const [theme,         setTheme]         = useState(() => localStorage.getItem('omni-theme') || 'dark');
+  const [soundEnabled,  setSoundEnabled]  = useState(() => localStorage.getItem('omni-sound') !== 'false');
   const [sidebarOpen,   setSidebarOpen]   = useState(() => window.innerWidth >= 768);
   const [isFocusMode,    setIsFocusMode]    = useState(false);
+  const [isLoading,     setIsLoading]     = useState(true);
+  const [input,         setInput]         = useState('');
+  const [activeSection, setActiveSection] = useState('chat');
+  const [showSearch,     setShowSearch]     = useState(false);
+  const [toasts,         setToasts]         = useState([]);
 
   const chatEndRefs = useRef({});
   const inputRef    = useRef(null);
 
   /* ── Toast helpers ────────────────────────────────────── */
-  const [toasts,         setToasts]         = useState([]);
   const addToast = useCallback((message, type = 'info') => {
     const id = genId();
     setToasts(p => [...p, { id, message, type }]);
@@ -111,14 +117,6 @@ export default function ChatPage() {
     localStorage.setItem('omni-sound', soundEnabled);
   }, [soundEnabled]);
 
-  /* ── Toast helpers ────────────────────────────────────── */
-  const addToast = useCallback((message, type = 'info') => {
-    const id = genId();
-    setToasts(p => [...p, { id, message, type }]);
-    setTimeout(() => setToasts(p => p.filter(t => t.id !== id)), 3200);
-  }, []);
-  const removeToast = useCallback(id => setToasts(p => p.filter(t => t.id !== id)), []);
-
   /* ── Auth ─────────────────────────────────────────────── */
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -135,11 +133,6 @@ export default function ChatPage() {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const [input,         setInput]         = useState('');
-  const [isLoading,     setIsLoading]     = useState(true);
-  const [activeSection, setActiveSection] = useState('chat');
-  const [soundEnabled,  setSoundEnabled]  = useState(() => localStorage.getItem('omni-sound') !== 'false');
-  const [showSearch,     setShowSearch]     = useState(false);
 
   /* ── Conversations Hook ──────────────────────────────── */
 
@@ -171,162 +164,23 @@ export default function ChatPage() {
     });
   }, [activeModels, activeConvId, chatHistories, setChatHistories]);
 
+  /* ── Chat Actions Hook ──────────────────────────────── */
+  const { handleSend, handleRegenerate, handleDeleteMsg } = useChatActions({
+    currentUser,
+    activeConvId,
+    activeConv,
+    activeModels,
+    chatHistories,
+    setChatHistories,
+    setConversations,
+    addToast,
+    soundEnabled,
+    saveChatToDB,
+    setInput
+  });
+
   /* ── Conversations Hook Handlers (Wrapper) ────────────────── */
-  // Wrap core functions if they need extra UI logic
   const onNewConv = () => handleNewConv(inputRef);
-
-  /* ── Send message ─────────────────────────────────────── */
-
-  /* ── Send message ─────────────────────────────────────── */
-  const handleSend = async () => {
-    initAudioContext();
-    const text = input.trim(); if (!text) return;
-    if (soundEnabled) playSendSound();
-    // 🚀 Performance: Update Knowledge Points (Gamification)
-    const currentKp = parseInt(localStorage.getItem('omni-kp') || '120');
-    localStorage.setItem('omni-kp', (currentKp + 5).toString());
-    window.dispatchEvent(new Event('storage')); // Trigger update in sidebar
-
-    setInput('');
-    const userMsg = { id: genId(), role: 'user', content: text, timestamp: Date.now() };
-    setChatHistories(prev => {
-      const updated = { ...prev };
-      activeModels.forEach(model => {
-        const key = `${model.providerId}-${model.id}`;
-        updated[activeConvId] = { ...(updated[activeConvId] || {}), [key]: [...(updated[activeConvId]?.[key] || []), userMsg] };
-      });
-      return updated;
-    });
-    if (activeConv?.title === 'New Conversation')
-      setConversations(p => p.map(c => c.id === activeConvId ? { ...c, title: text.slice(0, 36) + (text.length > 36 ? '…' : '') } : c));
-
-    activeModels.forEach(async model => {
-      const key = `${model.providerId}-${model.id}`;
-      const streamId = genId();
-      setChatHistories(prev => ({
-        ...prev,
-        [activeConvId]: { ...prev[activeConvId], [key]: [...(prev[activeConvId]?.[key] || []), { id: streamId, role: 'assistant', content: '', isStreaming: true, model, timestamp: Date.now() }] },
-      }));
-      try {
-        const priorMsgs = (chatHistories[activeConvId]?.[key] || []).filter(m => !m.isStreaming).map(m => ({ role: m.role, content: m.content }));
-        priorMsgs.push({ role: 'user', content: text });
-        
-        const { data: { session } } = await supabase.auth.getSession();
-        const token = session?.access_token || '';
-
-        const response = await fetch(`${API_BASE}/api/chat`, {
-          method: 'POST', 
-          headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ messages: priorMsgs, providerId: model.providerId, modelId: model.id }),
-        });
-        if (!response.ok) throw new Error(`API Error ${response.status}`);
-        const reader = response.body.getReader(); const decoder = new TextDecoder(); let reply = '';
-        while (true) {
-          const { done, value } = await reader.read(); if (done) break;
-          for (const chunk of decoder.decode(value).split('\n\n')) {
-            if (chunk.startsWith('data: ')) {
-              try {
-                const d = JSON.parse(chunk.slice(6));
-                if (d.type === 'chunk') {
-                  reply += d.text;
-                  setChatHistories(prev => {
-                    const msgs = [...(prev[activeConvId]?.[key] || [])];
-                    const i = msgs.findIndex(m => m.id === streamId);
-                    if (i > -1) msgs[i] = { ...msgs[i], content: reply };
-                    return { ...prev, [activeConvId]: { ...prev[activeConvId], [key]: msgs } };
-                  });
-                }
-              } catch (_) {}
-            }
-          }
-        }
-        setChatHistories(prev => {
-          const msgs = [...(prev[activeConvId]?.[key] || [])];
-          const i = msgs.findIndex(m => m.id === streamId);
-          if (i > -1) msgs[i] = { ...msgs[i], isStreaming: false };
-          const updated = { ...prev, [activeConvId]: { ...prev[activeConvId], [key]: msgs } };
-          saveChatToDB(activeConvId, activeConv?.title || 'Chat', updated[activeConvId], activeConv?.pinned || false);
-          return updated;
-        });
-        if (soundEnabled) playReceiveSound();
-      } catch (err) {
-        let msg = err.message;
-        if (msg === 'Failed to fetch') {
-          msg = `Backend unreachable (${API_BASE || 'proxied'}). If using Render Free Tier, the first request may take 60s to wake up the server.`;
-        }
-        setChatHistories(prev => {
-          const msgs = [...(prev[activeConvId]?.[key] || [])];
-          const i = msgs.findIndex(m => m.id === streamId);
-          if (i > -1) msgs[i] = { ...msgs[i], content: `❌ **Connectivity Error:** ${msg}`, isStreaming: false };
-          return { ...prev, [activeConvId]: { ...prev[activeConvId], [key]: msgs } };
-        });
-        addToast(`${model.name}: ${msg}`, 'error');
-        if (soundEnabled) playErrorSound();
-      }
-    });
-  };
-
-  const handleDeleteMsg = msgId => {
-    setChatHistories(prev => {
-      const conv = { ...prev[activeConvId] };
-      Object.keys(conv).forEach(k => { conv[k] = (conv[k] || []).filter(m => m.id !== msgId); });
-      return { ...prev, [activeConvId]: conv };
-    });
-  };
-
-  const handleRegenerate = async (model) => {
-    const key = `${model.providerId}-${model.id}`;
-    const history = chatHistories[activeConvId]?.[key] || [];
-    const lastUser = [...history].reverse().find(m => m.role === 'user');
-    if (!lastUser) return;
-    setChatHistories(prev => {
-      const msgs = [...(prev[activeConvId]?.[key] || [])];
-      const lastAI = [...msgs].reverse().findIndex(m => m.role === 'assistant' && !m.isStreaming);
-      if (lastAI !== -1) msgs.splice(msgs.length - 1 - lastAI, 1);
-      return { ...prev, [activeConvId]: { ...prev[activeConvId], [key]: msgs } };
-    });
-    const streamId = genId();
-    setChatHistories(prev => ({
-      ...prev,
-      [activeConvId]: { ...prev[activeConvId], [key]: [...(prev[activeConvId]?.[key] || []), { id: streamId, role: 'assistant', content: '', isStreaming: true, model, timestamp: Date.now() }] },
-    }));
-    try {
-      const msgs = (chatHistories[activeConvId]?.[key] || []).filter(m => !m.isStreaming).map(m => ({ role: m.role, content: m.content }));
-      
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token || '';
-
-      const response = await fetch(`${API_BASE}/api/chat`, { 
-        method: 'POST', 
-        headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }, 
-        body: JSON.stringify({ messages: msgs, providerId: model.providerId, modelId: model.id }) 
-      });
-      if (!response.ok) throw new Error(`API Error ${response.status}`);
-      const reader = response.body.getReader(); const decoder = new TextDecoder(); let reply = '';
-      while (true) {
-        const { done, value } = await reader.read(); if (done) break;
-        for (const chunk of decoder.decode(value).split('\n\n')) {
-          if (chunk.startsWith('data: ')) {
-            try {
-              const d = JSON.parse(chunk.slice(6));
-              if (d.type === 'chunk') {
-                reply += d.text;
-                setChatHistories(prev => { const m = [...(prev[activeConvId]?.[key] || [])]; const i = m.findIndex(x => x.id === streamId); if (i > -1) m[i] = { ...m[i], content: reply }; return { ...prev, [activeConvId]: { ...prev[activeConvId], [key]: m } }; });
-              }
-            } catch (_) {}
-          }
-        }
-      }
-      setChatHistories(prev => { const m = [...(prev[activeConvId]?.[key] || [])]; const i = m.findIndex(x => x.id === streamId); if (i > -1) m[i] = { ...m[i], isStreaming: false }; return { ...prev, [activeConvId]: { ...prev[activeConvId], [key]: m } }; });
-      addToast('Regenerated', 'success');
-    } catch (err) { addToast('Regeneration failed', 'error'); }
-  };
 
   /* ── Loading screen ───────────────────────────────────── */
   if (isLoading) return (
@@ -605,7 +459,7 @@ export default function ChatPage() {
                   const key = `${activeModels[0]?.providerId}-${activeModels[0]?.id}`;
                   const history = getCurrentHistory(key);
                   const hasMessages = history.some(m => m.role === 'user');
-                  return <AdvancedInput input={input} setInput={setInput} onSend={handleSend} activeModels={activeModels} isMultiChatMode={isMultiMode} inputRef={inputRef} hasMessages={hasMessages} />;
+                  return <AdvancedInput input={input} setInput={setInput} onSend={() => handleSend(input)} activeModels={activeModels} isMultiChatMode={isMultiMode} inputRef={inputRef} hasMessages={hasMessages} />;
                 })()}
               </div>
             </motion.div>
