@@ -267,16 +267,16 @@ export const SLASH_COMMANDS = [
   { cmd: '/debug',     label: 'Debug Code',         desc: 'Analyze and fix code issues',     icon: '⚡' },
 ];
 
-/* ── PROMPT TEMPLATES ── */
+/* ── PROMPT TEMPLATES (Student-Focused) ── */
 export const PROMPT_TEMPLATES = [
-  { label: 'Debug Code',    text: 'Help me debug this code:\n\n```\n\n```', icon: '⚡' },
-  { label: 'Brainstorm',    text: 'Brainstorm 10 creative ideas for: ',      icon: '◎' },
-  { label: 'Pros & Cons',   text: 'Pros and cons analysis of: ',             icon: '⇌' },
-  { label: 'Summarize',     text: 'Summarize in 5 key bullet points:\n\n',   icon: '▣' },
-  { label: 'Explain',       text: 'Explain step by step with examples: ',    icon: '◉' },
-  { label: 'Email Draft',   text: 'Write a professional email about: ',      icon: '✉' },
-  { label: 'Review',        text: 'Review and suggest improvements:\n\n',    icon: '✦' },
-  { label: 'Write Post',    text: 'Write a LinkedIn post about: ',           icon: '✍' },
+  { label: 'Summarize Notes', text: 'Summarize my coursework notes into 5 key bullet points for quick revision:\n\n', icon: '▣' },
+  { label: 'Feynman Technique', text: 'Explain this concept to me as if I am 5 years old. Use simple analogies:\n\n', icon: '◉' },
+  { label: 'Exam Quizzer',     text: 'Create a 5-question multiple choice quiz based on this topic to test my knowledge:\n\n', icon: '⚡' },
+  { label: 'Study Guide',      text: 'Create a comprehensive study guide and roadmap for mastering this subject:\n\n', icon: '✦' },
+  { label: 'Essay Outline',    text: 'Help me draft a structured outline for an essay on the following topic:\n\n', icon: '✍' },
+  { label: 'Code Tutor',       text: 'Explain how this code works step-by-step and suggest 3 ways to improve it:\n\n```\n\n```', icon: '⌥' },
+  { label: 'Mnemonic Maker',   text: 'Create 3 clever mnemonics to help me remember the following facts:\n\n', icon: '🧠' },
+  { label: 'Time Management',  text: 'Create a study schedule for me. I have 4 hours and need to cover: ', icon: '⏳' },
 ];
 
 /* ══════════════════════════════════════════════════════════

@@ -67,6 +67,7 @@ export default function ChatPage() {
   const [chatHistories,  setChatHistories]  = useState({ default: {} });
   const [toasts,         setToasts]         = useState([]);
   const [showSearch,     setShowSearch]     = useState(false);
+  const [isFocusMode,    setIsFocusMode]    = useState(false);
 
   const chatEndRefs = useRef({});
   const inputRef    = useRef(null);
@@ -219,6 +220,11 @@ export default function ChatPage() {
     initAudioContext();
     const text = input.trim(); if (!text) return;
     if (soundEnabled) playSendSound();
+    // 🚀 Performance: Update Knowledge Points (Gamification)
+    const currentKp = parseInt(localStorage.getItem('omni-kp') || '120');
+    localStorage.setItem('omni-kp', (currentKp + 5).toString());
+    window.dispatchEvent(new Event('storage')); // Trigger update in sidebar
+
     setInput('');
     const userMsg = { id: genId(), role: 'user', content: text, timestamp: Date.now() };
     setChatHistories(prev => {
@@ -401,6 +407,18 @@ export default function ChatPage() {
         className="fixed -bottom-[20%] -right-[10%] w-[60%] h-[60%] bg-blue-500/5 blur-[140px] pointer-events-none z-0 will-change-transform" 
       />
 
+      {/* Focus Glow Overlay */}
+      <AnimatePresence>
+        {isFocusMode && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 0.15 }} 
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 pointer-events-none z-0 bg-omin-gold blur-[140px]" 
+          />
+        )}
+      </AnimatePresence>
+
       {/* Mobile sidebar backdrop */}
       {isMobile && sidebarOpen && (
         <div onClick={() => setSidebarOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 140, backdropFilter: 'blur(4px)' }} />
@@ -408,7 +426,7 @@ export default function ChatPage() {
 
       {/* ═══ SIDEBAR ═══ */}
       <AnimatePresence>
-        {sidebarOpen && (
+        {!isFocusMode && sidebarOpen && (
           <ChatSidebar
             isMobile={isMobile}
             sidebarOpen={sidebarOpen}
@@ -509,6 +527,15 @@ export default function ChatPage() {
                 style={{ width: 34, height: 34, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                 {theme === 'dark' ? <IC.Sun /> : <IC.Moon />}
               </button>
+
+              {/* 🚀 New: Focus Mode Toggle */}
+              {!isMobile && (
+                <button onClick={() => setIsFocusMode(!isFocusMode)}
+                  style={{ height: 34, padding: '0 12px', background: isFocusMode ? 'var(--accent)' : 'var(--bg-hover)', border: `1px solid ${isFocusMode ? 'var(--accent)' : 'var(--border-light)'}`, borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, color: isFocusMode ? '#000' : 'var(--text-muted)', fontSize: 11, fontWeight: 700, transition: 'all .25s', fontFamily: "'Outfit',sans-serif" }}>
+                  <span style={{ fontSize: 14 }}>{isFocusMode ? '🎯' : '🧘'}</span>
+                  {isFocusMode ? 'Focused' : 'Focus Mode'}
+                </button>
+              )}
             </div>
           </div>
         </header>
@@ -579,7 +606,7 @@ export default function ChatPage() {
                     )}
                   </>
                 ) : (
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }} className={isFocusMode ? 'focus-mode-content' : ''}>
                     {(() => {
                       const key = `${activeModels[0]?.providerId}-${activeModels[0]?.id}`;
                       const history = getCurrentHistory(key);
@@ -587,7 +614,7 @@ export default function ChatPage() {
                         return <EmptyState activeModel={activeModels[0]} onTemplateSelect={t => { setInput(t); setTimeout(() => inputRef.current?.focus(), 100); }} />;
                       return (
                         <div className="omni-scroll" style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: isMobile ? '16px 12px 10px' : '30px 20px 14px' }}>
-                          <div style={{ maxWidth: isMobile ? '100%' : 740, width: '100%', minWidth: 0, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: isMobile ? 14 : 20, overflow: 'hidden' }}>
+                          <div style={{ maxWidth: isMobile ? '100%' : (isFocusMode ? 850 : 740), width: '100%', minWidth: 0, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: isMobile ? 14 : 20, overflow: 'hidden', transition: 'max-width .4s' }}>
                             {history.map(msg => (
                               <MessageBubble key={msg.id} msg={msg} model={activeModels[0]} userProfile={userProfile}
                                 onCopy={txt => { navigator.clipboard.writeText(txt); addToast('Copied!', 'success'); }}
@@ -606,7 +633,7 @@ export default function ChatPage() {
               </div>
 
               {/* Chat input */}
-              <div className="chat-input-mobile" style={{ padding: isMobile ? '0 10px' : '0 20px', background: 'var(--bg-base)', flexShrink: 0 }}>
+              <div className="chat-input-mobile" style={{ padding: isMobile ? '0 10px' : (isFocusMode ? '0 100px' : '0 20px'), background: 'var(--bg-base)', flexShrink: 0, transition: 'padding .4s' }}>
                 {(() => {
                   const key = `${activeModels[0]?.providerId}-${activeModels[0]?.id}`;
                   const history = getCurrentHistory(key);
@@ -668,6 +695,7 @@ export default function ChatPage() {
       </AnimatePresence>
 
       <ArtifactPanel />
+      <StudyTools isFocusMode={isFocusMode} onToggleFocus={() => setIsFocusMode(!isFocusMode)} />
       <Toast toasts={toasts} removeToast={removeToast} />
     </div>
   );

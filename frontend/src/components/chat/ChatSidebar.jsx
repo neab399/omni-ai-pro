@@ -106,6 +106,76 @@ function SearchPane({ conversations, chatHistories, onJump, onClose }) {
 }
 
 /* ══════════════════════════════════════════════════════════
+   STUDENT PROGRESS (Gamification)
+   - Tracks Daily Study Streak (flame)
+   - Tracks Knowledge Points (💎 KP / XP)
+══════════════════════════════════════════════════════════ */
+function StudentProgress() {
+  const [streak, setStreak] = useState(0);
+  const [kp, setKp] = useState(0);
+
+  useEffect(() => {
+    // ── Streak Logic ──
+    const lastDate = localStorage.getItem('omni-last-study');
+    const savedStreak = parseInt(localStorage.getItem('omni-streak') || '0');
+    const today = new Date().toDateString();
+    
+    if (lastDate !== today) {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (lastDate === yesterday.toDateString()) {
+        const newStreak = savedStreak + 1;
+        setStreak(newStreak);
+        localStorage.setItem('omni-streak', newStreak);
+      } else {
+        setStreak(1);
+        localStorage.setItem('omni-streak', '1');
+      }
+      localStorage.setItem('omni-last-study', today);
+    } else {
+      setStreak(savedStreak || 1);
+    }
+
+    // ── KP Logic (Mock) ──
+    const updateKP = () => {
+      const savedKp = parseInt(localStorage.getItem('omni-kp') || '120');
+      setKp(savedKp);
+    };
+    updateKP();
+    window.addEventListener('storage', updateKP);
+    return () => window.removeEventListener('storage', updateKP);
+  }, []);
+
+  return (
+    <div style={{ padding: '12px', borderTop: '1px solid var(--border-light)', background: 'rgba(255,217,61,0.03)' }}>
+      <div style={{ display: 'flex', gap: 8 }}>
+        {/* Streak */}
+        <div style={{ flex: 1, padding: '10px', borderRadius: 12, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ fontSize: 9, fontWeight: 800, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 2 }}>Study Streak</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ fontSize: 18 }}>🔥</span>
+            <span style={{ fontSize: 16, fontWeight: 900, color: 'var(--text-main)' }}>{streak} <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-muted)' }}>Days</span></span>
+          </div>
+          <div style={{ position: 'absolute', top: -5, right: -5, width: 30, height: 30, background: 'var(--omin-gold)', opacity: 0.1, borderRadius: '50%', blur: '20px' }} />
+        </div>
+        {/* KP */}
+        <div style={{ flex: 1, padding: '10px', borderRadius: 12, background: 'var(--bg-hover)', border: '1px solid var(--border-light)', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ fontSize: 9, fontWeight: 800, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 2 }}>Knowledge XP</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ fontSize: 18 }}>💎</span>
+            <span style={{ fontSize: 16, fontWeight: 900, color: 'var(--text-main)' }}>{kp} <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-muted)' }}>KP</span></span>
+          </div>
+        </div>
+      </div>
+      <div style={{ marginTop: 8, height: 4, background: 'var(--bg-base)', borderRadius: 2, overflow: 'hidden' }}>
+        <motion.div initial={{ width: 0 }} animate={{ width: '65%' }} transition={{ duration: 1, delay: 0.5 }} style={{ height: '100%', background: 'linear-gradient(90deg, var(--omin-gold), #fb923c)', boxShadow: '0 0 10px var(--omin-gold)' }} />
+      </div>
+      <div style={{ fontSize: 8.5, color: 'var(--text-faint)', marginTop: 4, textAlign: 'right', fontWeight: 600 }}>80 KP to Level 4 (Scholar)</div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
    CHAT SIDEBAR
 ══════════════════════════════════════════════════════════ */
 export default function ChatSidebar({
@@ -222,6 +292,9 @@ export default function ChatSidebar({
           </div>
         </div>
       )}
+
+      {/* 🚀 New: Student Gamification Dashboard */}
+      <StudentProgress />
 
       {/* User footer */}
       <div style={{ padding: '9px 12px 13px', borderTop: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>

@@ -200,7 +200,7 @@ export default function LandingPage() {
   return (
     <div ref={containerRef} className="landing-scroll-container h-screen w-full relative bg-omin-black text-white selection:bg-omin-gold/30 overflow-y-scroll overflow-x-hidden">
       {!isMobile && <CanvasBackground />}
-      <CursorGlow />
+      {/* <CursorGlow /> */}
 
       {/* ═══ SCROLL PROGRESS BAR ═══ */}
       <motion.div style={{ scaleX: progressScaleX }} className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-omin-gold via-yellow-200 to-omin-gold z-[200] origin-left" />

@@ -640,3 +640,16 @@ body.landing-page-active {
   80% { transform: translate(3%, 35%); } 
   90% { transform: translate(-10%, 10%); } 
 }
+
+/* ── STUDENT FOCUS SYSTEM ── */
+:root {
+  --omin-gold: #FFD93D;
+}
+
+.focus-mode-active {
+  background: radial-gradient(circle at 50% 50%, rgba(255, 217, 61, 0.05) 0%, transparent 80%);
+}
+
+.focus-mode-content {
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
