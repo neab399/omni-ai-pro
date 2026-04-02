@@ -1,10 +1,19 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo, lazy, Suspense } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase, MODELS } from './landingData';
 import { CanvasBackground, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp, StaggeredText, ScrambleText, SiriWave, Floating3DOrb, SectionHeader, ParallaxLayer, SafeSpline } from './landingComponents';
 import InteractiveLogo from '../components/InteractiveLogo';
-import { LogoCloud, LiveAIDemo, HowItWorks, ModelLibrary, CompareTable, TestimonialsSection, PricingSection, FAQSection, MarqueeSection } from './landingSections';
+import { LogoCloud, LiveAIDemo, HowItWorks } from './landingSections';
+
+// 🚀 Performance: Lazy Load Heavy Below-the-Fold Sections
+const ModelLibrary = lazy(() => import('./landingSections').then(module => ({ default: module.ModelLibrary })));
+const CompareTable = lazy(() => import('./landingSections').then(module => ({ default: module.CompareTable })));
+const TestimonialsSection = lazy(() => import('./landingSections').then(module => ({ default: module.TestimonialsSection })));
+const PricingSection = lazy(() => import('./landingSections').then(module => ({ default: module.PricingSection })));
+const FAQSection = lazy(() => import('./landingSections').then(module => ({ default: module.FAQSection })));
+const MarqueeSection = lazy(() => import('./landingSections').then(module => ({ default: module.MarqueeSection })));
+
 import confetti from 'canvas-confetti';
 import { preloadSounds, initAudioContext, playSystemStartupSFX, playSelectSound, playHoverSound } from '../lib/audio';
 import WarpTransition from '../components/WarpTransition';
@@ -14,16 +23,19 @@ export default function LandingPage() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ container: containerRef });
 
-  // Scroll-linked transforms
+  // Scroll-linked transforms — REFINED FOR MODAL VISIBILITY & PERFORMANCE
   const navBg = useTransform(scrollYProgress, [0, 0.015], ['rgba(5,5,5,0)', 'rgba(5,5,5,0.9)']);
   const navBorder = useTransform(scrollYProgress, [0, 0.015], ['rgba(255,255,255,0)', 'rgba(255,255,255,0.08)']);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.12], [1, 0.85]);
-  const heroY = useTransform(scrollYProgress, [0, 0.15], [0, -150]);
-  const dashboardScale = useTransform(scrollYProgress, [0.04, 0.18], [0.85, 1]);
-  const dashboardRotateX = useTransform(scrollYProgress, [0.04, 0.18], [25, 0]);
-  const dashboardOpacity = useTransform(scrollYProgress, [0.04, 0.15], [0, 1]);
-  const dashboardY = useTransform(scrollYProgress, [0.04, 0.18], [150, 0]);
+  
+  // 🟢 Fixed: Hero stays visible longer (threshold increased from 0.12 to 0.20)
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.20], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.22], [1, 0.82]);
+  const heroY = useTransform(scrollYProgress, [0, 0.25], [0, -80]); // Softened from -150 to keep it from flying away
+  
+  const dashboardScale = useTransform(scrollYProgress, [0.06, 0.22], [0.82, 1]);
+  const dashboardRotateX = useTransform(scrollYProgress, [0.06, 0.22], [25, 0]);
+  const dashboardOpacity = useTransform(scrollYProgress, [0.06, 0.18], [0, 1]);
+  const dashboardY = useTransform(scrollYProgress, [0.06, 0.22], [180, 0]);
   const progressScaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
   
   // ─── Adaptive Environment Dynamics ───
@@ -326,7 +338,9 @@ export default function LandingPage() {
       </section>
 
       {/* ═══ 4. MARQUEE ═══ */}
-      <MarqueeSection />
+      <Suspense fallback={<SectionLoader />}>
+        <MarqueeSection />
+      </Suspense>
 
       {/* ═══ 5. LIVE AI DEMO ═══ */}
       <LiveAIDemo />
@@ -390,19 +404,29 @@ export default function LandingPage() {
       <HowItWorks />
 
       {/* ═══ 8. MODEL LIBRARY ═══ */}
-      <ModelLibrary />
+      <Suspense fallback={<SectionLoader />}>
+        <ModelLibrary />
+      </Suspense>
 
       {/* ═══ 9. COMPARE TABLE ═══ */}
-      <CompareTable />
+      <Suspense fallback={<SectionLoader />}>
+        <CompareTable />
+      </Suspense>
 
       {/* ═══ 10. TESTIMONIALS ═══ */}
-      <TestimonialsSection />
+      <Suspense fallback={<SectionLoader />}>
+        <TestimonialsSection />
+      </Suspense>
 
       {/* ═══ 11. PRICING ═══ */}
-      <PricingSection onAction={triggerAuth} />
+      <Suspense fallback={<SectionLoader />}>
+        <PricingSection onAction={triggerAuth} />
+      </Suspense>
 
       {/* ═══ 12. FAQ ═══ */}
-      <FAQSection />
+      <Suspense fallback={<SectionLoader />}>
+        <FAQSection />
+      </Suspense>
 
       {/* ═══ 13. FINAL CTA ═══ */}
       <section className="py-16 md:py-32 px-6 relative flex justify-center z-20">
