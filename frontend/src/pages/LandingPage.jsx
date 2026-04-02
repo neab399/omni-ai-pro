@@ -138,7 +138,7 @@ export default function LandingPage() {
 
   return (
     <div ref={containerRef} className="landing-scroll-container h-screen w-full relative bg-omin-black text-white selection:bg-omin-gold/30 overflow-y-scroll overflow-x-hidden">
-      <CanvasBackground />
+      {!isMobile && <CanvasBackground />}
       <CursorGlow />
 
       {/* ═══ SCROLL PROGRESS BAR ═══ */}
@@ -214,14 +214,24 @@ export default function LandingPage() {
 
       {/* ═══ 1. HERO ═══ */}
       <motion.section style={{ opacity: heroOpacity, scale: heroScale, y: heroY }} className="hero-section relative flex flex-col items-center justify-center min-h-[95vh] text-center px-4 pt-32 pb-10">
-        {/* ═══ 3D INTERACTIVE CORE (Sits behind text) ═══ */}
+        {/* ═══ ✨ ADAPTIVE CORE ✨ (3D on Desktop, CSS on Mobile) ═══ */}
         <ParallaxLayer speed={-0.2} className="absolute inset-0 z-0 pointer-events-none sm:pointer-events-auto">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(5,5,5,0)_0%,rgba(5,5,5,1)_80%)] z-10" />
-          <SafeSpline 
-            scene="https://prod.spline.design/ATpf-K-V8F1ZIdP6/scene.splinecode" 
-            onLoad={() => setSplineLoaded(true)}
-            fallback={<div className="absolute inset-0 bg-gradient-to-b from-omin-gold/10 via-omin-black to-omin-black z-0" />}
-          />
+          {!isMobile ? (
+            <>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(5,5,5,0)_0%,rgba(5,5,5,1)_80%)] z-10" />
+              <SafeSpline 
+                scene="https://prod.spline.design/ATpf-K-V8F1ZIdP6/scene.splinecode" 
+                onLoad={() => setSplineLoaded(true)}
+                fallback={
+                  <div className="absolute inset-0 bg-omin-black flex items-center justify-center">
+                    <div className="w-[80vw] h-[80vw] bg-omin-gold/10 blur-[150px] rounded-full animate-pulse" />
+                  </div>
+                }
+              />
+            </>
+          ) : (
+            <MobileHeroBackground />
+          )}
         </ParallaxLayer>
 
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="relative z-10 mb-6 md:mb-10">
@@ -347,7 +357,7 @@ export default function LandingPage() {
 
       {/* ═══ 6. BENTO FEATURES ═══ */}
       <section id="features" className="bento-section section-content py-20 md:py-32 px-5 md:px-6 max-w-[1400px] mx-auto relative z-20 flex flex-col lg:flex-row gap-8 lg:gap-20">
-        <Floating3DOrb className="absolute -top-20 -left-40 w-[600px] h-[600px] opacity-20 blur-3xl" />
+        {!isMobile && <Floating3DOrb className="absolute -top-20 -left-40 w-[600px] h-[600px] opacity-20 blur-3xl" />}
         <div className="bento-sidebar lg:w-1/3 lg:sticky lg:top-40 h-fit text-center lg:text-left">
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
             <h2 className="font-display font-bold text-[2rem] md:text-[clamp(3.5rem,5vw,4.5rem)] leading-[1.05] tracking-tight mb-4 md:mb-6">Unfair<br className="hidden lg:block"/><span className="text-transparent bg-clip-text bg-gradient-to-r from-omin-gold to-yellow-100 pl-2 lg:pl-0">Advantage.</span></h2>

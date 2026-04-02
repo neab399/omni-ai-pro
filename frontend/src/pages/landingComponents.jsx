@@ -290,7 +290,16 @@ export function BentoCard({ children, className, delay = 0 }) {
   const liquidX = useSpring(spotX, { stiffness: 100, damping: 20 });
   const liquidY = useSpring(spotY, { stiffness: 100, damping: 20 });
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024 || 'ontouchstart' in window);
+    check();
+    window.addEventListener('resize', check, { passive: true });
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   function handleMouseMove(e) { 
+    if (isMobile) return;
     const rect = e.currentTarget.getBoundingClientRect(); 
     spotX.set(e.clientX - rect.left); 
     spotY.set(e.clientY - rect.top); 
@@ -320,31 +329,39 @@ export function BentoCard({ children, className, delay = 0 }) {
       className={`relative ${className}`}
     >
       <motion.div 
-        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        style={{ 
+          rotateX: isMobile ? 0 : rotateX, 
+          rotateY: isMobile ? 0 : rotateY, 
+          transformStyle: "preserve-3d" 
+        }}
         onMouseMove={handleMouseMove}
-        onMouseEnter={() => playHoverSound()}
+        onMouseEnter={() => !isMobile && playHoverSound()}
         onMouseLeave={handleMouseLeave}
         onClick={() => playSelectSound(0.15)}
         className={`glass-panel glow-border rounded-2xl md:rounded-[2rem] p-5 md:p-8 relative overflow-hidden group h-full w-full shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-shadow duration-500 cursor-pointer`}
         data-magnetic
       >
-        {/* Liquid Border Light */}
-        <motion.div 
-          className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-500 group-hover:opacity-100" 
-          style={{ 
-            background: useMotionTemplate`radial-gradient(400px circle at ${liquidX}px ${liquidY}px, rgba(255,217,61,0.25), transparent 80%)`, 
-            transform: "translateZ(1px)" 
-          }} 
-        />
-        {/* Secondary Organic Glow */}
-        <motion.div 
-          className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-700 group-hover:opacity-40" 
-          style={{ 
-            background: useMotionTemplate`radial-gradient(600px circle at ${spotX}px ${spotY}px, rgba(59,130,246,0.15), transparent 70%)`, 
-            transform: "translateZ(2px)" 
-          }} 
-        />
-        <div className="relative z-10 h-full" style={{ transform: "translateZ(35px)" }}>{children}</div>
+        {/* Liquid Border Light (Desktop Only) */}
+        {!isMobile && (
+          <motion.div 
+            className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-500 group-hover:opacity-100" 
+            style={{ 
+              background: useMotionTemplate`radial-gradient(400px circle at ${liquidX}px ${liquidY}px, rgba(255,217,61,0.25), transparent 80%)`, 
+              transform: "translateZ(1px)" 
+            }} 
+          />
+        )}
+        {/* Secondary Organic Glow (Desktop Only) */}
+        {!isMobile && (
+          <motion.div 
+            className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-700 group-hover:opacity-40" 
+            style={{ 
+              background: useMotionTemplate`radial-gradient(600px circle at ${spotX}px ${spotY}px, rgba(59,130,246,0.15), transparent 70%)`, 
+              transform: "translateZ(2px)" 
+            }} 
+          />
+        )}
+        <div className="relative z-10 h-full" style={{ transform: isMobile ? "none" : "translateZ(35px)" }}>{children}</div>
       </motion.div>
     </motion.div>
   );
