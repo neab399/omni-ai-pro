@@ -4,8 +4,8 @@ import { motion, useSpring, useMotionValue } from 'framer-motion';
 export default function InteractiveCursor() {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
-  const springX = useSpring(cursorX, { stiffness: 500, damping: 28 });
-  const springY = useSpring(cursorY, { stiffness: 500, damping: 28 });
+  const springX = useSpring(cursorX, { stiffness: 800, damping: 35 });
+  const springY = useSpring(cursorY, { stiffness: 800, damping: 35 });
   const [isPointer, setIsPointer] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [magneticTarget, setMagneticTarget] = useState(null);
@@ -21,8 +21,7 @@ export default function InteractiveCursor() {
           const rect = target.getBoundingClientRect();
           const centerX = rect.left + rect.width / 2;
           const centerY = rect.top + rect.height / 2;
-          // Magnetic effect: blend mouse position with target center
-          const weight = 0.5; // How much it snaps
+          const weight = 0.5; 
           cursorX.set(e.clientX + (centerX - e.clientX) * weight);
           cursorY.set(e.clientY + (centerY - e.clientY) * weight);
           setMagneticTarget(target);
@@ -42,28 +41,43 @@ export default function InteractiveCursor() {
   }, [isVisible, cursorX, cursorY]);
 
   return (
-    <motion.div
-      style={{
-        left: springX,
-        top: springY,
-        x: '-50%',
-        y: '-50%',
-      }}
-      className={`fixed pointer-events-none z-[99999] rounded-full border-2 border-omin-gold/60 backdrop-blur-[2px] transition-all duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
-      animate={{
-        width: isPointer ? (magneticTarget ? 60 : 40) : 20,
-        height: isPointer ? (magneticTarget ? 60 : 40) : 20,
-        backgroundColor: isPointer ? 'rgba(255, 217, 61, 0.15)' : 'rgba(255, 217, 61, 0.05)',
-      }}
-    >
-      <div className="absolute inset-0 rounded-full border border-white/20 scale-[0.8]" />
-      {magneticTarget && (
-        <motion.div
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-          className="absolute inset-0 rounded-full border border-omin-gold/10"
-        />
-      )}
-    </motion.div>
+    <>
+      {/* ─── Instant Core Dot (No Lag) ─── */}
+      <motion.div
+        style={{
+          left: cursorX,
+          top: cursorY,
+          x: '-50%',
+          y: '-50%',
+        }}
+        className={`fixed pointer-events-none z-[100000] w-1.5 h-1.5 rounded-full bg-omin-gold shadow-[0_0_10px_rgba(255,217,61,0.8)] transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+      />
+
+      {/* ─── Fluid Fluid Ring (Snappy Lag) ─── */}
+      <motion.div
+        style={{
+          left: springX,
+          top: springY,
+          x: '-50%',
+          y: '-50%',
+        }}
+        className={`fixed pointer-events-none z-[99999] rounded-full border border-omin-gold/40 backdrop-blur-[1px] transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+        animate={{
+          width: isPointer ? (magneticTarget ? 64 : 48) : 32,
+          height: isPointer ? (magneticTarget ? 64 : 48) : 32,
+          backgroundColor: isPointer ? 'rgba(255, 217, 61, 0.1)' : 'rgba(255, 217, 61, 0.05)',
+          borderWidth: isPointer ? '2px' : '1px'
+        }}
+      >
+        <div className="absolute inset-0 rounded-full border border-white/10 scale-[0.8]" />
+        {magneticTarget && (
+          <motion.div
+            animate={{ scale: [1, 1.15, 1], rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+            className="absolute -inset-1 rounded-full border border-dashed border-omin-gold/20"
+          />
+        )}
+      </motion.div>
+    </>
   );
 }
