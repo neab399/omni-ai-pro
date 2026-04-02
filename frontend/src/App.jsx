@@ -8,7 +8,7 @@ import { initAudioContext } from './lib/audio';
 
 const GlobalFeedback = lazy(() => import('./components/GlobalFeedback'));
 const CookieNotice = lazy(() => import('./components/CookieNotice'));
-const InteractiveCursor = lazy(() => import('./components/InteractiveCursor'));
+// const InteractiveCursor = lazy(() => import('./components/InteractiveCursor'));
 
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const ChatPage = lazy(() => import('./pages/ChatPage'));
@@ -58,7 +58,7 @@ function App() {
           <Suspense fallback={null}>
             <GlobalFeedback />
             <CookieNotice />
-            <InteractiveCursor />
+            {/* <InteractiveCursor /> */}
           </Suspense>
         )}
       </div>

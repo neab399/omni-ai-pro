@@ -27,6 +27,7 @@ import ChatSidebar             from '../components/chat/ChatSidebar';
 import { ImageSection, VoiceSection, VideoSection } from '../components/chat/MediaSections';
 import { useArtifacts } from '../context/ArtifactContext';
 import ArtifactPanel from '../components/chat/ArtifactPanel';
+import StudyTools from '../components/chat/StudyTools';
 import { playSendSound, playReceiveSound, playErrorSound, initAudioContext } from '../lib/audio';
 
 /* ══════════════════════════════════════════════════════════
