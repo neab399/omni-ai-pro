@@ -76,15 +76,6 @@ export default function LandingPage() {
   const navBg = scrolled ? 'rgba(5,5,5,0.94)' : 'rgba(5,5,5,0)';
   const navBorder = scrolled ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0)';
   
-  // 🟢 Fixed: Hero stays visible longer (threshold increased from 0.12 to 0.20)
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.20], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.22], [1, 0.82]);
-  const heroY = useTransform(scrollYProgress, [0, 0.25], [0, -80]); 
-  
-  const dashboardScale = useTransform(scrollYProgress, [0.06, 0.22], [0.82, 1]);
-  const dashboardRotateX = useTransform(scrollYProgress, [0.06, 0.22], [25, 0]);
-  const dashboardOpacity = useTransform(scrollYProgress, [0.06, 0.18], [0, 1]);
-  const dashboardY = useTransform(scrollYProgress, [0.06, 0.22], [180, 0]);
   const progressScaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
   
   // ─── Adaptive Environment Dynamics ───
@@ -270,55 +261,42 @@ export default function LandingPage() {
       </nav>
 
       {/* ═══ 1. HERO ═══ */}
-      <motion.section style={{ opacity: heroOpacity, scale: heroScale, y: heroY }} className="hero-section relative flex flex-col items-center justify-center min-h-[95vh] text-center px-4 pt-32 pb-10">
+      <section className="hero-section relative flex flex-col items-center justify-start min-h-[90vh] text-center px-4 pt-44 pb-10">
         {/* ═══ ✨ ADAPTIVE CORE ✨ (3D on Desktop, CSS on Mobile) ═══ */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <MobileHeroBackground />
         </div>
 
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="relative z-10 mb-6 md:mb-10">
+        <div className="relative z-10 mb-6 md:mb-10">
           <span className="glass-pill px-4 md:px-6 py-2 md:py-2.5 rounded-full text-[8.5px] md:text-[10px] sm:text-xs font-bold tracking-[0.25em] text-white uppercase shadow-[0_0_30px_rgba(255,255,255,0.05)]">
             <span className="text-omin-gold mr-2">✦</span>The Ultimate AI Aggregator
           </span>
-        </motion.div>
-        <h1 className="hero-heading relative z-10 font-display font-bold text-[2rem] sm:text-[3rem] md:text-[clamp(3.5rem,8vw,9rem)] leading-[0.9] tracking-tighter mb-6 md:mb-10 max-w-6xl mx-auto flex flex-col items-center">
-          <motion.div 
-            initial={{ y: 40, opacity: 0 }} 
-            animate={{ y: 0, opacity: 1 }} 
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-white pb-1 md:pb-2"
-          >
+        </div>
+        <h1 className="hero-heading relative z-10 font-display font-black text-[2.75rem] md:text-[clamp(3.5rem,8vw,8.5rem)] leading-[0.95] md:leading-[0.9] tracking-[-0.04em] mb-6 md:mb-10 text-white flex flex-col items-center">
+          <div className="opacity-80">
             68 AI MODELS.
-          </motion.div>
-          <motion.div 
-            initial={{ y: 40, opacity: 0 }} 
-            animate={{ y: 0, opacity: 1 }} 
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-transparent bg-clip-text bg-[linear-gradient(110deg,#FFD93D,45%,#fff,55%,#FFD93D)] bg-[length:250%_100%] animate-shimmer pb-2 md:pb-4"
-          >
+          </div>
+          <div className="text-transparent bg-clip-text bg-[linear-gradient(110deg,#FFD93D,45%,#fff,55%,#FFD93D)] bg-[length:250%_100%] animate-shimmer pb-2 md:pb-4">
             ONE DASHBOARD.
-          </motion.div>
+          </div>
         </h1>
         <div className="hero-subtitle relative z-10 text-white/50 text-[11px] md:text-[clamp(0.95rem,2vw,1.25rem)] max-w-[280px] md:max-w-3xl leading-[1.6] md:leading-relaxed mb-8 md:mb-12 font-medium">
-          <ScrambleText 
-            text="GPT-5.4, Claude 4.6 Opus, Gemini 3.1 Pro, Midjourney, and Sora Video. Everything you need for Code, Copy, Audio, and Video — starting at just ₹249."
-            delay={0.6}
-          />
+          GPT-5.4, Claude 4.6 Opus, Gemini 3.1 Pro, Midjourney, and Sora Video. Everything you need for Code, Copy, Audio, and Video — starting at just ₹249.
         </div>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }} className="hero-cta-row relative z-10 flex flex-col sm:flex-row gap-3 md:gap-4 mb-10 md:mb-12">
+        <div className="hero-cta-row relative z-10 flex flex-col sm:flex-row gap-3 md:gap-4 mb-10 md:mb-12">
           <MagBtn onClick={handleDashboardEntry} className="bg-white text-black px-6 py-3.5 md:px-10 md:py-4 rounded-full font-bold text-[12px] md:text-lg hover:bg-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] flex items-center justify-center gap-2 group" data-magnetic>
             {user ? 'Go to Dashboard' : 'Start Free — No Card Needed'}<span className="group-hover:translate-x-1 transition-transform">→</span>
           </MagBtn>
           <a href="#compare" className="glass-pill text-white/60 px-6 py-3.5 md:px-8 md:py-4 text-[11px] md:text-base rounded-full font-semibold hover:bg-white/10 hover:text-white transition-all flex items-center justify-center" data-magnetic>See Comparison ↓</a>
-        </motion.div>
+        </div>
         {/* Live model ticker */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} className="relative z-10 glass-pill px-5 py-2.5 rounded-full flex items-center gap-3">
+        <div className="relative z-10 glass-pill px-5 py-2.5 rounded-full flex items-center gap-3">
           <span className="text-[10px] text-white/30 font-bold tracking-widest uppercase">Live:</span>
           <AnimatePresence mode="wait">
             <motion.span key={liveModel} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="text-xs font-bold" style={{ color: MODELS[liveModel].color }}>{MODELS[liveModel].name}</motion.span>
           </AnimatePresence>
-        </motion.div>
-      </motion.section>
+        </div>
+      </section>
 
       {/* ═══ 2. LOGO CLOUD ═══ */}
       <Suspense fallback={<SectionLoader />}>
