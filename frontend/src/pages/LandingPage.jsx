@@ -205,10 +205,10 @@ export default function LandingPage() {
       {/* ═══ SCROLL PROGRESS BAR ═══ */}
       <motion.div style={{ scaleX: progressScaleX }} className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-omin-gold via-yellow-200 to-omin-gold z-[200] origin-left" />
 
-      {/* Background Parallax Orbs */}
-      <motion.div style={{ y: orb1Y }} className="parallax-orb fixed top-[-15%] left-[-15%] w-[55vw] h-[55vw] rounded-full bg-omin-gold/[0.04] blur-[140px] pointer-events-none" />
-      <motion.div style={{ y: orb2Y }} className="parallax-orb fixed bottom-[-25%] right-[-15%] w-[60vw] h-[60vw] rounded-full bg-blue-500/[0.04] blur-[160px] pointer-events-none" />
-      <motion.div style={{ y: orb3Y }} className="parallax-orb fixed top-[40%] right-[-5%] w-[30vw] h-[30vw] rounded-full bg-purple-500/[0.03] blur-[120px] pointer-events-none" />
+      {/* Static Background Orbs (Zero Lag) */}
+      <div className="fixed top-[-15%] left-[-15%] w-[55vw] h-[55vw] rounded-full bg-omin-gold/[0.04] blur-[140px] pointer-events-none" />
+      <div className="fixed bottom-[-25%] right-[-15%] w-[60vw] h-[60vw] rounded-full bg-blue-500/[0.04] blur-[160px] pointer-events-none" />
+      <div className="fixed top-[40%] right-[-5%] w-[30vw] h-[30vw] rounded-full bg-purple-500/[0.03] blur-[120px] pointer-events-none" />
 
       {/* ─── VISIONARY WARP TUNNEL ─── */}
       <WarpTransition active={warpActive} onComplete={() => setWarpActive(false)} />
@@ -276,24 +276,9 @@ export default function LandingPage() {
       {/* ═══ 1. HERO ═══ */}
       <motion.section style={{ opacity: heroOpacity, scale: heroScale, y: heroY }} className="hero-section relative flex flex-col items-center justify-center min-h-[95vh] text-center px-4 pt-32 pb-10">
         {/* ═══ ✨ ADAPTIVE CORE ✨ (3D on Desktop, CSS on Mobile) ═══ */}
-        <ParallaxLayer speed={-0.2} className="absolute inset-0 z-0 pointer-events-none sm:pointer-events-auto">
-          {!isMobile ? (
-            <>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(5,5,5,0)_0%,rgba(5,5,5,1)_80%)] z-10" />
-              <SafeSpline 
-                scene="https://prod.spline.design/ATpf-K-V8F1ZIdP6/scene.splinecode" 
-                onLoad={() => setSplineLoaded(true)}
-                fallback={
-                  <div className="absolute inset-0 bg-omin-black flex items-center justify-center">
-                    <div className="w-[80vw] h-[80vw] bg-omin-gold/10 blur-[150px] rounded-full animate-pulse" />
-                  </div>
-                }
-              />
-            </>
-          ) : (
-            <MobileHeroBackground />
-          )}
-        </ParallaxLayer>
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <MobileHeroBackground />
+        </div>
 
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} className="relative z-10 mb-6 md:mb-10">
           <span className="glass-pill px-4 md:px-6 py-2 md:py-2.5 rounded-full text-[8.5px] md:text-[10px] sm:text-xs font-bold tracking-[0.25em] text-white uppercase shadow-[0_0_30px_rgba(255,255,255,0.05)]">
@@ -301,32 +286,22 @@ export default function LandingPage() {
           </span>
         </motion.div>
         <h1 className="hero-heading relative z-10 font-display font-bold text-[2rem] sm:text-[3rem] md:text-[clamp(3.5rem,8vw,9rem)] leading-[0.9] tracking-tighter mb-6 md:mb-10 max-w-6xl mx-auto flex flex-col items-center">
-          <div className="overflow-hidden flex gap-[clamp(0.4rem,2vw,1.5rem)] flex-wrap justify-center">
-            {heroWords1.map((w, i) => (
-              <motion.span 
-                key={i} 
-                initial={{ y: "120%", opacity: 0 }} 
-                animate={{ y: 0, opacity: 1 }} 
-                transition={{ duration: 0.9, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }} 
-                className="inline-block text-white pb-1 md:pb-2"
-              >
-                <ScrambleText text={w} delay={i * 0.1} />
-              </motion.span>
-            ))}
-          </div>
-          <div className="overflow-hidden flex gap-[clamp(0.4rem,2vw,1.5rem)] flex-wrap justify-center">
-            {heroWords2.map((w, i) => (
-              <motion.span 
-                key={i} 
-                initial={{ y: "120%", opacity: 0 }} 
-                animate={{ y: 0, opacity: 1 }} 
-                transition={{ duration: 0.9, delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] }} 
-                className="inline-block text-transparent bg-clip-text bg-[linear-gradient(110deg,#FFD93D,45%,#fff,55%,#FFD93D)] bg-[length:250%_100%] animate-shimmer pb-2 md:pb-4"
-              >
-                <ScrambleText text={w} delay={0.3 + i * 0.1} />
-              </motion.span>
-            ))}
-          </div>
+          <motion.div 
+            initial={{ y: 40, opacity: 0 }} 
+            animate={{ y: 0, opacity: 1 }} 
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="text-white pb-1 md:pb-2"
+          >
+            68 AI MODELS.
+          </motion.div>
+          <motion.div 
+            initial={{ y: 40, opacity: 0 }} 
+            animate={{ y: 0, opacity: 1 }} 
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-transparent bg-clip-text bg-[linear-gradient(110deg,#FFD93D,45%,#fff,55%,#FFD93D)] bg-[length:250%_100%] animate-shimmer pb-2 md:pb-4"
+          >
+            ONE DASHBOARD.
+          </motion.div>
         </h1>
         <div className="hero-subtitle relative z-10 text-white/50 text-[11px] md:text-[clamp(0.95rem,2vw,1.25rem)] max-w-[280px] md:max-w-3xl leading-[1.6] md:leading-relaxed mb-8 md:mb-12 font-medium">
           <ScrambleText 

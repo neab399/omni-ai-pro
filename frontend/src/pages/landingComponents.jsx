@@ -177,35 +177,28 @@ function ScrambleChar({ char, delay, index }) {
 }
 
 export function ScrambleText({ text, className, delay = 0 }) {
-  const characters = text.split("");
   return (
-    <motion.span className={className}>
-      {characters.map((char, i) => <ScrambleChar key={i} char={char} delay={delay} index={i} />)}
+    <motion.span 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: delay }}
+      className={className}
+    >
+      {text}
     </motion.span>
   );
 }
 
 /* ─── Staggered Character Reveal ─── */
 export function StaggeredText({ text, className, delay = 0 }) {
-  const characters = text.split("");
   return (
-    <motion.span className={className}>
-      {characters.map((char, i) => (
-        <motion.span
-          key={i}
-          initial={{ opacity: 0, filter: "blur(10px)", y: 20 }}
-          whileInView={{ opacity: 1, filter: "blur(0px)", y: 0 }}
-          viewport={{ once: true }}
-          transition={{
-            duration: 0.5,
-            delay: delay + i * 0.03,
-            ease: [0.16, 1, 0.3, 1]
-          }}
-          className="inline-block"
-        >
-          {char === " " ? "\u00A0" : char}
-        </motion.span>
-      ))}
+    <motion.span 
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: delay, ease: [0.16, 1, 0.3, 1] }}
+      className={className}
+    >
+      {text}
     </motion.span>
   );
 }
@@ -438,7 +431,7 @@ export function CountUp({ target, suffix = '', className }) {
   }, [started]);
   useEffect(() => {
     if (!started) return;
-    let frame; const dur = 2000; const start = performance.now();
+    let frame; const dur = 800; const start = performance.now();
     const step = (now) => { const p = Math.min((now - start) / dur, 1); const ease = 1 - Math.pow(1 - p, 4); setCount(Math.floor(ease * target)); if (p < 1) frame = requestAnimationFrame(step); };
     frame = requestAnimationFrame(step);
     return () => cancelAnimationFrame(frame);
@@ -447,7 +440,7 @@ export function CountUp({ target, suffix = '', className }) {
 }
 
 /* ─── Typewriter ─── */
-export function Typewriter({ text, speed = 30, onDone, startDelay = 0 }) {
+export function Typewriter({ text, speed = 15, onDone, startDelay = 0 }) {
   const [displayed, setDisplayed] = useState('');
   const [started, setStarted] = useState(false);
   useEffect(() => { const t = setTimeout(() => setStarted(true), startDelay); return () => clearTimeout(t); }, [startDelay]);
@@ -483,7 +476,7 @@ export function LoopTypewriter({ sequences, speed = 30, deleteSpeed = 20, pause 
         ? currentFullText.slice(0, displayed.length - 1)
         : currentFullText.slice(0, displayed.length + 1);
       
-      timeout = setTimeout(() => setDisplayed(nextChar), isDeleting ? deleteSpeed : speed);
+      timeout = setTimeout(() => setDisplayed(nextChar), isDeleting ? 10 : 15);
     }
 
     return () => clearTimeout(timeout);
@@ -552,42 +545,24 @@ export function Floating3DOrb({ className, scene = "https://prod.spline.design/A
 export function SectionHeader({ badge, title, subtitle, scramble = false }) {
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 40 }} 
+      initial={{ opacity: 0, y: 20 }} 
       whileInView={{ opacity: 1, y: 0 }} 
       viewport={{ once: true }} 
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }} 
+      transition={{ duration: 0.6 }} 
       className="text-center mb-10 md:mb-20 px-4"
     >
       {badge && (
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="text-omin-gold text-[9px] md:text-xs font-bold tracking-[0.35em] uppercase mb-3 md:mb-5"
-        >
+        <div className="text-omin-gold text-[9px] md:text-xs font-bold tracking-[0.35em] uppercase mb-3 md:mb-5">
           {badge}
-        </motion.div>
+        </div>
       )}
-      <motion.h2 
-        initial={{ letterSpacing: "0.2em", scale: 0.95, opacity: 0 }}
-        whileInView={{ letterSpacing: "-0.02em", scale: 1, opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-        className="font-display font-bold text-[1.75rem] md:text-[clamp(2.5rem,5vw,4.5rem)] tracking-tight mb-3 md:mb-6 leading-[1.1] md:leading-tight"
-      >
-        {scramble ? <ScrambleText text={title} /> : title}
-      </motion.h2>
+      <h2 className="font-display font-bold text-[1.75rem] md:text-[clamp(2.5rem,5vw,4.5rem)] tracking-tight mb-3 md:mb-6 leading-[1.1] md:leading-tight">
+        {title}
+      </h2>
       {subtitle && (
-        <motion.p 
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-white/50 text-[11px] md:text-lg max-w-[280px] md:max-w-2xl mx-auto leading-relaxed"
-        >
+        <p className="text-white/50 text-[11px] md:text-lg max-w-[280px] md:max-w-2xl mx-auto leading-relaxed">
           {subtitle}
-        </motion.p>
+        </p>
       )}
     </motion.div>
   );
