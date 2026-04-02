@@ -134,20 +134,63 @@ export const playHoverSound = () => {
   osc.stop(ctx.currentTime + 0.05);
 };
 
-/* ── SFX: Robotic AI Welcome (Zero-Cost Futuristic Whisper) ── */
-export const playRoboticWhisper = (text = "Omni AI... Initialized") => {
+/* ── SFX: JARVIS-Style System Startup (Ultra-Premium Synthesis) ── */
+export const playSystemStartupSFX = () => {
   const ctx = getAudioContext();
-  if (!ctx || typeof window === 'undefined') return;
+  if (!ctx) return;
+  initAudioContext();
   
-  const synth = window.speechSynthesis;
-  const utterance = new SpeechSynthesisUtterance(text);
-  const voices = synth.getVoices();
+  const now = ctx.currentTime;
   
-  // Try to find a robotic or deep voice
-  utterance.voice = voices.find(v => v.name.includes('Google') || v.name.includes('Neural')) || voices[0];
-  utterance.pitch = 0.5;
-  utterance.rate = 0.85;
-  utterance.volume = 0.4;
+  // ── Layer 1: The "Riser" (Power up sweep)
+  const riser = ctx.createOscillator();
+  const riserGain = ctx.createGain();
+  riser.type = 'sine';
+  riser.frequency.setValueAtTime(110, now);
+  riser.frequency.exponentialRampToValueAtTime(440, now + 1.2);
+  riserGain.gain.setValueAtTime(0, now);
+  riserGain.gain.linearRampToValueAtTime(0.08, now + 0.3);
+  riserGain.gain.exponentialRampToValueAtTime(0.001, now + 1.25);
+  riser.connect(riserGain);
+  riserGain.connect(ctx.destination);
   
-  synth.speak(utterance);
+  // ── Layer 2: Digital HUD Bleeps (The "Tri-Tone")
+  const playBleep = (freq, time, dur) => {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.value = freq;
+    g.gain.setValueAtTime(0, now + time);
+    g.gain.linearRampToValueAtTime(0.03, now + time + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, now + time + dur);
+    osc.connect(g);
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 800;
+    g.connect(filter);
+    filter.connect(ctx.destination);
+    osc.start(now + time);
+    osc.stop(now + time + dur + 0.1);
+  };
+  
+  playBleep(880, 0.4, 0.08); // Bleep 1
+  playBleep(1320, 0.52, 0.08); // Bleep 2
+  playBleep(1760, 0.64, 0.12); // Final Bleep
+  
+  // ── Layer 3: Atmospheric Static Burst
+  const noise = ctx.createBufferSource();
+  const bufferSize = ctx.sampleRate * 0.15;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+  noise.buffer = buffer;
+  const noiseGain = ctx.createGain();
+  noiseGain.gain.setValueAtTime(0.02, now);
+  noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+  noise.connect(noiseGain);
+  noiseGain.connect(ctx.destination);
+  
+  riser.start(now);
+  riser.stop(now + 1.3);
+  noise.start(now);
 };

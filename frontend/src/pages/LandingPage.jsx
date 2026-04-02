@@ -6,7 +6,7 @@ import { CanvasBackground, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp, St
 import InteractiveLogo from '../components/InteractiveLogo';
 import { LogoCloud, LiveAIDemo, HowItWorks, ModelLibrary, CompareTable, TestimonialsSection, PricingSection, FAQSection, MarqueeSection } from './landingSections';
 import confetti from 'canvas-confetti';
-import { preloadSounds, initAudioContext, playRoboticWhisper, playSelectSound, playHoverSound } from '../lib/audio';
+import { preloadSounds, initAudioContext, playSystemStartupSFX, playSelectSound, playHoverSound } from '../lib/audio';
 import WarpTransition from '../components/WarpTransition';
 
 export default function LandingPage() {
@@ -49,14 +49,14 @@ export default function LandingPage() {
     // Preload ultra-premium sounds
     preloadSounds();
 
-    // Trigger AI Whisper after a short cinematic delay
-    const whisperTimeout = setTimeout(() => {
-      playRoboticWhisper("Omni AI... System Online.");
-    }, 2500);
+    // Trigger JARVIS-Style System Startup SFX
+    const startupTimeout = setTimeout(() => {
+      playSystemStartupSFX();
+    }, 1500);
     
     return () => {
       document.body.classList.remove('landing-page-active');
-      clearTimeout(whisperTimeout);
+      clearTimeout(startupTimeout);
     };
   }, []);
 
