@@ -53,7 +53,14 @@ const SectionLoader = () => (
 export default function LandingPage() {
   const navigate = useNavigate();
   const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({ container: containerRef });
+  const { scrollYProgress } = useScroll(); // Native window scroll
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // 📱 Device Detection for Performance Mode
   const [isMobile, setIsMobile] = useState(false);
@@ -65,8 +72,9 @@ export default function LandingPage() {
   }, []);
 
   // Scroll-linked transforms — REFINED FOR MODAL VISIBILITY & PERFORMANCE
-  const navBg = useTransform(scrollYProgress, [0, 0.015], ['rgba(5,5,5,0)', 'rgba(5,5,5,0.9)']);
-  const navBorder = useTransform(scrollYProgress, [0, 0.015], ['rgba(255,255,255,0)', 'rgba(255,255,255,0.08)']);
+  // Simplified Nav (Performance: Use CSS transitions instead of useTransform)
+  const navBg = scrolled ? 'rgba(5,5,5,0.94)' : 'rgba(5,5,5,0)';
+  const navBorder = scrolled ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0)';
   
   // 🟢 Fixed: Hero stays visible longer (threshold increased from 0.12 to 0.20)
   const heroOpacity = useTransform(scrollYProgress, [0, 0.20], [1, 0]);
@@ -79,17 +87,9 @@ export default function LandingPage() {
   const dashboardY = useTransform(scrollYProgress, [0.06, 0.22], [180, 0]);
   const progressScaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
   
-  // Parallax Orbs Transforms (Fixed: Moved out of JSX to resolve Hook violation)
-  const orb1Y = useTransform(scrollYProgress, [0, 1], [0, 600]);
-  const orb2Y = useTransform(scrollYProgress, [0, 1], [0, -500]);
-  const orb3Y = useTransform(scrollYProgress, [0, 1], [0, 300]);
-  
   // ─── Adaptive Environment Dynamics ───
-  const glowColor = useTransform(
-    scrollYProgress,
-    [0, 0.25, 0.5, 0.75, 1],
-    ['rgba(255,217,61,0.15)', 'rgba(59,130,246,0.15)', 'rgba(16,185,129,0.15)', 'rgba(168,85,247,0.15)', 'rgba(255,217,61,0.15)']
-  );
+  // Removed heavy background color shifts to stop "hanging" on lag
+  const glowColor = 'rgba(255,217,61,0.15)'; 
 
   const [liveModel, setLiveModel] = useState(0);
   const [user, setUser] = useState(null);
@@ -198,16 +198,16 @@ export default function LandingPage() {
   const heroWords2 = "ONE DASHBOARD.".split(" ");
 
   return (
-    <div ref={containerRef} className="landing-scroll-container h-screen w-full relative bg-omin-black text-white selection:bg-omin-gold/30 overflow-y-scroll overflow-x-hidden">
-      {!isMobile && <CanvasBackground />}
+    <div className="landing-root min-h-screen w-full relative bg-omin-black text-white selection:bg-omin-gold/30">
+      <CanvasBackground />
       {/* <CursorGlow /> */}
 
       {/* ═══ SCROLL PROGRESS BAR ═══ */}
       <motion.div style={{ scaleX: progressScaleX }} className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-omin-gold via-yellow-200 to-omin-gold z-[200] origin-left" />
 
-      {/* Static Background Orbs (Zero Lag) */}
+      {/* Static Background Orbs (Performance: Fixed positions) */}
       <div className="fixed top-[-15%] left-[-15%] w-[55vw] h-[55vw] rounded-full bg-omin-gold/[0.04] blur-[140px] pointer-events-none" />
-      <div className="fixed bottom-[-25%] right-[-15%] w-[60vw] h-[60vw] rounded-full bg-blue-500/[0.04] blur-[160px] pointer-events-none" />
+      <div className="fixed bottom-[25%] right-[-15%] w-[60vw] h-[60vw] rounded-full bg-blue-500/[0.04] blur-[160px] pointer-events-none" />
       <div className="fixed top-[40%] right-[-5%] w-[30vw] h-[30vw] rounded-full bg-purple-500/[0.03] blur-[120px] pointer-events-none" />
 
       {/* ─── VISIONARY WARP TUNNEL ─── */}
@@ -251,13 +251,13 @@ export default function LandingPage() {
         style={{ backgroundColor: glowColor }}
         className="fixed top-0 -left-[20%] w-[70%] h-[70%] blur-[120px] pointer-events-none z-0 transition-colors duration-1000" 
       />
-      <motion.div 
+      <div 
         style={{ backgroundColor: glowColor }}
         className="fixed bottom-0 -right-[20%] w-[70%] h-[70%] blur-[120px] pointer-events-none z-0 transition-colors duration-1000" 
       />
 
       {/* ═══ NAV ═══ */}
-      <motion.nav style={{ background: navBg, borderBottomColor: navBorder }} className="landing-nav fixed top-[3px] z-[100] w-full min-w-[320px] h-[72px] flex items-center justify-between px-6 lg:px-12 backdrop-blur-xl border-b border-transparent">
+      <nav style={{ background: navBg, borderBottomColor: navBorder }} className="landing-nav fixed top-0 sm:top-[3px] z-[100] w-full min-w-[320px] h-[72px] flex items-center justify-between px-6 lg:px-12 backdrop-blur-xl border-b border-transparent transition-all duration-300">
         <div className="flex items-center gap-3 cursor-pointer" data-magnetic onClick={() => playSelectSound(0.15)}>
           <InteractiveLogo size={32} iconSize={20} />
           <span className="font-display font-bold tracking-tight text-[15px]">OMNI AI <span className="text-omin-gold">PRO</span></span>
@@ -271,7 +271,7 @@ export default function LandingPage() {
             Dashboard →
           </MagBtn>
         </div>
-      </motion.nav>
+      </nav>
 
       {/* ═══ 1. HERO ═══ */}
       <motion.section style={{ opacity: heroOpacity, scale: heroScale, y: heroY }} className="hero-section relative flex flex-col items-center justify-center min-h-[95vh] text-center px-4 pt-32 pb-10">
