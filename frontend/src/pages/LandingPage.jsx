@@ -6,6 +6,7 @@ import { CanvasBackground, CursorGlow, MagBtn, BrandLogo, BentoCard, CountUp, St
 import InteractiveLogo from '../components/InteractiveLogo';
 import { LogoCloud, LiveAIDemo, HowItWorks, ModelLibrary, CompareTable, TestimonialsSection, PricingSection, FAQSection, MarqueeSection } from './landingSections';
 import confetti from 'canvas-confetti';
+import { preloadSounds, initAudioContext } from '../lib/audio';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -34,6 +35,10 @@ export default function LandingPage() {
   useEffect(() => {
     // Lock body scroll — landing page uses its own container scroll
     document.body.classList.add('landing-page-active');
+    
+    // Preload ultra-premium sounds
+    preloadSounds();
+    
     return () => document.body.classList.remove('landing-page-active');
   }, []);
 
@@ -143,12 +148,12 @@ export default function LandingPage() {
 
       {/* ═══ NAV ═══ */}
       <motion.nav style={{ background: navBg, borderBottomColor: navBorder }} className="landing-nav fixed top-[3px] z-[100] w-full min-w-[320px] h-[72px] flex items-center justify-between px-6 lg:px-12 backdrop-blur-xl border-b border-transparent">
-        <div className="flex items-center gap-3" data-magnetic>
+        <div className="flex items-center gap-3 cursor-pointer" data-magnetic onClick={() => playSelectSound(0.15)}>
           <InteractiveLogo size={32} iconSize={20} />
           <span className="font-display font-bold tracking-tight text-[15px]">OMNI AI <span className="text-omin-gold">PRO</span></span>
         </div>
         <div className="hidden md:flex gap-8">
-          {['Features', 'Models', 'Compare', 'Pricing'].map(l => <a key={l} href={`#${l.toLowerCase()}`} className="text-white/40 hover:text-white transition-colors uppercase text-[10px] tracking-[0.2em] font-bold">{l}</a>)}
+          {['Features', 'Models', 'Compare', 'Pricing'].map(l => <a key={l} href={`#${l.toLowerCase()}`} onClick={() => playSelectSound(0.1)} className="text-white/40 hover:text-white transition-colors uppercase text-[10px] tracking-[0.2em] font-bold">{l}</a>)}
         </div>
         <div className="flex items-center gap-4">
           {user ? <button onClick={handleLogout} className="text-red-400 text-[13px] font-semibold hover:text-red-300">Log Out</button> : <button onClick={triggerAuth} className="text-white/50 text-[13px] font-semibold hover:text-white transition-colors hidden sm:block">Log In</button>}

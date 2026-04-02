@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { motion, useMotionValue, useSpring, useMotionTemplate, useTransform, AnimatePresence, useScroll } from 'framer-motion';
 import Spline from '@splinetool/react-spline';
+import { playSelectSound, playHoverSound } from '../lib/audio';
 
 /* ─── Animated Canvas Particle Network ─── */
 export function CanvasBackground() {
@@ -233,9 +234,9 @@ export function MagBtn({ children, className, onClick }) {
       transition={{ boxShadow: { duration: 0.3 } }}
       className={`relative overflow-hidden active:scale-95 transition-transform ${className}`}
       onMouseMove={onMove}
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={() => { setHovered(true); playHoverSound(); }}
       onMouseLeave={() => { x.set(0); y.set(0); setHovered(false); }}
-      onClick={onClick}
+      onClick={(e) => { playSelectSound(); onClick?.(e); }}
     >
       {/* Sweeping shimmer on hover */}
       <motion.div
@@ -321,8 +322,10 @@ export function BentoCard({ children, className, delay = 0 }) {
       <motion.div 
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
         onMouseMove={handleMouseMove}
+        onMouseEnter={() => playHoverSound()}
         onMouseLeave={handleMouseLeave}
-        className={`glass-panel glow-border rounded-2xl md:rounded-[2rem] p-5 md:p-8 relative overflow-hidden group h-full w-full shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-shadow duration-500`}
+        onClick={() => playSelectSound(0.15)}
+        className={`glass-panel glow-border rounded-2xl md:rounded-[2rem] p-5 md:p-8 relative overflow-hidden group h-full w-full shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-shadow duration-500 cursor-pointer`}
         data-magnetic
       >
         {/* Liquid Border Light */}

@@ -65,19 +65,71 @@ export const playReceiveSound = () => {
 export const playErrorSound = () => {
   const ctx = getAudioContext();
   if (!ctx) return;
-  
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
-  
   osc.type = 'triangle';
   osc.frequency.setValueAtTime(150, ctx.currentTime);
   osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.2);
-  
   gain.gain.setValueAtTime(0.3, ctx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
-  
   osc.connect(gain);
   gain.connect(ctx.destination);
   osc.start();
   osc.stop(ctx.currentTime + 0.3);
+};
+
+/* ── PRELOADING & BUFFERED SFX ── */
+let selectBuffer = null;
+
+export const preloadSounds = async () => {
+  const ctx = getAudioContext();
+  if (!ctx || selectBuffer) return;
+  try {
+    const res = await fetch('/sounds/select.wav');
+    const arrayBuffer = await res.arrayBuffer();
+    selectBuffer = await ctx.decodeAudioData(arrayBuffer);
+  } catch (err) {
+    console.warn("Failed to preload sounds:", err);
+  }
+};
+
+/* ── SFX: Modern Technology Select (Ultra-Premium) ── */
+export const playSelectSound = (volume = 0.25) => {
+  const ctx = getAudioContext();
+  if (!ctx || !selectBuffer) return;
+  initAudioContext();
+  
+  const source = ctx.createBufferSource();
+  const gain = ctx.createGain();
+  source.buffer = selectBuffer;
+  gain.gain.setValueAtTime(volume, ctx.currentTime);
+  source.connect(gain);
+  gain.connect(ctx.destination);
+  source.start(0);
+};
+
+/* ── SFX: Haptic Hover Tick ── */
+export const playHoverSound = () => {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+  
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(800, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(2000, ctx.currentTime + 0.05);
+  
+  filter.type = 'highpass';
+  filter.frequency.value = 1500;
+  
+  gain.gain.setValueAtTime(0.02, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+  
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.05);
 };
