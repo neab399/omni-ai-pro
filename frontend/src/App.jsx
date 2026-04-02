@@ -21,13 +21,20 @@ function App() {
   const [showSplash, setShowSplash] = useState(true);
   const handleSplashComplete = useCallback(() => setShowSplash(false), []);
 
+  // 🚀 Performance: Prefetch critical chunks while splash screen is active
+  useState(() => {
+    import('./pages/LandingPage');
+    import('./pages/ChatPage');
+    import('./pages/DashboardPage');
+  }, []);
+
   return (
     <ArtifactProvider>
       <div onClick={() => initAudioContext()} onTouchStart={() => initAudioContext()}>
         <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.03] mix-blend-overlay noise-grain" />
         {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
         <Router>
-          <Suspense fallback={<div className="min-h-screen bg-omin-black flex items-center justify-center"><div className="w-10 h-10 border-2 border-omin-gold/20 border-t-omin-gold rounded-full animate-spin" /></div>}>
+          <Suspense fallback={<div className="fixed inset-0 bg-[#030305] flex items-center justify-center animate-pulse-slow"><div className="w-8 h-8 border-2 border-omin-gold/20 border-t-omin-gold rounded-full animate-spin" /></div>}>
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/chat" element={<ChatPage />} />

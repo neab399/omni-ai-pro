@@ -7,6 +7,21 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('@splinetool')) return 'vendor-spline';
+            if (id.includes('framer-motion')) return 'vendor-framer';
+            if (id.includes('lucide-react') || id.includes('canvas-confetti')) return 'vendor-ui';
+            if (id.includes('@supabase')) return 'vendor-db';
+            return 'vendor';
+          }
+        }
+      }
+    }
+  },
   server: {
     port: 5176, // Matches your current running port
     proxy: {

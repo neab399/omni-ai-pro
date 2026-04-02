@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { motion, useMotionValue, useSpring, useMotionTemplate, useTransform, AnimatePresence, useScroll } from 'framer-motion';
-import Spline from '@splinetool/react-spline';
+// import Spline from '@splinetool/react-spline'; // Moved to lazy import
+const Spline = React.lazy(() => import('@splinetool/react-spline'));
 import { playSelectSound, playHoverSound } from '../lib/audio';
 
 /* ─── Animated Canvas Particle Network ─── */
