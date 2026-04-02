@@ -1,28 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../lib/supabase';
+import { IC, ALL_TEXT_MODELS, genId } from '../lib/models';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-/* ── Icons ── */
-const Icons = {
-  Back:    () => <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>,
-  Chat:    () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
-  Image:   () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>,
-  Voice:   () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>,
-  Video:   () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>,
-  Zap:     () => <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11L10 22L19.5 10.5H13L13 2Z"/></svg>,
-  Users:   () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-  Clock:   () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-  Star:    () => <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
-  Trend:   () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
-  Globe:   () => <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
-  Sun:     () => <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>,
-  Moon:    () => <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>,
-};
+// Using IC from models.jsx instead of local Icons
 
 /* ── Animated Counter ── */
 function AnimCounter({ target, suffix = '', prefix = '' }) {
@@ -254,9 +236,9 @@ export default function DashboardPage() {
   const userAvatar = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
   
   const TABS = [
-    { id: 'overview', label: 'Overview', icon: Icons.Trend },
-    { id: 'models', label: 'Models', icon: Icons.Zap },
-    { id: 'activity', label: 'Activity', icon: Icons.Clock },
+    { id: 'overview', label: 'Overview', icon: IC.Sparkle },
+    { id: 'models', label: 'Models', icon: IC.Bolt },
+    { id: 'activity', label: 'Activity', icon: IC.Refresh },
   ];
 
   return (
@@ -274,9 +256,9 @@ export default function DashboardPage() {
             </button>
             <div>
               <h1 style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Outfit',sans-serif", letterSpacing: '-0.02em', margin: 0 }}>
-                Dashboard
+                OmniAI Commander
               </h1>
-              <p style={{ fontSize: 12, color: 'var(--db-muted)', margin: 0 }}>Welcome back, {userName}</p>
+              <p style={{ fontSize: 12, color: 'var(--db-muted)', margin: 0 }}>Terminal Ready · {userName}</p>
             </div>
           </div>
           
@@ -298,7 +280,7 @@ export default function DashboardPage() {
               style={{ width: 34, height: 34, background: 'var(--db-hover)', border: '1px solid var(--db-border)', borderRadius: 9, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--db-muted)' }}>
               {theme === 'dark' ? <Icons.Sun /> : <Icons.Moon />}
             </button>
-            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'var(--db-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', fontWeight: 700, fontSize: 13, color: '#030305' }}>
+            <div onClick={() => navigate('/settings')} style={{ width: 32, height: 32, borderRadius: 9, background: 'var(--db-accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', fontWeight: 700, fontSize: 13, color: '#030305', cursor: 'pointer' }}>
               {userAvatar ? <img src={userAvatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : userName[0]}
             </div>
           </div>
@@ -311,13 +293,36 @@ export default function DashboardPage() {
           {activeTab === 'overview' && (
             <motion.div key="overview" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               
+              {/* ── Quick Actions (Command Center Feel) ── */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 28 }}>
+                {[
+                  { label: 'New Chat', icon: IC.Chat, color: '#FFD93D', path: '/chat?mode=chat' },
+                  { label: 'Generate Art', icon: IC.Image, color: '#a855f7', path: '/chat?mode=image' },
+                  { label: 'Voice Mode', icon: IC.Mic, color: '#4ade80', path: '/chat?mode=voice' },
+                  { label: 'Settings', icon: IC.Settings, color: '#60a5fa', path: '/settings' },
+                ].map((action, i) => {
+                  const Icon = action.icon;
+                  return (
+                    <motion.div key={i}
+                      whileHover={{ y: -4, scale: 1.02, boxShadow: 'var(--db-glow)' }}
+                      onClick={() => navigate(action.path)}
+                      style={{ background: 'var(--db-panel)', border: '1px solid var(--db-border)', borderRadius: 16, padding: '24px 20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, transition: 'all .2s' }}>
+                      <div style={{ width: 44, height: 44, borderRadius: 12, background: `${action.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: action.color }}>
+                        <Icon />
+                      </div>
+                      <span style={{ fontSize: 13, fontWeight: 700, fontFamily: "'Outfit',sans-serif" }}>{action.label}</span>
+                    </motion.div>
+                  );
+                })}
+              </div>
+
               {/* ── Stat Cards ── */}
               <div className="db-stat-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 28 }}>
                 {[
-                  { label: 'Total Interactions', value: totalChats, icon: Icons.Chat, color: '#FFD93D', suffix: '' },
-                  { label: 'Tokens Used', value: totalTokens < 1000 ? totalTokens : Math.round(totalTokens / 1000), icon: Icons.Zap, color: '#4ade80', suffix: totalTokens < 1000 ? '' : 'K' },
-                  { label: 'Models Used', value: metrics.models.length, icon: Icons.Globe, color: '#60a5fa', suffix: '' },
-                  { label: 'Hours Saved', value: stats.hoursSaved, icon: Icons.Clock, color: '#a855f7', suffix: 'h' },
+                  { label: 'Total Interactions', value: totalChats, icon: IC.Chat, color: '#FFD93D', suffix: '' },
+                  { label: 'Tokens Used', value: totalTokens < 1000 ? totalTokens : Math.round(totalTokens / 1000), icon: IC.Bolt, color: '#4ade80', suffix: totalTokens < 1000 ? '' : 'K' },
+                  { label: 'Models Active', value: metrics.models.length, icon: IC.Sparkle, color: '#60a5fa', suffix: '' },
+                  { label: 'Hours Saved', value: stats.hoursSaved, icon: IC.Refresh, color: '#a855f7', suffix: 'h' },
                 ].map((stat, i) => {
                   const Icon = stat.icon;
                   return (
@@ -409,7 +414,7 @@ export default function DashboardPage() {
           {activeTab === 'models' && (
             <motion.div key="models" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               <h2 style={{ fontSize: 16, fontWeight: 700, fontFamily: "'Outfit',sans-serif", marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Icons.Zap /> Most Used Models
+                <IC.Bolt /> Most Used Models
               </h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {metrics.models.map((model, i) => {
@@ -470,7 +475,7 @@ export default function DashboardPage() {
           {activeTab === 'activity' && (
             <motion.div key="activity" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
               <h2 style={{ fontSize: 16, fontWeight: 700, fontFamily: "'Outfit',sans-serif", marginBottom: 18, display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Icons.Clock /> 30-Day Activity
+                <IC.Refresh /> 30-Day Activity
               </h2>
               <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
                 style={{ background: 'var(--db-panel)', backdropFilter: 'blur(24px)', border: '1px solid var(--db-border)', borderRadius: 16, padding: '20px', marginBottom: 20 }}>
@@ -496,7 +501,7 @@ export default function DashboardPage() {
                     { action: 'Music generation with Suno v4', time: 'Yesterday', type: 'chat', color: '#a855f7' },
                     { action: 'Image comparison: Midjourney vs DALL-E', time: 'Yesterday', type: 'image', color: '#FFD93D' },
                   ].map((item, i) => {
-                    const TypeIcon = item.type === 'image' ? Icons.Image : item.type === 'voice' ? Icons.Voice : item.type === 'video' ? Icons.Video : Icons.Chat;
+                    const TypeIcon = item.type === 'image' ? IC.Image : item.type === 'voice' ? IC.Mic : item.type === 'video' ? IC.Video : IC.Chat;
                     return (
                       <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.05 }}
                         style={{ display: 'flex', gap: 14, padding: '12px 0', borderBottom: i < 7 ? '1px solid var(--db-border)' : 'none' }}>

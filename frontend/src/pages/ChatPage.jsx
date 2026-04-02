@@ -4,9 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 
 /* ── Supabase ─────────────────────────────────────────── */
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from '../lib/supabase';
 
 /* ── Data / constants ─────────────────────────────────── */
 import {
@@ -24,11 +22,15 @@ import MessageBubble           from '../components/chat/MessageBubble';
 import { EmptyState }          from '../components/chat/EmptyState';
 import AdvancedInput           from '../components/chat/AdvancedInput';
 import ChatSidebar             from '../components/chat/ChatSidebar';
-import { ImageSection, VoiceSection, VideoSection } from '../components/chat/MediaSections';
+import { ImageSection } from '../components/chat/ImageSection';
+import { VoiceSection } from '../components/chat/VoiceSection';
+import { VideoSection } from '../components/chat/VideoSection';
 import { useArtifacts } from '../context/ArtifactContext';
 import ArtifactPanel from '../components/chat/ArtifactPanel';
 import StudyTools from '../components/chat/StudyTools';
 import { playSendSound, playReceiveSound, playErrorSound, initAudioContext } from '../lib/audio';
+import useConversations from '../hooks/useConversations';
+import useModelManagement from '../hooks/useModelManagement';
 
 /* ══════════════════════════════════════════════════════════
    CHAT PAGE — state + handlers only (~250 lines)
@@ -49,29 +51,55 @@ export default function ChatPage() {
   const [currentUser,   setCurrentUser]   = useState(null);
   const [userProfile,   setUserProfile]   = useState({ name: 'Omni User', email: '', avatar: null });
   const [sidebarOpen,   setSidebarOpen]   = useState(() => window.innerWidth >= 768);
-  const [isMultiMode,   setIsMultiMode]   = useState(false);
-  const [input,         setInput]         = useState('');
-  const [isLoading,     setIsLoading]     = useState(true);
-  const [activeSection, setActiveSection] = useState('chat');
-  const [soundEnabled,  setSoundEnabled]  = useState(() => localStorage.getItem('omni-sound') !== 'false');
-
-  const [showModelSel,  setShowModelSel]  = useState(false);
-  const [activeModels,  setActiveModels]  = useState([{
-    ...TEXT_PROVIDERS.find(p => p.id === 'meta').models[0],
-    providerId: 'meta', slug: 'meta', color: '#0081fb',
-  }]);
-
-  const [conversations,  setConversations]  = useState([{ id: 'default', title: 'New Conversation', createdAt: Date.now(), pinned: false }]);
-  const [activeConvId,   setActiveConvId]   = useState('default');
-  const [renamingId,     setRenamingId]     = useState(null);
-  const [renameValue,    setRenameValue]    = useState('');
-  const [chatHistories,  setChatHistories]  = useState({ default: {} });
-  const [toasts,         setToasts]         = useState([]);
-  const [showSearch,     setShowSearch]     = useState(false);
   const [isFocusMode,    setIsFocusMode]    = useState(false);
 
   const chatEndRefs = useRef({});
   const inputRef    = useRef(null);
+
+  /* ── Toast helpers ────────────────────────────────────── */
+  const [toasts,         setToasts]         = useState([]);
+  const addToast = useCallback((message, type = 'info') => {
+    const id = genId();
+    setToasts(p => [...p, { id, message, type }]);
+    setTimeout(() => setToasts(p => p.filter(t => t.id !== id)), 3200);
+  }, []);
+  const removeToast = useCallback(id => setToasts(p => p.filter(t => t.id !== id)), []);
+
+  /* ── Model Management Hook ────────────────────────────── */
+  const {
+    isMultiMode,
+    setIsMultiMode,
+    showModelSel,
+    setShowModelSel,
+    activeModels,
+    setActiveModels,
+    handleModelSelect,
+    removeModelFromChat,
+    continueWithModel
+  } = useModelManagement(addToast);
+
+  /* ── Conversations Hook ──────────────────────────────── */
+  const {
+    conversations,
+    setConversations,
+    activeConvId,
+    setActiveConvId,
+    chatHistories,
+    setChatHistories,
+    renamingId,
+    setRenamingId,
+    renameValue,
+    setRenameValue,
+    activeConv,
+    getCurrentHistory,
+    sortedConvs,
+    handleNewConv,
+    handleDeleteConv,
+    handlePinConv,
+    handleRenameConv,
+    handleStartRename,
+    saveChatToDB
+  } = useConversations(currentUser, addToast);
 
   /* ── Theme & Sound sync ───────────────────────────────────────── */
   useEffect(() => {
@@ -107,28 +135,25 @@ export default function ChatPage() {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  /* ── Load chats from DB ───────────────────────────────── */
-  useEffect(() => {
-    if (!currentUser) return;
-    (async () => {
-      const { data, error } = await supabase.from('chats').select('*').eq('user_id', currentUser.id).order('updated_at', { ascending: false });
-      if (!error && data?.length > 0) {
-        setConversations(data.map(c => ({ id: c.id, title: c.title, pinned: c.pinned, createdAt: c.created_at })));
-        const h = {}; data.forEach(c => { h[c.id] = c.history || {}; });
-        setChatHistories(h); setActiveConvId(data[0].id);
-      }
-    })();
-  }, [currentUser]);
+  const [input,         setInput]         = useState('');
+  const [isLoading,     setIsLoading]     = useState(true);
+  const [activeSection, setActiveSection] = useState('chat');
+  const [soundEnabled,  setSoundEnabled]  = useState(() => localStorage.getItem('omni-sound') !== 'false');
+  const [showSearch,     setShowSearch]     = useState(false);
 
-  const saveChatToDB = useCallback(async (convId, title, history, pinned) => {
-    if (!currentUser) return;
-    await supabase.from('chats').upsert({ id: convId, user_id: currentUser.id, title, history, pinned, updated_at: Date.now() });
-  }, [currentUser]);
+  /* ── Conversations Hook ──────────────────────────────── */
 
-  /* ── Scroll to bottom ─────────────────────────────────── */
+  /* ── Keyboard shortcuts ───────────────────────────────── */
   useEffect(() => {
-    Object.values(chatEndRefs.current).forEach(r => r?.scrollIntoView({ behavior: 'smooth' }));
-  }, [chatHistories]);
+    const h = e => {
+      const mod = e.metaKey || e.ctrlKey;
+      if (mod && e.key === 'k')  { e.preventDefault(); setShowSearch(p => !p); }
+      if (mod && e.key === 'n')  { e.preventDefault(); handleNewConv(inputRef); }
+      if (mod && e.key === '\\') { e.preventDefault(); setSidebarOpen(p => !p); }
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [handleNewConv, inputRef]);
 
   /* ── Init model history ───────────────────────────────── */
   useEffect(() => {
@@ -144,77 +169,13 @@ export default function ChatPage() {
         }));
       }
     });
-  }, [activeModels, activeConvId]);
+  }, [activeModels, activeConvId, chatHistories, setChatHistories]);
 
-  /* ── Keyboard shortcuts ───────────────────────────────── */
-  useEffect(() => {
-    const h = e => {
-      const mod = e.metaKey || e.ctrlKey;
-      if (mod && e.key === 'k')  { e.preventDefault(); setShowSearch(p => !p); }
-      if (mod && e.key === 'n')  { e.preventDefault(); handleNewConv(); }
-      if (mod && e.key === '\\') { e.preventDefault(); setSidebarOpen(p => !p); }
-    };
-    window.addEventListener('keydown', h);
-    return () => window.removeEventListener('keydown', h);
-  }, []);
+  /* ── Conversations Hook Handlers (Wrapper) ────────────────── */
+  // Wrap core functions if they need extra UI logic
+  const onNewConv = () => handleNewConv(inputRef);
 
-  /* ── Derived ──────────────────────────────────────────── */
-  const activeConv = conversations.find(c => c.id === activeConvId);
-  const getCurrentHistory = useCallback(key => chatHistories[activeConvId]?.[key] || [], [chatHistories, activeConvId]);
-  const sortedConvs = useMemo(() => {
-    const pin   = conversations.filter(c =>  c.pinned).sort((a, b) => b.createdAt - a.createdAt);
-    const unpin = conversations.filter(c => !c.pinned).sort((a, b) => b.createdAt - a.createdAt);
-    return [...pin, ...unpin];
-  }, [conversations]);
-
-  /* ── Conversation handlers ────────────────────────────── */
-  const handleNewConv = () => {
-    const id = genId();
-    setConversations(p => [{ id, title: 'New Conversation', createdAt: Date.now(), pinned: false }, ...p]);
-    setChatHistories(p => ({ ...p, [id]: {} }));
-    setActiveConvId(id); setIsMultiMode(false); setShowSearch(false);
-    setTimeout(() => inputRef.current?.focus(), 100);
-  };
-
-  const handleDeleteConv = async (id) => {
-    setConversations(p => p.filter(c => c.id !== id));
-    setChatHistories(p => { const n = { ...p }; delete n[id]; return n; });
-    if (currentUser) await supabase.from('chats').delete().eq('id', id);
-    if (activeConvId === id) handleNewConv();
-    addToast('Chat deleted');
-  };
-
-  const handlePinConv = id => setConversations(p => p.map(c => c.id === id ? { ...c, pinned: !c.pinned } : c));
-
-  const handleRenameConv = (id, value) => {
-    if (!value.trim()) return;
-    setConversations(p => p.map(c => c.id === id ? { ...c, title: value.trim() } : c));
-    setRenamingId(null);
-  };
-
-  const handleStartRename = (id, currentTitle) => {
-    setRenamingId(id);
-    setRenameValue(currentTitle);
-  };
-
-  /* ── Model selection ──────────────────────────────────── */
-  const handleModelSelect = (model, provider) => {
-    const m = { ...model, providerId: provider.id, slug: provider.slug, color: provider.color };
-    if (isMultiMode) {
-      if (activeModels.find(x => x.id === model.id && x.providerId === provider.id)) {
-        if (activeModels.length === 1) { addToast('Need at least 1 model', 'error'); return; }
-        setActiveModels(p => p.filter(x => !(x.id === model.id && x.providerId === provider.id)));
-        addToast(`Removed ${model.name}`);
-      } else { setActiveModels(p => [...p, m]); addToast(`Added ${model.name}`, 'success'); }
-    } else { setActiveModels([m]); setShowModelSel(false); addToast(`Switched to ${model.name}`, 'success'); }
-  };
-
-  const removeModelFromChat = (modelId, providerId) => {
-    if (activeModels.length === 1) { addToast('Need at least 1 model', 'error'); return; }
-    setActiveModels(p => p.filter(m => !(m.id === modelId && m.providerId === providerId)));
-  };
-
-  const continueWithModel = model => { setActiveModels([model]); setIsMultiMode(false); addToast(`Continued with ${model.name}`, 'success'); };
+  /* ── Send message ─────────────────────────────────────── */
 
   /* ── Send message ─────────────────────────────────────── */
   const handleSend = async () => {
@@ -445,7 +406,7 @@ export default function ChatPage() {
             renamingId={renamingId}
             renameValue={renameValue}
             setRenameValue={setRenameValue}
-            onNewConv={handleNewConv}
+            onNewConv={onNewConv}
             onSelectConv={id => { setActiveConvId(id); setShowSearch(false); if (isMobile) setSidebarOpen(false); }}
             onPinConv={handlePinConv}
             onDeleteConv={handleDeleteConv}
@@ -545,7 +506,12 @@ export default function ChatPage() {
         {/* Section content */}
         <AnimatePresence mode="wait">
           {activeSection === 'chat' && (
-            <motion.div key="chat" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+            <motion.div key="chat" 
+              initial={{ opacity: 0, y: 10, scale: 0.995 }} 
+              animate={{ opacity: 1, y: 0, scale: 1 }} 
+              exit={{ opacity: 0, y: -10, scale: 0.995 }} 
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
               {/* Chat messages */}
               <div className="omni-scroll" style={{ flex: 1, display: 'flex', overflowX: isMultiMode ? 'auto' : 'hidden', overflowY: isMultiMode ? 'hidden' : 'auto', background: 'var(--bg-base)', minHeight: 0, position: 'relative' }}>
                 {isMultiMode ? (
@@ -646,17 +612,34 @@ export default function ChatPage() {
           )}
 
           {activeSection === 'image' && (
-            <motion.div key="image" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+            <motion.div key="image" 
+              initial={{ opacity: 0, scale: 1.01 }} 
+              animate={{ opacity: 1, scale: 1 }} 
+              exit={{ opacity: 0, scale: 0.99 }} 
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
               <ImageSection addToast={addToast} />
             </motion.div>
           )}
+
           {activeSection === 'voice' && (
-            <motion.div key="voice" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+            <motion.div key="voice" 
+              initial={{ opacity: 0, x: 20 }} 
+              animate={{ opacity: 1, x: 0 }} 
+              exit={{ opacity: 0, x: -20 }} 
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
               <VoiceSection addToast={addToast} />
             </motion.div>
           )}
+
           {activeSection === 'video' && (
-            <motion.div key="video" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+            <motion.div key="video" 
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              exit={{ opacity: 0, y: -20 }} 
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
               <VideoSection addToast={addToast} />
             </motion.div>
           )}
