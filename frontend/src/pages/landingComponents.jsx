@@ -319,6 +319,9 @@ export function BentoCard({ children, className, delay = 0 }) {
     spotY.set(-1000);
   }
 
+  const background1 = useMotionTemplate`radial-gradient(400px circle at ${liquidX}px ${liquidY}px, rgba(255,217,61,0.25), transparent 80%)`;
+  const background2 = useMotionTemplate`radial-gradient(600px circle at ${spotX}px ${spotY}px, rgba(59,130,246,0.15), transparent 70%)`;
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 30 }} 
@@ -346,7 +349,7 @@ export function BentoCard({ children, className, delay = 0 }) {
           <motion.div 
             className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-500 group-hover:opacity-100" 
             style={{ 
-              background: useMotionTemplate`radial-gradient(400px circle at ${liquidX}px ${liquidY}px, rgba(255,217,61,0.25), transparent 80%)`, 
+              background: background1, 
               transform: "translateZ(1px)" 
             }} 
           />
@@ -356,7 +359,7 @@ export function BentoCard({ children, className, delay = 0 }) {
           <motion.div 
             className="pointer-events-none absolute -inset-px rounded-[2rem] opacity-0 transition duration-700 group-hover:opacity-40" 
             style={{ 
-              background: useMotionTemplate`radial-gradient(600px circle at ${spotX}px ${spotY}px, rgba(59,130,246,0.15), transparent 70%)`, 
+              background: background2, 
               transform: "translateZ(2px)" 
             }} 
           />

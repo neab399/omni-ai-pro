@@ -18,10 +18,50 @@ import confetti from 'canvas-confetti';
 import { preloadSounds, initAudioContext, playSystemStartupSFX, playSelectSound, playHoverSound } from '../lib/audio';
 import WarpTransition from '../components/WarpTransition';
 
+// ─── Lightweight Sentient Glow Background for Mobile ───
+const MobileHeroBackground = () => (
+  <div className="absolute inset-0 z-0 overflow-hidden bg-omin-black">
+    <motion.div 
+      animate={{ 
+        scale: [1, 1.2, 1],
+        opacity: [0.15, 0.3, 0.15],
+      }}
+      transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vw] bg-[radial-gradient(circle,rgba(255,217,61,0.15)_0%,transparent_70%)] blur-[100px]"
+    />
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(5,5,5,0)_0%,rgba(5,5,5,1)_85%)] z-10" />
+  </div>
+);
+
+// ─── Sleek Section Loader for Suspense ───
+const SectionLoader = () => (
+  <div className="w-full py-20 flex flex-col items-center justify-center gap-4">
+    <motion.div 
+      animate={{ 
+        scale: [1, 1.1, 1],
+        opacity: [0.3, 0.6, 0.3],
+        rotate: [0, 180, 360]
+      }}
+      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+      className="w-8 h-8 border-2 border-omin-gold/30 border-t-omin-gold rounded-full"
+    />
+    <span className="text-[10px] font-bold tracking-[0.3em] text-white/20 uppercase">Loading Vision...</span>
+  </div>
+);
+
 export default function LandingPage() {
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ container: containerRef });
+
+  // 📱 Device Detection for Performance Mode
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024 || 'ontouchstart' in window);
+    check();
+    window.addEventListener('resize', check, { passive: true });
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   // Scroll-linked transforms — REFINED FOR MODAL VISIBILITY & PERFORMANCE
   const navBg = useTransform(scrollYProgress, [0, 0.015], ['rgba(5,5,5,0)', 'rgba(5,5,5,0.9)']);
@@ -30,7 +70,7 @@ export default function LandingPage() {
   // 🟢 Fixed: Hero stays visible longer (threshold increased from 0.12 to 0.20)
   const heroOpacity = useTransform(scrollYProgress, [0, 0.20], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.22], [1, 0.82]);
-  const heroY = useTransform(scrollYProgress, [0, 0.25], [0, -80]); // Softened from -150 to keep it from flying away
+  const heroY = useTransform(scrollYProgress, [0, 0.25], [0, -80]); 
   
   const dashboardScale = useTransform(scrollYProgress, [0.06, 0.22], [0.82, 1]);
   const dashboardRotateX = useTransform(scrollYProgress, [0.06, 0.22], [25, 0]);
@@ -39,7 +79,6 @@ export default function LandingPage() {
   const progressScaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
   
   // ─── Adaptive Environment Dynamics ───
-  // Map scroll to different accent colors: Deep Gold -> Blue -> Emerald -> Purple
   const glowColor = useTransform(
     scrollYProgress,
     [0, 0.25, 0.5, 0.75, 1],
